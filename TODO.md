@@ -33,9 +33,16 @@
 - [x] 004 — IO Callbacks
 - [x] 005 — Worker Threads (Intro)
 
-## Katas — Phases 3–16
+## Katas — Phase 3: File System & OS Interaction
 
-- [ ] Phase 3 — File System & OS Interaction
+- [x] 001 — Reading and Writing Files
+- [x] 002 — Paths and Directories
+- [x] 003 — OS and System Information
+- [x] 004 — Process and Environment Variables
+- [x] 005 — Process Lifecycle and Signals
+
+## Katas — Phases 4–16
+
 - [ ] Phase 4 — Buffers, Binary Data & Encoding
 - [ ] Phase 5 — Streams & Backpressure
 - [ ] Phase 6 — Networking Fundamentals
