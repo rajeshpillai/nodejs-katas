@@ -54,9 +54,66 @@ nodejs-katas/
 - **Frontend:** SolidJS, Tailwind CSS
 - **Katas:** Markdown with YAML frontmatter
 
+## Prerequisites
+
+- **Node.js** v18+ (LTS recommended)
+- **npm** (comes with Node.js)
+
 ## Getting Started
 
-*Coming soon — project is under active development. See [TODO.md](TODO.md) for current status.*
+```bash
+# Clone the repo
+git clone https://github.com/rajeshpillai/nodejs-katas.git
+cd nodejs-katas
+
+# Install dependencies
+cd backend && npm install
+cd ../frontend && npm install
+cd ..
+```
+
+## Running the App
+
+You need two terminals — one for the backend, one for the frontend.
+
+**Terminal 1 — Backend (port 6000):**
+
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2 — Frontend (port 3000):**
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open **http://localhost:3000** in your browser.
+
+Or run both at once from the project root:
+
+```bash
+npm run dev
+```
+
+## Usage
+
+1. Open http://localhost:3000
+2. Click **Katas** on the landing page
+3. Select a kata from the sidebar (start with Phase 0)
+4. Read the **Description** tab to understand the concept
+5. Switch to the **Experiment** tab to see the starter code
+6. Click **Run** (or press `Ctrl+Enter`) to execute
+7. Modify the code and re-run to explore
+
+## Production Build
+
+```bash
+cd frontend && npm run build    # outputs to frontend/dist/
+cd ../backend && npm run start  # serves API + frontend on port 6000
+```
 
 ## License
 
