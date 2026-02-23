@@ -16,7 +16,7 @@ function resolveDir(envKey, candidates) {
   return candidates[0];
 }
 
-const PORT = process.env.PORT ?? "6000";
+const PORT = process.argv[2] || process.env.PORT || "6001";
 
 const katasDir = resolveDir("KATAS_DIR", [
   join(__dirname, "../../katas"),

@@ -105,10 +105,24 @@
 - [x] 004 — Transactions
 - [x] 005 — Database Error Handling
 
-## Katas — Phases 9A–16
+## Katas — Phase 9A: Advanced PostgreSQL in Node.js
 
-- [ ] Phase 9A — Advanced PostgreSQL in Node.js
-- [ ] Phase 10 — Cryptography & Security
+- [x] 001 — Streaming Query Results
+- [x] 002 — Bulk Inserts and COPY
+- [x] 003 — Pagination Strategies
+- [x] 004 — JSONB in PostgreSQL
+- [x] 005 — Query Cancellation and Timeouts
+
+## Katas — Phase 10: Cryptography & Security
+
+- [x] 001 — Hashing with the crypto Module
+- [x] 002 — Password Storage with scrypt
+- [x] 003 — Symmetric Encryption with AES
+- [x] 004 — Tokens and Signatures (HMAC and JWT)
+- [x] 005 — Secure Random Generation
+
+## Katas — Phases 11–16
+
 - [ ] Phase 11 — Child Processes & Worker Threads
 - [ ] Phase 12 — Observability & Reliability
 - [ ] Phase 13 — Performance & Scaling
