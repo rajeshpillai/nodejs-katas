@@ -73,10 +73,24 @@
 - [x] 004 — HTTP Keep-Alive
 - [x] 005 — Content Encoding and Range Requests
 
-## Katas — Phases 7A–16
+## Katas — Phase 7A: WebSockets & Real-Time Systems
 
-- [ ] Phase 7A — WebSockets & Real-Time Systems
-- [ ] Phase 8 — Building Web Servers & APIs
+- [x] 001 — HTTP to WebSocket Upgrade
+- [x] 002 — WebSocket Frame Protocol
+- [x] 003 — Building a WebSocket Server
+- [x] 004 — Real-Time State Management
+- [x] 005 — Scaling WebSockets
+
+## Katas — Phase 8: Building Web Servers & APIs
+
+- [x] 001 — URL Routing
+- [x] 002 — Middleware Patterns
+- [x] 003 — JSON APIs and Validation
+- [x] 004 — Error Handling in APIs
+- [x] 005 — Graceful Shutdown
+
+## Katas — Phases 8A–16
+
 - [ ] Phase 8A — File Uploads & Multipart Streaming
 - [ ] Phase 9 — PostgreSQL Integration
 - [ ] Phase 9A — Advanced PostgreSQL in Node.js
