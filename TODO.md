@@ -57,10 +57,24 @@
 - [x] 004 — Piping and Pipeline
 - [x] 005 — Backpressure
 
-## Katas — Phases 6–16
+## Katas — Phase 6: Networking Fundamentals
 
-- [ ] Phase 6 — Networking Fundamentals
-- [ ] Phase 7 — HTTP from First Principles
+- [x] 001 — TCP Basics with the net Module
+- [x] 002 — UDP Overview
+- [x] 003 — Socket Lifecycle
+- [x] 004 — Timeouts and Retries
+- [x] 005 — Length-Prefix Framing
+
+## Katas — Phase 7: HTTP from First Principles
+
+- [x] 001 — The HTTP Protocol
+- [x] 002 — Headers and Content Types
+- [x] 003 — Request/Response Lifecycle
+- [x] 004 — HTTP Keep-Alive
+- [x] 005 — Content Encoding and Range Requests
+
+## Katas — Phases 7A–16
+
 - [ ] Phase 7A — WebSockets & Real-Time Systems
 - [ ] Phase 8 — Building Web Servers & APIs
 - [ ] Phase 8A — File Uploads & Multipart Streaming
