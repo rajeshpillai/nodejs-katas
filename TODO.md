@@ -153,10 +153,21 @@
 - [x] 004 — Idempotency
 - [x] 005 — Failure Modes
 
-## Katas — Phases 15–16
+## Katas — Phase 15: Frameworks (After Fundamentals)
 
-- [ ] Phase 15 — Frameworks (After Fundamentals)
-- [ ] Phase 16 — Advanced Architectures
+- [x] 001 — Why Frameworks Exist
+- [x] 002 — Routing and Parameters
+- [x] 003 — Middleware and Hooks
+- [x] 004 — Validation and Serialization
+- [x] 005 — Plugins and Encapsulation
+
+## Katas — Phase 16: Advanced Architectures
+
+- [x] 001 — REST + Real-Time Hybrid
+- [x] 002 — Streaming APIs
+- [x] 003 — API Gateway Patterns
+- [x] 004 — Monolith vs Microservices
+- [x] 005 — Configuration and Secrets Management
 
 ## Frontend
 
