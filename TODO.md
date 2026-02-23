@@ -41,10 +41,24 @@
 - [x] 004 — Process and Environment Variables
 - [x] 005 — Process Lifecycle and Signals
 
-## Katas — Phases 4–16
+## Katas — Phase 4: Buffers, Binary Data & Encoding
 
-- [ ] Phase 4 — Buffers, Binary Data & Encoding
-- [ ] Phase 5 — Streams & Backpressure
+- [x] 001 — What Is a Buffer?
+- [x] 002 — Encoding and Decoding
+- [x] 003 — Buffer Operations
+- [x] 004 — Typed Arrays and DataView
+- [x] 005 — Parsing Binary Protocols
+
+## Katas — Phase 5: Streams & Backpressure
+
+- [x] 001 — Readable Streams
+- [x] 002 — Writable Streams
+- [x] 003 — Transform Streams
+- [x] 004 — Piping and Pipeline
+- [x] 005 — Backpressure
+
+## Katas — Phases 6–16
+
 - [ ] Phase 6 — Networking Fundamentals
 - [ ] Phase 7 — HTTP from First Principles
 - [ ] Phase 7A — WebSockets & Real-Time Systems
