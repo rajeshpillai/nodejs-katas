@@ -121,10 +121,24 @@
 - [x] 004 — Tokens and Signatures (HMAC and JWT)
 - [x] 005 — Secure Random Generation
 
-## Katas — Phases 11–16
+## Katas — Phase 11: Child Processes & Worker Threads
 
-- [ ] Phase 11 — Child Processes & Worker Threads
-- [ ] Phase 12 — Observability & Reliability
+- [x] 001 — Child Process Basics
+- [x] 002 — spawn and Streaming I/O
+- [x] 003 — fork and Inter-Process Communication
+- [x] 004 — Worker Threads
+- [x] 005 — CPU Offloading Patterns
+
+## Katas — Phase 12: Observability & Reliability
+
+- [x] 001 — Structured Logging
+- [x] 002 — Health Checks and Readiness Probes
+- [x] 003 — Application Metrics
+- [x] 004 — Crash Handling and Recovery
+- [x] 005 — Graceful Restart and Zero-Downtime Deploys
+
+## Katas — Phases 13–16
+
 - [ ] Phase 13 — Performance & Scaling
 - [ ] Phase 14 — Background Jobs & Async Systems
 - [ ] Phase 15 — Frameworks (After Fundamentals)
