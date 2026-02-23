@@ -19,19 +19,19 @@
 
 ## Katas — Phase 1: JavaScript for the Node Runtime
 
-- [ ] 001 — The Call Stack
-- [ ] 002 — Microtasks vs Macrotasks
-- [ ] 003 — Promises
-- [ ] 004 — async/await
-- [ ] 005 — Async Pitfalls
+- [x] 001 — The Call Stack
+- [x] 002 — Microtasks vs Macrotasks
+- [x] 003 — Promises
+- [x] 004 — async/await
+- [x] 005 — Async Pitfalls
 
 ## Katas — Phase 2: Node.js Core Architecture
 
-- [ ] 001 — Event Loop Phases
-- [ ] 002 — libuv
-- [ ] 003 — Timers
-- [ ] 004 — IO Callbacks
-- [ ] 005 — Worker Threads (Intro)
+- [x] 001 — Event Loop Phases
+- [x] 002 — libuv
+- [x] 003 — Timers
+- [x] 004 — IO Callbacks
+- [x] 005 — Worker Threads (Intro)
 
 ## Katas — Phases 3–16
 
