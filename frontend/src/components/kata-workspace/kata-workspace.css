@@ -1,0 +1,27 @@
+.kata-workspace {
+  display: flex;
+  height: 100%;
+}
+
+.kata-workspace-panel {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.kata-workspace-handle {
+  width: 6px;
+  background: var(--handle-bg);
+  cursor: col-resize;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.kata-workspace-handle:hover,
+.kata-workspace-handle[data-active] {
+  background: var(--accent);
+}
+
+.code-panel-editor .cm-editor {
+  height: 100%;
+}

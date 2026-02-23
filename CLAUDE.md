@@ -61,6 +61,47 @@ Framework details must remain invisible to learners.
 
 ---
 
+## UX Principles (IMPORTANT)
+
+### Core
+- **Simple and clean** — no visual clutter, no unnecessary chrome
+- **Keyboard accessible** — all actions reachable via keyboard; visible focus indicators
+- **Mobile-friendly** — responsive layout that works on phones and tablets
+- **Cross-browser** — must work in all modern browsers (Chrome, Firefox, Safari, Edge)
+
+### Navigation
+- Sidebar or top-level nav for phase selection
+- Linear kata progression within each phase (previous / next)
+- Current position always visible (phase + kata number)
+- Quick-jump to any unlocked kata
+
+### Kata View Layout
+- **Left panel:** Kata content (concept, key insight, challenge) — scrollable markdown
+- **Right panel:** Code editor (top) + output console (bottom) — resizable split
+- On mobile: stacked vertically (content → editor → output)
+- Run button with keyboard shortcut (Ctrl/Cmd + Enter)
+- Reset button to restore starter code
+
+### Editor
+- Syntax-highlighted code editor (CodeMirror or Monaco)
+- Minimal toolbar: Run, Reset
+- Line numbers enabled
+- Auto-indent and bracket matching
+
+### Output Console
+- Monospace output area
+- Clear distinction between stdout (default), stderr (red), and system messages (dim)
+- Auto-scroll to bottom on new output
+- Clear button
+
+### Visual Design
+- Dark theme by default with light theme toggle
+- Clean typography — system font stack for UI, monospace for code
+- Generous whitespace, no dense layouts
+- Loading states for code execution (spinner or progress bar)
+
+---
+
 ## Project Structure
 
 ```

@@ -2,20 +2,20 @@
 
 ## Infrastructure
 
-- [ ] Initialize backend project (package.json, entry point)
-- [ ] Initialize frontend project (SolidJS + Tailwind)
-- [ ] Set up kata markdown parser (frontmatter + sections)
-- [ ] Build sandboxed code executor (child process, timeout, memory limits)
+- [x] Initialize backend project (package.json, entry point)
+- [x] Initialize frontend project (SolidJS + Tailwind)
+- [x] Set up kata markdown parser (frontmatter + sections)
+- [x] Build sandboxed code executor (child process, timeout, memory limits)
 - [ ] Set up PostgreSQL connection for backend
-- [ ] Configure development scripts (dev, build, test)
+- [x] Configure development scripts (dev, build, test)
 
 ## Katas — Phase 0: What is Node.js Really?
 
-- [ ] 001 — Node.js vs Browser JavaScript
-- [ ] 002 — The V8 Engine
-- [ ] 003 — Single-Threaded Execution
-- [ ] 004 — Event Loop Overview
-- [ ] 005 — Why Node.js Scales
+- [x] 001 — Node.js vs Browser JavaScript
+- [x] 002 — The V8 Engine
+- [x] 003 — Single-Threaded Execution
+- [x] 004 — Event Loop Overview
+- [x] 005 — Why Node.js Scales
 
 ## Katas — Phase 1: JavaScript for the Node Runtime
 
@@ -55,11 +55,11 @@
 
 ## Frontend
 
-- [ ] Code editor component
-- [ ] Output & log viewer
+- [x] Code editor component
+- [x] Output & log viewer
 - [ ] Stream visualizer
 - [ ] Event loop visualizer
-- [ ] Kata navigation (phase/sequence)
+- [x] Kata navigation (phase/sequence)
 - [ ] Kata progress tracking
 
 ## Testing
