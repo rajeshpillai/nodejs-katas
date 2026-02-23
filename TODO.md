@@ -89,10 +89,24 @@
 - [x] 004 — Error Handling in APIs
 - [x] 005 — Graceful Shutdown
 
-## Katas — Phases 8A–16
+## Katas — Phase 8A: File Uploads & Multipart Streaming
 
-- [ ] Phase 8A — File Uploads & Multipart Streaming
-- [ ] Phase 9 — PostgreSQL Integration
+- [x] 001 — Understanding multipart/form-data
+- [x] 002 — Streaming Uploads
+- [x] 003 — File Size Limits and Validation
+- [x] 004 — Upload Progress Tracking
+- [x] 005 — Temporary Storage and Cleanup
+
+## Katas — Phase 9: PostgreSQL Integration
+
+- [x] 001 — PostgreSQL Architecture Overview
+- [x] 002 — Connection Pooling
+- [x] 003 — Parameterized Queries and SQL Injection
+- [x] 004 — Transactions
+- [x] 005 — Database Error Handling
+
+## Katas — Phases 9A–16
+
 - [ ] Phase 9A — Advanced PostgreSQL in Node.js
 - [ ] Phase 10 — Cryptography & Security
 - [ ] Phase 11 — Child Processes & Worker Threads
