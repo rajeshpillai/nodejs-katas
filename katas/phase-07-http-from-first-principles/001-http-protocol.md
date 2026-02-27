@@ -67,6 +67,7 @@ const server = createServer((req, res) => {
 
   res.writeHead(200, {
     "Content-Type": "application/json",
+    "Content-Length": Buffer.byteLength(body),
     "X-Custom-Header": "kata-demo",
   });
   res.end(body);
