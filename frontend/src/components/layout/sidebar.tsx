@@ -1,22 +1,6 @@
 import { createResource, createSignal, For, Show } from "solid-js";
 import { A, useParams } from "@solidjs/router";
-import { apiGet } from "../../lib/api-client";
-
-interface KataSummary {
-  id: string;
-  sequence: number;
-  title: string;
-}
-
-interface PhaseGroup {
-  phase: number;
-  title: string;
-  katas: KataSummary[];
-}
-
-interface KataListResponse {
-  phases: PhaseGroup[];
-}
+import { apiGet, type KataListResponse } from "../../lib/api-client";
 
 interface SidebarProps {
   collapsed: boolean;

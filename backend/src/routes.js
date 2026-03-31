@@ -24,10 +24,19 @@ function buildPhaseGroups(katas) {
   return Array.from(phaseMap.values()).sort((a, b) => a.phase - b.phase);
 }
 
+const MAX_BODY_SIZE = 1024 * 1024; // 1 MB
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
+    let size = 0;
     req.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > MAX_BODY_SIZE) {
+        req.destroy();
+        reject(new Error("Request body too large"));
+        return;
+      }
       body += chunk;
     });
     req.on("end", () => resolve(body));

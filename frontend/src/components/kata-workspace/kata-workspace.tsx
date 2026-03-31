@@ -36,9 +36,9 @@ export default function KataWorkspace(props: KataWorkspaceProps) {
     setOutput({ stdout: "", stderr: "", success: true, execution_time_ms: 0, error: null });
     try {
       await apiPostStream("/playground/run-stream", { code: code() }, (event) => {
-        if (event.type === "stdout") {
+        if (event.type === "stdout" && event.data) {
           setOutput((prev) => prev ? { ...prev, stdout: prev.stdout + event.data } : prev);
-        } else if (event.type === "stderr") {
+        } else if (event.type === "stderr" && event.data) {
           setOutput((prev) => prev ? { ...prev, stderr: prev.stderr + event.data } : prev);
         } else if (event.type === "done") {
           setOutput((prev) => prev ? {

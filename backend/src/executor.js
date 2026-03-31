@@ -9,12 +9,12 @@ const MAX_MEMORY_MB = 64;
 export function executeNodeCode(code) {
   return new Promise((resolve) => {
     const start = Date.now();
+    let settled = false;
 
     const child = spawn(
       process.execPath,
       [`--max-old-space-size=${MAX_MEMORY_MB}`, "--input-type=module", "-"],
       {
-        timeout: TIMEOUT_MS,
         shell: false,
         stdio: ["pipe", "pipe", "pipe"],
         env: {
@@ -24,6 +24,10 @@ export function executeNodeCode(code) {
         },
       }
     );
+
+    const killTimer = setTimeout(() => {
+      child.kill("SIGTERM");
+    }, TIMEOUT_MS);
 
     let stdout = "";
     let stderr = "";
@@ -36,6 +40,9 @@ export function executeNodeCode(code) {
     });
 
     child.on("close", (exitCode, signal) => {
+      clearTimeout(killTimer);
+      if (settled) return;
+      settled = true;
       const elapsedMs = Date.now() - start;
       if (signal === "SIGTERM" || elapsedMs >= TIMEOUT_MS) {
         resolve({
@@ -57,6 +64,10 @@ export function executeNodeCode(code) {
     });
 
     child.on("error", (err) => {
+      clearTimeout(killTimer);
+      child.kill("SIGTERM");
+      if (settled) return;
+      settled = true;
       resolve({
         stdout: "",
         stderr: "",
@@ -79,12 +90,20 @@ export function executeNodeCode(code) {
 export function executeNodeCodeStreaming(code, onEvent) {
   return new Promise((resolve) => {
     const start = Date.now();
+    let settled = false;
+
+    function safeEmit(event) {
+      try {
+        onEvent(event);
+      } catch {
+        child.kill("SIGTERM");
+      }
+    }
 
     const child = spawn(
       process.execPath,
       [`--max-old-space-size=${MAX_MEMORY_MB}`, "--input-type=module", "-"],
       {
-        timeout: TIMEOUT_MS,
         shell: false,
         stdio: ["pipe", "pipe", "pipe"],
         env: {
@@ -95,18 +114,25 @@ export function executeNodeCodeStreaming(code, onEvent) {
       }
     );
 
+    const killTimer = setTimeout(() => {
+      child.kill("SIGTERM");
+    }, TIMEOUT_MS);
+
     child.stdout.on("data", (chunk) => {
-      onEvent({ type: "stdout", data: chunk.toString() });
+      safeEmit({ type: "stdout", data: chunk.toString() });
     });
 
     child.stderr.on("data", (chunk) => {
-      onEvent({ type: "stderr", data: chunk.toString() });
+      safeEmit({ type: "stderr", data: chunk.toString() });
     });
 
     child.on("close", (exitCode, signal) => {
+      clearTimeout(killTimer);
+      if (settled) return;
+      settled = true;
       const elapsedMs = Date.now() - start;
       const timedOut = signal === "SIGTERM" || elapsedMs >= TIMEOUT_MS;
-      onEvent({
+      safeEmit({
         type: "done",
         success: timedOut ? false : exitCode === 0,
         execution_time_ms: elapsedMs,
@@ -116,7 +142,11 @@ export function executeNodeCodeStreaming(code, onEvent) {
     });
 
     child.on("error", (err) => {
-      onEvent({
+      clearTimeout(killTimer);
+      child.kill("SIGTERM");
+      if (settled) return;
+      settled = true;
+      safeEmit({
         type: "done",
         success: false,
         execution_time_ms: Date.now() - start,
