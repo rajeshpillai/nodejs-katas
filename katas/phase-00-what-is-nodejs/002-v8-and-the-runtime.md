@@ -66,7 +66,7 @@ Runtime components:
 
 ## Challenge
 
-1. Try `fibonacci(45)` — notice how much longer it takes (exponential growth)
+1. Try `fibonacci(45)` — notice how much longer it takes (exponential growth). This will exceed the 10-second execution timeout because naive recursive fibonacci is O(2ⁿ) — each extra `n` nearly doubles the time. That timeout is the expected result!
 2. Print all available version strings with `console.log(process.versions)`
 3. Think about this: while `fibonacci(40)` is running, can Node.js do anything else? Why or why not?
 

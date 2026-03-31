@@ -1,4 +1,4 @@
-import { executeNodeCode } from "./executor.js";
+import { executeNodeCode, executeNodeCodeStreaming } from "./executor.js";
 
 function sendJson(res, status, data) {
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -80,6 +80,29 @@ export function createApiRouter(katas) {
           execution_time_ms: result.executionTimeMs,
           error: result.error,
         });
+      } catch {
+        sendJson(res, 400, { error: "invalid request body" });
+      }
+      return true;
+    }
+
+    if (req.method === "POST" && path === "/api/playground/run-stream") {
+      try {
+        const body = await readBody(req);
+        const { code } = JSON.parse(body);
+        if (!code || typeof code !== "string") {
+          sendJson(res, 400, { error: "code is required" });
+          return true;
+        }
+        res.writeHead(200, {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        });
+        await executeNodeCodeStreaming(code, (event) => {
+          res.write(`data: ${JSON.stringify(event)}\n\n`);
+        });
+        res.end();
       } catch {
         sendJson(res, 400, { error: "invalid request body" });
       }

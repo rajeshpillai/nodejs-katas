@@ -1,4 +1,4 @@
-import { createResource, createSignal, Show } from "solid-js";
+import { createResource, createSignal, createEffect, Show } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { apiGet, type Kata } from "../lib/api-client";
 import MarkdownContent from "../components/common/markdown-content";
@@ -9,6 +9,12 @@ export default function KataPage() {
   const [activeTab, setActiveTab] = createSignal<"description" | "experiment">(
     "description"
   );
+
+  // Reset to description tab when navigating to a different kata
+  createEffect(() => {
+    const _ = params.kataId;
+    setActiveTab("description");
+  });
 
   const [kata] = createResource(
     () => params.kataId,

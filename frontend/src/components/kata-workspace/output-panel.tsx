@@ -43,15 +43,12 @@ export default function OutputPanel(props: OutputPanelProps) {
           "background-color": "var(--bg-code)",
         }}
       >
-        <Show when={props.running}>
-          <span style={{ color: "var(--text-muted)" }}>Running...</span>
-        </Show>
-        <Show when={!props.running && !props.result}>
+        <Show when={!props.result && !props.running}>
           <span style={{ color: "var(--text-muted)" }}>
             Click Run or press Ctrl+Enter to execute the experiment.
           </span>
         </Show>
-        <Show when={!props.running && props.result}>
+        <Show when={props.result}>
           <Show when={props.result!.stdout}>
             <pre
               class="m-0 whitespace-pre-wrap"
@@ -68,7 +65,10 @@ export default function OutputPanel(props: OutputPanelProps) {
               {props.result!.stderr}
             </pre>
           </Show>
-          <Show when={props.result!.error}>
+          <Show when={props.running}>
+            <span class="text-xs" style={{ color: "var(--text-muted)" }}>Running...</span>
+          </Show>
+          <Show when={!props.running && props.result!.error}>
             <pre
               class="m-0 whitespace-pre-wrap italic"
               style={{ color: "var(--error)" }}
@@ -76,15 +76,17 @@ export default function OutputPanel(props: OutputPanelProps) {
               {props.result!.error}
             </pre>
           </Show>
-          <div
-            class="mt-3 pt-3 border-t text-xs"
-            style={{
-              "border-color": "var(--border)",
-              color: props.result!.success ? "var(--success)" : "var(--error)",
-            }}
-          >
-            {props.result!.success ? "Exited successfully" : "Exited with error"}
-          </div>
+          <Show when={!props.running}>
+            <div
+              class="mt-3 pt-3 border-t text-xs"
+              style={{
+                "border-color": "var(--border)",
+                color: props.result!.success ? "var(--success)" : "var(--error)",
+              }}
+            >
+              {props.result!.success ? "Exited successfully" : "Exited with error"}
+            </div>
+          </Show>
         </Show>
       </div>
     </div>

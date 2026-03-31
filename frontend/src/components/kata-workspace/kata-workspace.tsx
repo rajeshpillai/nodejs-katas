@@ -2,7 +2,7 @@ import { createSignal, createEffect, Show } from "solid-js";
 import Resizable from "@corvu/resizable";
 import CodePanel from "./code-panel";
 import OutputPanel from "./output-panel";
-import { apiPost, type ExecutionResult } from "../../lib/api-client";
+import { apiPostStream, type ExecutionResult } from "../../lib/api-client";
 import "./kata-workspace.css";
 
 interface KataWorkspaceProps {
@@ -33,11 +33,22 @@ export default function KataWorkspace(props: KataWorkspaceProps) {
 
   const handleRun = async () => {
     setRunning(true);
+    setOutput({ stdout: "", stderr: "", success: true, execution_time_ms: 0, error: null });
     try {
-      const result = await apiPost<ExecutionResult>("/playground/run", {
-        code: code(),
+      await apiPostStream("/playground/run-stream", { code: code() }, (event) => {
+        if (event.type === "stdout") {
+          setOutput((prev) => prev ? { ...prev, stdout: prev.stdout + event.data } : prev);
+        } else if (event.type === "stderr") {
+          setOutput((prev) => prev ? { ...prev, stderr: prev.stderr + event.data } : prev);
+        } else if (event.type === "done") {
+          setOutput((prev) => prev ? {
+            ...prev,
+            success: event.success ?? false,
+            execution_time_ms: event.execution_time_ms ?? 0,
+            error: event.error ?? null,
+          } : prev);
+        }
       });
-      setOutput(result);
     } catch (e) {
       setOutput({
         stdout: "",
