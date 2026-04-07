@@ -44,9 +44,33 @@ function readBody(req) {
   });
 }
 
+function buildNeighborMap(katas) {
+  // Sort by (phase, sequence) so prev/next walk the linear progression
+  // across phases as the learner sees it in the sidebar.
+  const ordered = [...katas].sort(
+    (a, b) => a.phase - b.phase || a.sequence - b.sequence
+  );
+  const neighbors = new Map();
+  const summary = (k) =>
+    k && {
+      id: k.id,
+      phase: k.phase,
+      sequence: k.sequence,
+      title: k.title,
+    };
+  for (let i = 0; i < ordered.length; i++) {
+    neighbors.set(ordered[i].id, {
+      prev: summary(ordered[i - 1]),
+      next: summary(ordered[i + 1]),
+    });
+  }
+  return neighbors;
+}
+
 export function createApiRouter(katas) {
   const kataMap = new Map(katas.map((k) => [k.id, k]));
   const phaseGroups = buildPhaseGroups(katas);
+  const neighborMap = buildNeighborMap(katas);
 
   return async function apiRouter(req, res) {
     const url = new URL(req.url, "http://localhost");
@@ -69,7 +93,8 @@ export function createApiRouter(katas) {
         sendJson(res, 404, { error: "kata not found" });
         return true;
       }
-      sendJson(res, 200, kata);
+      const { prev, next } = neighborMap.get(kata.id) ?? {};
+      sendJson(res, 200, { ...kata, prev: prev ?? null, next: next ?? null });
       return true;
     }
 

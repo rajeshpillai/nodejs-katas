@@ -4,6 +4,39 @@ const TIMEOUT_MS = 10_000;
 const MAX_MEMORY_MB = 64;
 
 /**
+ * Detect whether code requires ES module mode.
+ *
+ * We default to CommonJS because ESM wraps the top-level body in a microtask
+ * continuation, which breaks the documented event-loop ordering for
+ * `process.nextTick` vs Promise microtasks scheduled at the top level
+ * (see kata phase-00/004-the-event-loop). CommonJS preserves the textbook
+ * ordering. We only opt into module mode when the code actually uses ESM
+ * syntax that CJS cannot run.
+ */
+function detectInputType(code) {
+  // Strip line and block comments so commented examples don't trigger ESM.
+  const stripped = code
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+
+  const esmPatterns = [
+    /(^|\n)\s*import\s+[^()]/, // `import x from ...` (not `import(...)`)
+    /(^|\n)\s*import\s*['"]/, // `import "side-effect"`
+    /(^|\n)\s*export\s/,
+    /(^|[^.\w$])await\s+(?!\s)/, // top-level await is ESM-only; conservative match
+  ];
+  return esmPatterns.some((re) => re.test(stripped)) ? "module" : "commonjs";
+}
+
+function nodeArgs(code) {
+  return [
+    `--max-old-space-size=${MAX_MEMORY_MB}`,
+    `--input-type=${detectInputType(code)}`,
+    "-",
+  ];
+}
+
+/**
  * Execute code and return the full result as a promise (non-streaming).
  */
 export function executeNodeCode(code) {
@@ -11,19 +44,15 @@ export function executeNodeCode(code) {
     const start = Date.now();
     let settled = false;
 
-    const child = spawn(
-      process.execPath,
-      [`--max-old-space-size=${MAX_MEMORY_MB}`, "--input-type=module", "-"],
-      {
-        shell: false,
-        stdio: ["pipe", "pipe", "pipe"],
-        env: {
-          NODE_PATH: "",
-          PATH: process.env.PATH || "/usr/local/bin:/usr/bin:/bin",
-          HOME: process.env.HOME || "/tmp",
-        },
-      }
-    );
+    const child = spawn(process.execPath, nodeArgs(code), {
+      shell: false,
+      stdio: ["pipe", "pipe", "pipe"],
+      env: {
+        NODE_PATH: "",
+        PATH: process.env.PATH || "/usr/local/bin:/usr/bin:/bin",
+        HOME: process.env.HOME || "/tmp",
+      },
+    });
 
     const killTimer = setTimeout(() => {
       child.kill("SIGTERM");
@@ -100,19 +129,15 @@ export function executeNodeCodeStreaming(code, onEvent) {
       }
     }
 
-    const child = spawn(
-      process.execPath,
-      [`--max-old-space-size=${MAX_MEMORY_MB}`, "--input-type=module", "-"],
-      {
-        shell: false,
-        stdio: ["pipe", "pipe", "pipe"],
-        env: {
-          NODE_PATH: "",
-          PATH: process.env.PATH || "/usr/local/bin:/usr/bin:/bin",
-          HOME: process.env.HOME || "/tmp",
-        },
-      }
-    );
+    const child = spawn(process.execPath, nodeArgs(code), {
+      shell: false,
+      stdio: ["pipe", "pipe", "pipe"],
+      env: {
+        NODE_PATH: "",
+        PATH: process.env.PATH || "/usr/local/bin:/usr/bin:/bin",
+        HOME: process.env.HOME || "/tmp",
+      },
+    });
 
     const killTimer = setTimeout(() => {
       child.kill("SIGTERM");

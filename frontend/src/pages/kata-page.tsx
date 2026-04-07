@@ -1,11 +1,47 @@
-import { createResource, createSignal, createEffect, Show } from "solid-js";
-import { useParams } from "@solidjs/router";
-import { apiGet, type Kata } from "../lib/api-client";
+import {
+  createResource,
+  createSignal,
+  createEffect,
+  onCleanup,
+  Show,
+} from "solid-js";
+import { A, useNavigate, useParams } from "@solidjs/router";
+import { apiGet, type Kata, type KataNeighbor } from "../lib/api-client";
 import MarkdownContent from "../components/common/markdown-content";
 import KataWorkspace from "../components/kata-workspace/kata-workspace";
 
+function NeighborLink(props: {
+  direction: "prev" | "next";
+  neighbor: KataNeighbor | null;
+}) {
+  const label = props.direction === "prev" ? "← Prev" : "Next →";
+  if (!props.neighbor) {
+    return (
+      <span
+        class="px-2 py-1 text-xs rounded opacity-40 cursor-not-allowed"
+        style={{ color: "var(--text-muted)" }}
+        aria-disabled="true"
+      >
+        {label}
+      </span>
+    );
+  }
+  const n = props.neighbor;
+  return (
+    <A
+      href={`/katas/${n.phase}/${n.id}`}
+      class="px-2 py-1 text-xs rounded hover:underline focus:outline-none focus:ring-2"
+      style={{ color: "var(--accent)" }}
+      title={`Phase ${n.phase} · ${n.sequence}. ${n.title}`}
+    >
+      {label}
+    </A>
+  );
+}
+
 export default function KataPage() {
   const params = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = createSignal<"description" | "experiment">(
     "description"
   );
@@ -20,6 +56,23 @@ export default function KataPage() {
     () => params.kataId,
     (id) => apiGet<Kata>(`/katas/${id}`)
   );
+
+  // Alt+Left / Alt+Right walk the linear progression. Alt avoids stealing
+  // arrow keys from the editor and from screen-reader navigation.
+  function onKeydown(e: KeyboardEvent) {
+    if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    const k = kata();
+    if (!k) return;
+    if (e.key === "ArrowLeft" && k.prev) {
+      e.preventDefault();
+      navigate(`/katas/${k.prev.phase}/${k.prev.id}`);
+    } else if (e.key === "ArrowRight" && k.next) {
+      e.preventDefault();
+      navigate(`/katas/${k.next.phase}/${k.next.id}`);
+    }
+  }
+  window.addEventListener("keydown", onKeydown);
+  onCleanup(() => window.removeEventListener("keydown", onKeydown));
 
   const tabClass = (active: boolean) =>
     `px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
@@ -80,7 +133,14 @@ export default function KataPage() {
                   ~{k().estimatedMinutes}min
                 </span>
               </div>
-              <div class="flex">
+              <div class="flex items-center gap-2">
+                <NeighborLink direction="prev" neighbor={k().prev} />
+                <NeighborLink direction="next" neighbor={k().next} />
+                <span
+                  class="mx-1 h-5 w-px"
+                  style={{ "background-color": "var(--border)" }}
+                  aria-hidden="true"
+                />
                 <button
                   class={tabClass(activeTab() === "description")}
                   style={{

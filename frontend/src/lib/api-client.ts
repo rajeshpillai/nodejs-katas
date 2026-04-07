@@ -16,6 +16,13 @@ export interface KataListResponse {
   phases: PhaseGroup[];
 }
 
+export interface KataNeighbor {
+  id: string;
+  phase: number;
+  sequence: number;
+  title: string;
+}
+
 export interface Kata {
   id: string;
   phase: number;
@@ -33,6 +40,8 @@ export interface Kata {
   deepDive: string;
   commonMistakes: string;
   description: string;
+  prev: KataNeighbor | null;
+  next: KataNeighbor | null;
 }
 
 export interface ExecutionResult {
