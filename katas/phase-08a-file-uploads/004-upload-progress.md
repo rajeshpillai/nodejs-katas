@@ -154,8 +154,8 @@ const server = createServer(async (req, res) => {
       res.end(JSON.stringify({ error: err.message }));
     }
 
-    // Clean up tracker after 5 minutes
-    setTimeout(() => uploads.delete(uploadId), 5 * 60 * 1000);
+    // Clean up tracker after 5 minutes (unref so it doesn't keep the loop alive)
+    setTimeout(() => uploads.delete(uploadId), 5 * 60 * 1000).unref();
     return;
   }
 

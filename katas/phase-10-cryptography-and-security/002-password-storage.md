@@ -156,8 +156,8 @@ console.log("  Why timingSafeEqual matters:\n");
 // Regular comparison (vulnerable to timing attack)
 const bufA = Buffer.from("correct_hash_value_here_abcdef01");
 const bufB = Buffer.from("correct_hash_value_here_abcdef01");
-const bufC = Buffer.from("wrong_hash_value__here_abcdef99");
-const bufD = Buffer.from("xxxxxx_hash_value__here_abcdef99");
+const bufC = Buffer.from("correct_hash_value_here_abcdef99");
+const bufD = Buffer.from("xorrect_hash_value_here_abcdef01");
 
 // Regular === comparison short-circuits at first mismatch
 console.log("  Regular comparison (===):");
@@ -177,10 +177,9 @@ console.log("  All false comparisons take the same time!\n");
 console.log("--- scrypt parameter tuning ---\n");
 
 const params = [
-  { N: 1024, r: 8, p: 1, label: "Low (dev)" },
+  { N: 1024,  r: 8, p: 1, label: "Low (dev)" },
+  { N: 4096,  r: 8, p: 1, label: "Light" },
   { N: 16384, r: 8, p: 1, label: "Medium (default)" },
-  { N: 65536, r: 8, p: 1, label: "High (sensitive)" },
-  { N: 131072, r: 8, p: 2, label: "Very high (paranoid)" },
 ];
 
 const salt = randomBytes(32);
@@ -191,6 +190,7 @@ for (const param of params) {
     N: param.N,
     r: param.r,
     p: param.p,
+    maxmem: 256 * 1024 * 1024,
   });
   const elapsed = performance.now() - start;
   const memory = param.N * param.r * 128;  // scrypt memory usage formula

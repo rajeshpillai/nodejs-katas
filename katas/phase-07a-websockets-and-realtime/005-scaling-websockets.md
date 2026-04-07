@@ -37,6 +37,22 @@ Client A → Server 1 → Redis Pub/Sub → Server 2 → Client B
 import { createServer } from "http";
 import { createHash, randomBytes } from "crypto";
 import { EventEmitter } from "events";
+import { connect as tcpConnect } from "net";
+
+function maskFrame(data, opcode = 0x01) {
+  const payload = Buffer.isBuffer(data) ? data : Buffer.from(data);
+  const len = payload.length;
+  const mask = randomBytes(4);
+  const headerSize = len < 126 ? 2 : (len < 65536 ? 4 : 10);
+  const frame = Buffer.alloc(headerSize + 4 + len);
+  frame[0] = 0x80 | opcode;
+  if (len < 126) frame[1] = 0x80 | len;
+  else if (len < 65536) { frame[1] = 0x80 | 126; frame.writeUInt16BE(len, 2); }
+  else { frame[1] = 0x80 | 127; frame.writeUInt32BE(0, 2); frame.writeUInt32BE(len, 6); }
+  mask.copy(frame, headerSize);
+  for (let i = 0; i < len; i++) frame[headerSize + 4 + i] = payload[i] ^ mask[i % 4];
+  return frame;
+}
 
 const WS_MAGIC_GUID = "258EAFA5-E914-47DA-95CA-5AB0DC85B711";
 
@@ -256,16 +272,47 @@ const port2 = server2.httpServer.address().port;
 console.log(`Server-1 on port ${port1}`);
 console.log(`Server-2 on port ${port2}`);
 
-// Connect clients to DIFFERENT servers
+// Connect clients to DIFFERENT servers via raw TCP + WebSocket handshake
 async function connect(port, name) {
-  const ws = new WebSocket(`ws://127.0.0.1:${port}`);
-  const messages = [];
-  await new Promise(resolve => { ws.onopen = resolve; });
-  ws.onmessage = (e) => messages.push(JSON.parse(e.data));
-  await new Promise(r => setTimeout(r, 50));
-  ws.send(JSON.stringify({ type: "set_name", name }));
-  await new Promise(r => setTimeout(r, 50));
-  return { ws, messages, name };
+  return new Promise((resolve, reject) => {
+    const sock = tcpConnect(port, "127.0.0.1");
+    const messages = [];
+    let buffer = Buffer.alloc(0);
+    let handshakeDone = false;
+    const client = {
+      name, messages,
+      send(text) { sock.write(maskFrame(text)); },
+      close() { sock.write(maskFrame(Buffer.from([0x03, 0xe8]), 0x08)); setTimeout(() => sock.end(), 10); },
+    };
+    sock.on("connect", () => {
+      const key = randomBytes(16).toString("base64");
+      sock.write(
+        "GET / HTTP/1.1\r\n" +
+        `Host: 127.0.0.1:${port}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n` +
+        `Sec-WebSocket-Key: ${key}\r\nSec-WebSocket-Version: 13\r\n\r\n`
+      );
+    });
+    sock.on("data", (chunk) => {
+      buffer = Buffer.concat([buffer, chunk]);
+      if (!handshakeDone) {
+        const idx = buffer.indexOf("\r\n\r\n");
+        if (idx === -1) return;
+        buffer = buffer.slice(idx + 4);
+        handshakeDone = true;
+        client.send(JSON.stringify({ type: "set_name", name }));
+        setTimeout(() => resolve(client), 50);
+      }
+      while (handshakeDone) {
+        const frame = decodeFrame(buffer);
+        if (!frame) break;
+        buffer = buffer.slice(frame.totalLength);
+        if (frame.opcode === 0x01) {
+          try { messages.push(JSON.parse(frame.payload.toString())); } catch {}
+        }
+      }
+    });
+    sock.on("error", reject);
+  });
 }
 
 // Alice → Server 1, Bob → Server 2
@@ -276,17 +323,17 @@ console.log("\nAlice connected to Server-1");
 console.log("Bob connected to Server-2");
 
 // Both join the same room
-alice.ws.send(JSON.stringify({ type: "join", room: "general" }));
-bob.ws.send(JSON.stringify({ type: "join", room: "general" }));
+alice.send(JSON.stringify({ type: "join", room: "general" }));
+bob.send(JSON.stringify({ type: "join", room: "general" }));
 await new Promise(r => setTimeout(r, 100));
 
 console.log("\nBoth joined #general\n");
 
 // Alice sends a message — Bob should receive it (via pub/sub backbone)
-alice.ws.send(JSON.stringify({ type: "message", room: "general", text: "Hello from Server-1!" }));
+alice.send(JSON.stringify({ type: "message", room: "general", text: "Hello from Server-1!" }));
 await new Promise(r => setTimeout(r, 100));
 
-bob.ws.send(JSON.stringify({ type: "message", room: "general", text: "Hello from Server-2!" }));
+bob.send(JSON.stringify({ type: "message", room: "general", text: "Hello from Server-2!" }));
 await new Promise(r => setTimeout(r, 100));
 
 // Check what each received
@@ -319,8 +366,8 @@ for (const n of scenarios) {
 }
 
 // Clean up
-alice.ws.close();
-bob.ws.close();
+alice.close();
+bob.close();
 await new Promise(r => setTimeout(r, 100));
 server1.httpServer.close();
 server2.httpServer.close();

@@ -54,40 +54,39 @@ async function processChunked(items, chunkSize = 100) {
 ## Experiment
 
 ```js
-import { Worker, isMainThread, parentPort, workerData } from "node:worker_threads";
+import { Worker } from "node:worker_threads";
 
-if (!isMainThread) {
+// Worker body — uses eval mode so this kata works whether the file is loaded
+// from disk or piped via stdin (where import.meta.url is not a real path).
+const workerCode = `
+  import { parentPort, workerData } from "node:worker_threads";
+  import { performance } from "node:perf_hooks";
+  import { scrypt } from "node:crypto";
+  import { promisify } from "node:util";
+  const scryptAsync = promisify(scrypt);
   const { task, data } = workerData;
 
   if (task === "hash-passwords") {
-    const { scrypt } = await import("node:crypto");
-    const { promisify } = await import("node:util");
-    const scryptAsync = promisify(scrypt);
-
     const results = [];
     for (const password of data) {
-      const salt = Buffer.alloc(16, "salt"); // Fixed salt for demo
+      const salt = Buffer.alloc(16, "salt");
       const hash = await scryptAsync(password, salt, 64, { N: 1024, r: 8, p: 1 });
       results.push(hash.toString("hex").slice(0, 16));
     }
     parentPort.postMessage({ results });
-    process.exit(0);
   }
 
   if (task === "analyze") {
     const start = performance.now();
-    // Simulate CPU-intensive analysis
     let sum = 0;
     for (const item of data) {
-      // Intentionally CPU-bound work
       for (let i = 0; i < 1000; i++) {
         sum += Math.sin(item * i) * Math.cos(item * i);
       }
     }
     parentPort.postMessage({ result: sum, elapsed: performance.now() - start });
-    process.exit(0);
   }
-}
+`;
 
 // --- Main thread code ---
 
@@ -95,10 +94,11 @@ console.log("=== CPU Offloading Patterns ===\n");
 
 function runInWorker(task, data) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL(import.meta.url), {
+    const worker = new Worker(workerCode, {
+      eval: true,
       workerData: { task, data },
     });
-    worker.on("message", resolve);
+    worker.on("message", (msg) => { resolve(msg); worker.terminate(); });
     worker.on("error", reject);
   });
 }
@@ -146,7 +146,8 @@ async function measureEventLoopLatency(label, workFn) {
   const avgLatency = latencies.length > 0
     ? latencies.reduce((a, b) => a + b, 0) / latencies.length
     : 0;
-  const maxLatency = latencies.length > 0 ? Math.max(...latencies) : 0;
+  let maxLatency = 0;
+  for (const l of latencies) if (l > maxLatency) maxLatency = l;
 
   console.log(`  ${label}:`);
   console.log(`    Work time: ${workElapsed.toFixed(0)}ms`);

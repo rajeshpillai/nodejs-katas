@@ -239,9 +239,10 @@ const server = createServer((req, res) => {
     }
   });
 
+  parser.resume();
   req.pipe(parser);
 
-  parser.on("end", () => {
+  parser.on("finish", () => {
     const response = {
       parts: results.map(p => ({
         name: p.name,

@@ -47,7 +47,7 @@ console.log("=== Socket Lifecycle Events ===\n");
 const serverEvents = [];
 const clientEvents = [];
 
-const server = createServer((socket) => {
+const server = createServer({ allowHalfOpen: true }, (socket) => {
   const log = (event, detail = "") => {
     const msg = `[server-socket] ${event}${detail ? ": " + detail : ""}`;
     serverEvents.push(event);
@@ -111,7 +111,7 @@ await new Promise(r => setTimeout(r, 50));
 
 console.log("\n=== Half-Close Demonstration ===\n");
 
-const server2 = createServer(async (socket) => {
+const server2 = createServer({ allowHalfOpen: true }, async (socket) => {
   // Read all data first (until client calls end())
   const chunks = [];
   socket.on("data", (chunk) => chunks.push(chunk));
@@ -199,20 +199,19 @@ console.log("\nDone");
 ```
 === Socket Lifecycle Events ===
 
-[client] lookup: 127.0.0.1 (IPv4)
+[server-socket] connection: from 127.0.0.1:<port>
 [client] connect
 [client] ready
-[server-socket] connection: from 127.0.0.1:<port>
 [server-socket] data: "Hello from client"
 [server-socket] end: client finished sending
+[server-socket] close: hadError=false
 [client] data: "Server's final message"
 [client] end: server finished sending
-[server-socket] close: hadError=false
 [client] close: hadError=false
 
 === Event Summary ===
 
-Client events: lookup → connect → ready → data → end → close
+Client events: connect → ready → data → end → close
 Server events: connection → data → end → close
 
 === Half-Close Demonstration ===

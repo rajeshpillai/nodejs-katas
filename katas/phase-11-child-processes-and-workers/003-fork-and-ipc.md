@@ -75,7 +75,7 @@ const echoWorkerPath = createWorkerScript(`
   });
 `);
 
-const echoWorker = fork(echoWorkerPath);
+const echoWorker = fork(echoWorkerPath, [], { execArgv: [] });
 
 const echoResult = await new Promise(resolve => {
   echoWorker.on("message", resolve);
@@ -108,7 +108,7 @@ const computeWorkerPath = createWorkerScript(`
 `);
 
 // Run fibonacci in child process (doesn't block parent)
-const computeWorker = fork(computeWorkerPath);
+const computeWorker = fork(computeWorkerPath, [], { execArgv: [] });
 
 console.log("  Computing fibonacci(35) in child process...");
 console.log("  Parent event loop is NOT blocked!\n");
@@ -161,7 +161,7 @@ const rpcWorkerPath = createWorkerScript(`
   });
 `);
 
-const rpcWorker = fork(rpcWorkerPath);
+const rpcWorker = fork(rpcWorkerPath, [], { execArgv: [] });
 let rpcId = 0;
 const pending = new Map();
 
@@ -224,6 +224,7 @@ const lifecycleWorkerPath = createWorkerScript(`
 
 const lifecycleWorker = fork(lifecycleWorkerPath, [], {
   stdio: ["pipe", "inherit", "inherit", "ipc"],
+  execArgv: [],
 });
 
 console.log(`  [parent] forked child (PID: ${lifecycleWorker.pid})`);

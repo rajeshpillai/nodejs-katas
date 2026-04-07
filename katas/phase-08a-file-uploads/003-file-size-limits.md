@@ -269,14 +269,11 @@ const res1 = await fetch(`http://127.0.0.1:${port}/upload`, {
 });
 console.log("Normal upload:", (await res1.json()).accepted?.length ?? 0, "files accepted");
 
-// Oversized upload (via Content-Length)
+// Oversized upload (declared via Content-Length header)
 const res2 = await fetch(`http://127.0.0.1:${port}/upload`, {
   method: "POST",
-  headers: {
-    "Content-Type": "multipart/form-data; boundary=test",
-    "Content-Length": String(10 * 1024 * 1024),
-  },
-  body: Buffer.alloc(100),  // Actual body doesn't matter — header triggers rejection
+  headers: { "Content-Type": "multipart/form-data; boundary=test" },
+  body: Buffer.alloc(LIMITS.maxBodySize + 1),  // Actually send oversized body
 });
 console.log("Oversized (header):", res2.status, (await res2.json()).error);
 

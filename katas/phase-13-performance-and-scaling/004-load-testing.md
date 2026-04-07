@@ -167,7 +167,7 @@ console.log(`  Test server running on port ${port}\n`);
 // Run load test
 const tester = new LoadTester({
   url: `http://localhost:${port}/api/test`,
-  duration: 2000,
+  duration: 1000,
   connections: 10,
 });
 
@@ -222,7 +222,7 @@ for (const workload of workloads) {
   mode = workload.mode;
   const t = new LoadTester({
     url: `http://localhost:${varPort}/`,
-    duration: 1500,
+    duration: 600,
     connections: 10,
   });
   const r = await t.run();
@@ -241,7 +241,7 @@ console.log(`  ${"-".repeat(60)}`);
 for (const conns of [1, 5, 10, 50]) {
   const t = new LoadTester({
     url: `http://localhost:${varPort}/`,
-    duration: 1500,
+    duration: 600,
     connections: conns,
   });
   const r = await t.run();

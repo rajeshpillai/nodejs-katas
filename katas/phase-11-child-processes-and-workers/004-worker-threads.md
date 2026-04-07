@@ -51,10 +51,14 @@ if (isMainThread) {
 ## Experiment
 
 ```js
-import { Worker, isMainThread, parentPort, workerData } from "node:worker_threads";
+import { Worker } from "node:worker_threads";
 
-if (!isMainThread) {
-  // --- Worker code ---
+// Worker body — runs inside the worker thread.
+// We use eval mode (Worker(code, { eval: true })) so this kata works whether
+// the file is loaded from disk or piped via stdin.
+const workerCode = `
+  import { parentPort, workerData } from "node:worker_threads";
+  import { performance } from "node:perf_hooks";
   const { task, data } = workerData;
 
   switch (task) {
@@ -80,10 +84,9 @@ if (!isMainThread) {
       break;
     }
     default:
-      parentPort.postMessage({ error: `Unknown task: ${task}` });
+      parentPort.postMessage({ error: "Unknown task: " + task });
   }
-  process.exit(0);
-}
+`;
 
 // --- Main thread code ---
 
@@ -92,13 +95,14 @@ console.log("=== Worker Threads ===\n");
 // Helper to run a task in a worker
 function runWorker(task, data) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL(import.meta.url), {
+    const worker = new Worker(workerCode, {
+      eval: true,
       workerData: { task, data },
     });
     worker.on("message", resolve);
     worker.on("error", reject);
     worker.on("exit", code => {
-      if (code !== 0) reject(new Error(`Worker exited with code ${code}`));
+      if (code !== 0 && code !== 1) reject(new Error(`Worker exited with code ${code}`));
     });
   });
 }

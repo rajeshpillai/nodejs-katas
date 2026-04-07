@@ -32,6 +32,7 @@ The server must:
 ```js
 import { createServer } from "http";
 import { createHash, randomBytes } from "crypto";
+import { connect as tcpConnect } from "net";
 
 const WS_MAGIC_GUID = "258EAFA5-E914-47DA-95CA-5AB0DC85B711";
 
@@ -259,29 +260,91 @@ const wsServer = new WebSocketServer(httpServer);
 // Start heartbeat
 const heartbeatInterval = setInterval(() => wsServer.heartbeat(), 5000);
 
-// Connect clients using Node.js built-in WebSocket (Node 22+)
-// Falls back to manual TCP if not available
+// Build a tiny WebSocket client over raw TCP, using the same frame helpers.
+// Client frames must be masked per RFC 6455.
+function maskFrame(data, opcode = 0x01) {
+  const payload = Buffer.isBuffer(data) ? data : Buffer.from(data);
+  const len = payload.length;
+  const mask = randomBytes(4);
+  const headerSize = len < 126 ? 2 : (len < 65536 ? 4 : 10);
+  const frame = Buffer.alloc(headerSize + 4 + len);
+  frame[0] = 0x80 | opcode;
+  if (len < 126) {
+    frame[1] = 0x80 | len;
+  } else if (len < 65536) {
+    frame[1] = 0x80 | 126;
+    frame.writeUInt16BE(len, 2);
+  } else {
+    frame[1] = 0x80 | 127;
+    frame.writeUInt32BE(0, 2);
+    frame.writeUInt32BE(len, 6);
+  }
+  mask.copy(frame, headerSize);
+  for (let i = 0; i < len; i++) {
+    frame[headerSize + 4 + i] = payload[i] ^ mask[i % 4];
+  }
+  return frame;
+}
+
 async function connectClient(name) {
-  return new Promise((resolve) => {
-    const ws = new WebSocket(`ws://127.0.0.1:${port}`);
+  return new Promise((resolve, reject) => {
+    const sock = tcpConnect(port, "127.0.0.1");
     const messages = [];
+    let buffer = Buffer.alloc(0);
+    let handshakeDone = false;
+    let resolved = false;
 
-    ws.onopen = () => {
-      console.log(`[${name}] Connected`);
+    const client = {
+      name,
+      messages,
+      send(text) { sock.write(maskFrame(text)); },
+      close(code = 1000, reason = "Done") {
+        const payload = Buffer.alloc(2 + Buffer.byteLength(reason));
+        payload.writeUInt16BE(code, 0);
+        payload.write(reason, 2);
+        sock.write(maskFrame(payload, 0x08));
+        setTimeout(() => sock.end(), 10);
+      },
     };
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      messages.push(data);
-      console.log(`[${name}] Received:`, data.type, data.type === "broadcast" ? `from ${data.from}: "${data.message}"` : "");
-    };
+    sock.on("connect", () => {
+      const key = randomBytes(16).toString("base64");
+      sock.write(
+        "GET / HTTP/1.1\r\n" +
+        `Host: 127.0.0.1:${port}\r\n` +
+        "Upgrade: websocket\r\n" +
+        "Connection: Upgrade\r\n" +
+        `Sec-WebSocket-Key: ${key}\r\n` +
+        "Sec-WebSocket-Version: 13\r\n\r\n"
+      );
+    });
 
-    ws.onclose = () => {
-      console.log(`[${name}] Disconnected`);
-    };
+    sock.on("data", (chunk) => {
+      buffer = Buffer.concat([buffer, chunk]);
+      if (!handshakeDone) {
+        const idx = buffer.indexOf("\r\n\r\n");
+        if (idx === -1) return;
+        buffer = buffer.slice(idx + 4);
+        handshakeDone = true;
+        console.log(`[${name}] Connected`);
+        if (!resolved) { resolved = true; resolve(client); }
+      }
+      while (handshakeDone) {
+        const frame = decodeFrame(buffer);
+        if (!frame) break;
+        buffer = buffer.slice(frame.totalLength);
+        if (frame.opcode === 0x01) {
+          const data = JSON.parse(frame.payload.toString());
+          messages.push(data);
+          console.log(`[${name}] Received:`, data.type, data.type === "broadcast" ? `from ${data.from}: "${data.message}"` : "");
+        } else if (frame.opcode === 0x09) {
+          sock.write(maskFrame(frame.payload.toString(), 0x0A));
+        }
+      }
+    });
 
-    // Wait for welcome message
-    setTimeout(() => resolve({ ws, messages, name }), 100);
+    sock.on("close", () => console.log(`[${name}] Disconnected`));
+    sock.on("error", (err) => { if (!resolved) reject(err); });
   });
 }
 
@@ -294,13 +357,13 @@ await new Promise(r => setTimeout(r, 100));
 // Send messages
 console.log("\n--- Sending messages ---\n");
 
-client1.ws.send(JSON.stringify({ type: "echo", text: "Hello from Alice" }));
+client1.send(JSON.stringify({ type: "echo", text: "Hello from Alice" }));
 await new Promise(r => setTimeout(r, 50));
 
-client2.ws.send(JSON.stringify({ type: "broadcast", message: "Hi everyone!" }));
+client2.send(JSON.stringify({ type: "broadcast", message: "Hi everyone!" }));
 await new Promise(r => setTimeout(r, 50));
 
-client1.ws.send(JSON.stringify({ type: "broadcast", message: "Hey Bob!" }));
+client1.send(JSON.stringify({ type: "broadcast", message: "Hey Bob!" }));
 await new Promise(r => setTimeout(r, 50));
 
 console.log("\n--- Connection stats ---\n");
@@ -308,10 +371,10 @@ console.log("Active clients:", wsServer.clients.size);
 
 // Clean shutdown
 console.log("\n--- Shutting down ---\n");
-client1.ws.close(1000, "Done");
+client1.close(1000, "Done");
 await new Promise(r => setTimeout(r, 50));
 
-client2.ws.close(1000, "Done");
+client2.close(1000, "Done");
 await new Promise(r => setTimeout(r, 50));
 
 clearInterval(heartbeatInterval);

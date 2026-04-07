@@ -46,6 +46,23 @@ If invalid: server sends correction, client rolls back
 ```js
 import { createServer } from "http";
 import { createHash, randomBytes } from "crypto";
+import { connect as tcpConnect } from "net";
+
+// Tiny WebSocket client over raw TCP — clients must mask frames per RFC 6455.
+function maskFrame(data, opcode = 0x01) {
+  const payload = Buffer.isBuffer(data) ? data : Buffer.from(data);
+  const len = payload.length;
+  const mask = randomBytes(4);
+  const headerSize = len < 126 ? 2 : (len < 65536 ? 4 : 10);
+  const frame = Buffer.alloc(headerSize + 4 + len);
+  frame[0] = 0x80 | opcode;
+  if (len < 126) frame[1] = 0x80 | len;
+  else if (len < 65536) { frame[1] = 0x80 | 126; frame.writeUInt16BE(len, 2); }
+  else { frame[1] = 0x80 | 127; frame.writeUInt32BE(0, 2); frame.writeUInt32BE(len, 6); }
+  mask.copy(frame, headerSize);
+  for (let i = 0; i < len; i++) frame[headerSize + 4 + i] = payload[i] ^ mask[i % 4];
+  return frame;
+}
 
 const WS_MAGIC_GUID = "258EAFA5-E914-47DA-95CA-5AB0DC85B711";
 
@@ -248,19 +265,49 @@ httpServer.on("upgrade", (req, socket) => {
 await new Promise(resolve => httpServer.listen(0, "127.0.0.1", resolve));
 const { port } = httpServer.address();
 
-// Helper to connect a client
+// Helper to connect a client over raw TCP and complete the WS handshake.
 async function connect(name) {
-  const ws = new WebSocket(`ws://127.0.0.1:${port}`);
-  const messages = [];
-
-  await new Promise(resolve => { ws.onopen = resolve; });
-  ws.onmessage = (e) => messages.push(JSON.parse(e.data));
-  await new Promise(r => setTimeout(r, 50));
-
-  ws.send(JSON.stringify({ type: "set_name", name }));
-  await new Promise(r => setTimeout(r, 50));
-
-  return { ws, messages, name };
+  return new Promise((resolve, reject) => {
+    const sock = tcpConnect(port, "127.0.0.1");
+    const messages = [];
+    let buffer = Buffer.alloc(0);
+    let handshakeDone = false;
+    const client = {
+      name, messages,
+      send(text) { sock.write(maskFrame(text)); },
+      close() { sock.write(maskFrame(Buffer.from([0x03, 0xe8]), 0x08)); setTimeout(() => sock.end(), 10); },
+    };
+    sock.on("connect", () => {
+      const key = randomBytes(16).toString("base64");
+      sock.write(
+        "GET / HTTP/1.1\r\n" +
+        `Host: 127.0.0.1:${port}\r\n` +
+        "Upgrade: websocket\r\nConnection: Upgrade\r\n" +
+        `Sec-WebSocket-Key: ${key}\r\nSec-WebSocket-Version: 13\r\n\r\n`
+      );
+    });
+    sock.on("data", async (chunk) => {
+      buffer = Buffer.concat([buffer, chunk]);
+      if (!handshakeDone) {
+        const idx = buffer.indexOf("\r\n\r\n");
+        if (idx === -1) return;
+        buffer = buffer.slice(idx + 4);
+        handshakeDone = true;
+        // Wait for "connected" message, then set name, then resolve.
+        client.send(JSON.stringify({ type: "set_name", name }));
+        setTimeout(() => resolve(client), 50);
+      }
+      while (handshakeDone) {
+        const frame = decodeFrame(buffer);
+        if (!frame) break;
+        buffer = buffer.slice(frame.totalLength);
+        if (frame.opcode === 0x01) {
+          try { messages.push(JSON.parse(frame.payload.toString())); } catch {}
+        }
+      }
+    });
+    sock.on("error", (err) => reject(err));
+  });
 }
 
 // Connect three users
@@ -271,33 +318,33 @@ const charlie = await connect("Charlie");
 console.log("\n--- Joining rooms ---\n");
 
 // Alice and Bob join #general
-alice.ws.send(JSON.stringify({ type: "join", room: "general" }));
+alice.send(JSON.stringify({ type: "join", room: "general" }));
 await new Promise(r => setTimeout(r, 50));
 
-bob.ws.send(JSON.stringify({ type: "join", room: "general" }));
+bob.send(JSON.stringify({ type: "join", room: "general" }));
 await new Promise(r => setTimeout(r, 50));
 
 // Charlie joins #general and #random
-charlie.ws.send(JSON.stringify({ type: "join", room: "general" }));
+charlie.send(JSON.stringify({ type: "join", room: "general" }));
 await new Promise(r => setTimeout(r, 50));
 
-charlie.ws.send(JSON.stringify({ type: "join", room: "random" }));
+charlie.send(JSON.stringify({ type: "join", room: "random" }));
 await new Promise(r => setTimeout(r, 50));
 
 console.log("\n--- Sending messages ---\n");
 
-alice.ws.send(JSON.stringify({ type: "message", room: "general", text: "Hey everyone!" }));
+alice.send(JSON.stringify({ type: "message", room: "general", text: "Hey everyone!" }));
 await new Promise(r => setTimeout(r, 50));
 
-bob.ws.send(JSON.stringify({ type: "message", room: "general", text: "Hi Alice!" }));
+bob.send(JSON.stringify({ type: "message", room: "general", text: "Hi Alice!" }));
 await new Promise(r => setTimeout(r, 50));
 
-charlie.ws.send(JSON.stringify({ type: "message", room: "random", text: "Anyone here?" }));
+charlie.send(JSON.stringify({ type: "message", room: "random", text: "Anyone here?" }));
 await new Promise(r => setTimeout(r, 50));
 
 console.log("\n--- Room state ---\n");
 
-alice.ws.send(JSON.stringify({ type: "get_state", room: "general" }));
+alice.send(JSON.stringify({ type: "get_state", room: "general" }));
 await new Promise(r => setTimeout(r, 50));
 
 // Show what each client received
@@ -314,9 +361,9 @@ if (stateMsg) {
 
 // Clean up
 console.log("\n--- Cleanup ---\n");
-alice.ws.close();
-bob.ws.close();
-charlie.ws.close();
+alice.close();
+bob.close();
+charlie.close();
 await new Promise(r => setTimeout(r, 100));
 
 console.log("Rooms remaining:", chat.rooms.size);
@@ -342,22 +389,26 @@ console.log("Done");
 
 --- Sending messages ---
 
-[chat] Message in #general from Alice: "Hey everyone!"
-[chat] Message in #general from Bob: "Hi Alice!"
-[chat] Message in #random from Charlie: "Anyone here?"
 
 --- Room state ---
 
-Alice's messages: ["[#general] Alice: Hey everyone!", "[#general] Bob: Hi Alice!"]
-Bob's messages: ["[#general] Alice: Hey everyone!", "[#general] Bob: Hi Alice!"]
-Charlie's messages: ["[#general] Alice: Hey everyone!", "[#general] Bob: Hi Alice!", "[#random] Charlie: Anyone here?"]
+
+Alice's messages: [ '[#general] Alice: Hey everyone!', '[#general] Bob: Hi Alice!' ]
+Bob's messages: [ '[#general] Alice: Hey everyone!', '[#general] Bob: Hi Alice!' ]
+Charlie's messages: [
+  '[#general] Alice: Hey everyone!',
+  '[#general] Bob: Hi Alice!',
+  '[#random] Charlie: Anyone here?'
+]
 
 #general state:
-  Members: ["Alice", "Bob", "Charlie"]
-  Recent messages: 2
+  Members: [ 'Alice', 'Bob', 'Charlie' ]
+  Recent messages: 5
 
 --- Cleanup ---
 
+[chat] Room #random deleted (empty)
+[chat] Room #general deleted (empty)
 Rooms remaining: 0
 Done
 ```
