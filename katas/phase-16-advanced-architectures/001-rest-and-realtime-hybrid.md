@@ -367,3 +367,10 @@ console.log("    5. Each side is independently testable");
 - Not handling WebSocket reconnection — clients disconnect constantly (network changes, sleep, tab hidden). Always implement reconnection with exponential backoff
 - Sending full objects over real-time connections — send minimal change events (`{ type: "updated", id: 42 }`) and let the client fetch the full object via REST if needed
 - No event ordering guarantees — WebSocket messages can arrive out of order. Include sequence numbers or timestamps
+
+
+---
+
+## Navigation
+
+[< 005 — Plugins And Encapsulation](../phase-15-frameworks/005-plugins-and-encapsulation.md) | [002 — Streaming Apis >](002-streaming-apis.md)

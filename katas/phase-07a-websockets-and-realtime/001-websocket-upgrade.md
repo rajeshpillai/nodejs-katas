@@ -255,3 +255,10 @@ The `Sec-` prefix on headers means "this header cannot be set by JavaScript in a
 - Forgetting the `Connection: Upgrade` header alongside `Upgrade: websocket` — both are required
 - Not validating `Sec-WebSocket-Version: 13` — current WebSocket protocol version, reject others
 - Confusing WebSocket with Server-Sent Events (SSE) — SSE is server-to-client only, over regular HTTP, simpler but less capable
+
+
+---
+
+## Navigation
+
+[< 005 — Content Encoding And Range](../phase-07-http-from-first-principles/005-content-encoding-and-range.md) | [002 — Websocket Framing >](002-websocket-framing.md)

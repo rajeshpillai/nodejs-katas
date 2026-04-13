@@ -99,3 +99,10 @@ This is why `await` in a loop is sequential — each iteration waits for the pre
 - Awaiting independent operations sequentially when they could run concurrently with `Promise.all`
 - Forgetting that `async` functions always return a Promise — even if you return a plain value, it's wrapped in `Promise.resolve()`
 - Using `try/catch` around the wrong scope — the `catch` must wrap the `await`, not just the function call
+
+
+---
+
+## Navigation
+
+[< 003 — Promises](003-promises.md) | [005 — Async Pitfalls >](005-async-pitfalls.md)

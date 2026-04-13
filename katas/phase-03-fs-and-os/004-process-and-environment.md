@@ -145,3 +145,10 @@ If `heapUsed` keeps growing over time without plateauing, you have a memory leak
 - Using `process.exit()` in library code — it prevents cleanup. Throw an error instead and let the caller decide
 - Not registering `process.on('uncaughtException')` — unhandled errors crash the process silently
 - Storing secrets in `process.argv` — they're visible to anyone running `ps` on the system. Use env vars instead
+
+
+---
+
+## Navigation
+
+[< 003 — Os And System Info](003-os-and-system-info.md) | [005 — Process Lifecycle >](005-process-lifecycle.md)

@@ -280,3 +280,10 @@ console.log(`  // Registration
 - Using `===` instead of `timingSafeEqual` — timing attacks can reveal the hash character by character
 - Logging passwords or hashes — never log authentication data, even in error handlers
 - Using a fixed salt for all users — defeats the purpose; each user needs a unique random salt
+
+
+---
+
+## Navigation
+
+[< 001 — Hashing](001-hashing.md) | [003 — Encryption >](003-encryption.md)

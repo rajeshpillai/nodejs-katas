@@ -300,3 +300,10 @@ Status: { total: 5, peakActive: 5, totalQueries: 100, ... }
 - Using `pool.connect()` when `pool.query()` suffices — manual connect/release is only needed for transactions
 - Setting pool max too high — PostgreSQL's `max_connections` is shared by all clients. If you have 5 Node.js processes each with max=50, that's 250 possible connections
 - Not handling pool exhaustion errors — when all connections are busy and the queue times out, handle the error gracefully instead of crashing
+
+
+---
+
+## Navigation
+
+[< 001 — Postgresql Architecture](001-postgresql-architecture.md) | [003 — Parameterized Queries >](003-parameterized-queries.md)

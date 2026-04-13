@@ -443,3 +443,10 @@ In production, use `ws` — it handles edge cases (fragmentation reassembly, UTF
 - Not buffering partial frames — TCP can deliver half a WebSocket frame
 - Forgetting the close handshake — both sides must exchange close frames for a clean shutdown
 - Not tracking connections — leaked sockets when clients disconnect abruptly
+
+
+---
+
+## Navigation
+
+[< 002 — Websocket Framing](002-websocket-framing.md) | [004 — Realtime State >](004-realtime-state.md)

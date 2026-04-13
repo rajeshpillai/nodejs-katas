@@ -174,3 +174,10 @@ The `.unref()` on the timeout is important — without it, the timeout itself ke
 - Not handling `SIGTERM` — containers (Docker, Kubernetes) send `SIGTERM` before `SIGKILL`. You have ~30 seconds to clean up
 - Running async code in the `'exit'` handler — only synchronous code works there
 - Forgetting to `.unref()` shutdown timeouts — they keep the process alive unnecessarily
+
+
+---
+
+## Navigation
+
+[< 004 — Process And Environment](004-process-and-environment.md) | [001 — What Is A Buffer >](../phase-04-buffers-and-encoding/001-what-is-a-buffer.md)

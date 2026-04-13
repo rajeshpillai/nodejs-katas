@@ -298,3 +298,10 @@ Each layer needs its own timeout. A common mistake is setting only a response ti
 - Retrying non-idempotent operations (POST requests) — the first attempt may have succeeded, and retrying creates duplicates
 - No maximum retry limit — infinite retries with backoff can keep retrying for hours
 - Same retry strategy everywhere — a DNS failure needs different handling than a 503 response
+
+
+---
+
+## Navigation
+
+[< 003 — Socket Lifecycle](003-socket-lifecycle.md) | [005 — Length Prefix Framing >](005-length-prefix-framing.md)

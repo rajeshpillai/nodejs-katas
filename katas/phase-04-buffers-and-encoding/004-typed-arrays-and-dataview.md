@@ -195,3 +195,10 @@ The typed array system always uses the CPU's native endianness for performance. 
 - Forgetting alignment requirements — `Uint32Array` views must start at 4-byte aligned offsets. `DataView` has no alignment requirement
 - Assuming Buffer and its ArrayBuffer share the same offset — `buf.byteOffset` may not be 0 (Buffer can reference a slice of a larger ArrayBuffer pool)
 - Mixing signed and unsigned reads — `readInt16BE` vs `readUInt16BE` interpret the same bytes differently
+
+
+---
+
+## Navigation
+
+[< 003 — Buffer Operations](003-buffer-operations.md) | [005 — Parsing Binary Protocols >](005-parsing-binary-protocols.md)

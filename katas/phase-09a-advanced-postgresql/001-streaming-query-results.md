@@ -363,3 +363,10 @@ The cursor issues `DECLARE cursor_name CURSOR FOR ...` then `FETCH 100 FROM curs
 - Forgetting to release the client after a stream ends — connection leaks from the pool
 - Not handling stream errors — an error without a handler crashes the process
 - Using cursor streams for small queries — the overhead of DECLARE/FETCH is slower than a single buffered query for small results
+
+
+---
+
+## Navigation
+
+[< 005 — Error Handling Db](../phase-09-postgresql-integration/005-error-handling-db.md) | [002 — Bulk Inserts >](002-bulk-inserts.md)

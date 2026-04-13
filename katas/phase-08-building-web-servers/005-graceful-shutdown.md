@@ -318,3 +318,10 @@ The race condition: step 2 (removing from endpoints) and step 1 (SIGTERM) happen
 - Not `.unref()`-ing the shutdown timeout — the timeout itself keeps the process alive
 - Not handling double-signals — pressing Ctrl+C twice should still shut down cleanly, not crash
 - Closing resources before in-flight requests finish — a request tries to query a closed database and crashes
+
+
+---
+
+## Navigation
+
+[< 004 — Error Handling](004-error-handling.md) | [001 — Multipart Form Data >](../phase-08a-file-uploads/001-multipart-form-data.md)

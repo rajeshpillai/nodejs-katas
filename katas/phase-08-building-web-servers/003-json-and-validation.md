@@ -350,3 +350,10 @@ Users: 2
 - Using HTTP 400 for validation errors — 422 Unprocessable Entity is more semantically correct
 - Not validating the `Content-Type` header — a POST with `text/plain` shouldn't be parsed as JSON
 - Trusting `Content-Length` for body size limits — it can be spoofed. Count bytes as you read the stream
+
+
+---
+
+## Navigation
+
+[< 002 — Middleware Patterns](002-middleware-patterns.md) | [004 — Error Handling >](004-error-handling.md)

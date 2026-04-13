@@ -117,3 +117,10 @@ Operations that do NOT use the thread pool:
 - Assuming all async operations are equally scalable — file I/O and crypto are limited by the thread pool
 - Not increasing `UV_THREADPOOL_SIZE` in production when doing heavy file I/O or crypto
 - Confusing `dns.lookup()` (thread pool, OS resolver) with `dns.resolve()` (async, c-ares) — they use different mechanisms
+
+
+---
+
+## Navigation
+
+[< 001 — Event Loop Phases](001-event-loop-phases.md) | [003 — Timers >](003-timers.md)

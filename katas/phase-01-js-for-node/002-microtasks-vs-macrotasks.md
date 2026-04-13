@@ -93,3 +93,10 @@ The priority order within Node.js:
 - Assuming `setTimeout(fn, 0)` and `Promise.then()` have equal priority — Promises always win
 - Using `process.nextTick` recursively — it starves the event loop because the microtask queue never drains
 - Not realizing that microtasks scheduled during microtask processing run immediately, before any macrotask
+
+
+---
+
+## Navigation
+
+[< 001 — The Call Stack](001-the-call-stack.md) | [003 — Promises >](003-promises.md)

@@ -277,3 +277,10 @@ Length-prefix is almost always better for binary protocols. Delimiter-based is f
 - Using wrong endianness — the most common binary protocol bug. Always document and verify byte order
 - Building strings with `buf.toString()` on the entire buffer instead of the payload slice — includes header bytes in the text
 - Not handling partial messages in streams — TCP delivers bytes, not messages. A single `data` event may contain half a message or three and a half messages
+
+
+---
+
+## Navigation
+
+[< 004 — Typed Arrays And Dataview](004-typed-arrays-and-dataview.md) | [001 — Readable Streams >](../phase-05-streams-and-backpressure/001-readable-streams.md)

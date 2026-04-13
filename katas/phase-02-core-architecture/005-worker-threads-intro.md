@@ -130,3 +130,10 @@ Workers share the same process but have separate V8 heaps. `SharedArrayBuffer` i
 - Creating a new worker per request — worker creation has overhead. Use a worker pool instead
 - Assuming workers share variables with the main thread — they don't. Data is cloned when sent via `postMessage`
 - Not handling worker errors — unhandled errors in a worker silently fail unless you listen for the `'error'` event
+
+
+---
+
+## Navigation
+
+[< 004 — Io Callbacks](004-io-callbacks.md) | [001 — Reading And Writing Files >](../phase-03-fs-and-os/001-reading-and-writing-files.md)

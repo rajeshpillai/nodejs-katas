@@ -350,3 +350,10 @@ Files in upload dir: [ '<timestamp>-data.bin' ]
 - Not cleaning up temp files on error — if parsing fails mid-upload, delete any partially written files
 - Trusting the `filename` from the client — it could contain path traversal (`../../etc/passwd`). Always sanitize
 - Not setting upload timeouts — a slow client can hold a connection open indefinitely
+
+
+---
+
+## Navigation
+
+[< 001 — Multipart Form Data](001-multipart-form-data.md) | [003 — File Size Limits >](003-file-size-limits.md)

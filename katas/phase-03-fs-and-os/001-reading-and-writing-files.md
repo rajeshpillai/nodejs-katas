@@ -101,3 +101,10 @@ console.log("6. File deleted");
 - Forgetting the `"utf-8"` encoding in `readFile` — returns a Buffer instead of a string
 - Not handling `ENOENT` (file not found) errors — always wrap file operations in `try/catch`
 - Writing sensitive data without proper file permissions — use the `mode` option: `writeFile(path, data, { mode: 0o600 })`
+
+
+---
+
+## Navigation
+
+[< 005 — Worker Threads Intro](../phase-02-core-architecture/005-worker-threads-intro.md) | [002 — Paths And Directories >](002-paths-and-directories.md)

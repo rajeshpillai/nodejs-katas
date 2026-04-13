@@ -98,3 +98,10 @@ Inside an I/O callback, you're in the **poll phase**. After poll, the **check ph
 - Assuming `setTimeout(fn, 0)` and `setImmediate` always run in the same order — they don't at the top level
 - Not understanding that I/O callbacks run in the poll phase, and check phase comes right after
 - Thinking `setImmediate` means "immediately" — it means "after the current poll phase"
+
+
+---
+
+## Navigation
+
+[< 005 — Async Pitfalls](../phase-01-js-for-node/005-async-pitfalls.md) | [002 — Libuv >](002-libuv.md)

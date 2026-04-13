@@ -386,3 +386,10 @@ Important: Node.js `query_timeout` stops waiting but **does not cancel the Postg
 - Relying only on Node.js client timeout — the query keeps running on PostgreSQL even after the client stops waiting
 - Setting timeouts too aggressively — legitimate complex queries fail. Use per-query timeouts for reports
 - Forgetting `idle_in_transaction_session_timeout` — a crashed Node.js process leaves connections "idle in transaction," holding locks
+
+
+---
+
+## Navigation
+
+[< 004 — Jsonb Usage](004-jsonb-usage.md) | [001 — Hashing >](../phase-10-cryptography-and-security/001-hashing.md)

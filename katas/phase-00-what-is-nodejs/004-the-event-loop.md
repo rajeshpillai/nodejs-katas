@@ -102,3 +102,10 @@ Between **every** phase transition, Node.js drains the `nextTick` queue, then th
 - Using `process.nextTick` recursively — it starves the event loop because nextTick callbacks run before any I/O
 - Thinking `setImmediate` is "more immediate" than `setTimeout(fn, 0)` — the name is misleading; it runs later
 - Assuming Promises run "in parallel" — they don't, they're just deferred microtasks on the same thread
+
+
+---
+
+## Navigation
+
+[< 003 — Single Threaded Execution](003-single-threaded-execution.md) | [005 — Why Nodejs Scales >](005-why-nodejs-scales.md)

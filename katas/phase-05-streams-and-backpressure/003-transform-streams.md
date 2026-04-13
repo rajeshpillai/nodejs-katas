@@ -295,3 +295,10 @@ If your transform doesn't implement `_flush`, any buffered state is silently los
 - Not calling `callback()` in `_transform` — the stream stalls, no more data is processed
 - Mixing object mode and byte mode in a pipeline — a byte-mode transform receiving objects will call `.toString()` on them, producing `"[object Object]"`
 - Pushing in the callback instead of before it — `callback()` signals "ready for next chunk." Push first, then call callback
+
+
+---
+
+## Navigation
+
+[< 002 — Writable Streams](002-writable-streams.md) | [004 — Piping And Pipeline >](004-piping-and-pipeline.md)

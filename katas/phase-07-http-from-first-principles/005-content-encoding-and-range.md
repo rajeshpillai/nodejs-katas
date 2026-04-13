@@ -304,3 +304,10 @@ Range request status codes:
 - Compressing tiny responses — the gzip header overhead (~20 bytes) makes small responses larger
 - Not handling `Range: bytes=0-` (request for everything as a range) — should work like a normal request
 - Setting `Content-Length` to the uncompressed size when `Content-Encoding` is set — the length must reflect the compressed size
+
+
+---
+
+## Navigation
+
+[< 004 — Http Keep Alive](004-http-keep-alive.md) | [001 — Websocket Upgrade >](../phase-07a-websockets-and-realtime/001-websocket-upgrade.md)

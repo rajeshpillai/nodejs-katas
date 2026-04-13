@@ -197,3 +197,10 @@ The `'end'` event represents a TCP half-close — one side is done sending but c
 - Not handling `'error'` on sockets — unhandled errors crash the process
 - Using `socket.destroy()` instead of `socket.end()` — `destroy()` is abrupt (RST packet), `end()` is graceful (FIN packet)
 - Forgetting to handle the case where `server.listen()` fails — port already in use is a common production error
+
+
+---
+
+## Navigation
+
+[< 005 — Backpressure](../phase-05-streams-and-backpressure/005-backpressure.md) | [002 — Udp Overview >](002-udp-overview.md)

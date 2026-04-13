@@ -290,3 +290,10 @@ With pooling (pool size 10):
 - Not setting `statement_timeout` — a runaway query can hold a connection and a backend process forever
 - Setting `max_connections` very high (500+) — each connection uses 5-10 MB of RAM in the PostgreSQL process
 - Assuming database connections are free — they're expensive OS resources that must be pooled and managed
+
+
+---
+
+## Navigation
+
+[< 005 — Temporary Storage](../phase-08a-file-uploads/005-temporary-storage.md) | [002 — Connection Pooling >](002-connection-pooling.md)

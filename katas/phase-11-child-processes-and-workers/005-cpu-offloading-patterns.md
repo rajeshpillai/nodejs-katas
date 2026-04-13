@@ -345,3 +345,10 @@ All I/O callbacks are delayed by the full duration of the CPU work. With 1000 re
 - Using `setImmediate` chunking with too-large chunks — each chunk still blocks; keep chunks under ~5ms of CPU time
 - Over-offloading I/O-bound work to workers — workers add overhead; async I/O is already non-blocking
 - Not monitoring event loop delay in production — use `monitorEventLoopDelay()` to detect blocking before users notice
+
+
+---
+
+## Navigation
+
+[< 004 — Worker Threads](004-worker-threads.md) | [001 — Structured Logging >](../phase-12-observability-and-reliability/001-structured-logging.md)

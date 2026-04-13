@@ -94,3 +94,10 @@ This is different from threads (preemptive multitasking), where the OS forcibly 
 - Thinking Node.js runs code in parallel — it runs code concurrently (interleaved on one thread), not in parallel (multiple threads)
 - Using `await` in a loop when operations are independent — this makes them sequential instead of concurrent
 - Assuming Node.js is always faster — it excels at I/O-bound work but is slower than multi-threaded languages for CPU-bound computation
+
+
+---
+
+## Navigation
+
+[< 004 — The Event Loop](004-the-event-loop.md) | [001 — The Call Stack >](../phase-01-js-for-node/001-the-call-stack.md)

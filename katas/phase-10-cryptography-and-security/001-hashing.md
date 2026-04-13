@@ -236,3 +236,10 @@ console.log(`    ${hashes.join(", ")}...`);
 - Using plain SHA-256 for passwords — it's too fast! Attackers can hash billions of guesses per second. Use bcrypt/scrypt/argon2
 - Hashing without HMAC when integrity + authenticity is needed — SHA-256 alone doesn't prove who created the hash
 - Creating a new hash object for each `.update()` call instead of reusing one — each `createHash()` allocates a new context
+
+
+---
+
+## Navigation
+
+[< 005 — Query Cancellation](../phase-09a-advanced-postgresql/005-query-cancellation.md) | [002 — Password Storage >](002-password-storage.md)

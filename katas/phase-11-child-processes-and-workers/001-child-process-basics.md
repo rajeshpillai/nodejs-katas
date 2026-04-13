@@ -247,3 +247,10 @@ for (const [opt, desc] of options) {
 - Not handling the `error` event on spawn — if the binary doesn't exist, the error event fires (not close)
 - Forgetting to handle stderr — many programs write to stderr even on success (warnings, progress)
 - Using `exec` for large outputs — `maxBuffer` defaults to 1MB; use `spawn` for unbounded output
+
+
+---
+
+## Navigation
+
+[< 005 — Secure Random](../phase-10-cryptography-and-security/005-secure-random.md) | [002 — Spawn And Streaming >](002-spawn-and-streaming.md)

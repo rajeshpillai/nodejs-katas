@@ -250,3 +250,10 @@ Node.js buffers the headers until you first call `write()` or `end()`. This lets
 - Using `JSON.parse` without try/catch — malformed JSON throws a SyntaxError, crashing the request handler
 - Setting headers after `writeHead()` — they're silently ignored, not an error
 - Not setting `Content-Type` — clients default to `application/octet-stream` or `text/html`, which may not be what you want
+
+
+---
+
+## Navigation
+
+[< 002 — Headers And Content Types](002-headers-and-content-types.md) | [004 — Http Keep Alive >](004-http-keep-alive.md)

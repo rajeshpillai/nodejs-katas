@@ -413,3 +413,10 @@ for (const [scenario, approach, reason] of decisions) {
 - Not handling backpressure — writing to `res` faster than the network can handle causes unbounded memory growth. Always check `res.write()` return value
 - Using JSON arrays for large exports — `[{...},{...},...]` requires the client to buffer the entire response before parsing. NDJSON lets the client process each line immediately
 - No content-type header — without `application/x-ndjson`, clients don't know how to parse the response. Always set the correct content type
+
+
+---
+
+## Navigation
+
+[< 001 — Rest And Realtime Hybrid](001-rest-and-realtime-hybrid.md) | [003 — Api Gateway Patterns >](003-api-gateway-patterns.md)

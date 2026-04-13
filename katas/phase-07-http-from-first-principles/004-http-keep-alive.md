@@ -263,3 +263,10 @@ In Node.js, the global `http.Agent` is created with `keepAlive: false` for backw
 - Setting `keepAliveTimeout` too high on the server — idle connections consume memory and file descriptors
 - Not destroying the agent when done — leaked sockets keep the process alive
 - Assuming keep-alive means "the connection never closes" — servers close idle connections after a timeout, and agents must handle reconnection
+
+
+---
+
+## Navigation
+
+[< 003 — Request Response Lifecycle](003-request-response-lifecycle.md) | [005 — Content Encoding And Range >](005-content-encoding-and-range.md)

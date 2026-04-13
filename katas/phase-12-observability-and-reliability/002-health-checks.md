@@ -306,3 +306,10 @@ console.log(`  // Health check routes
 - Not setting timeouts on health check dependencies — a slow dependency makes the entire health check timeout
 - Exposing detailed health information publicly — internal status should be on an internal port or behind authentication
 - Returning 200 when dependencies are down — the load balancer will keep routing traffic to a broken instance
+
+
+---
+
+## Navigation
+
+[< 001 — Structured Logging](001-structured-logging.md) | [003 — Metrics >](003-metrics.md)

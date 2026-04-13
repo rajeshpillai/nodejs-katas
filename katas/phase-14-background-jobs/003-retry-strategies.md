@@ -375,3 +375,10 @@ for (const [practice, reason] of practices) {
 - Not adding jitter — synchronized retries from multiple clients create periodic spikes
 - Retrying non-idempotent operations — sending a payment twice is worse than not sending it at all
 - No maximum retry limit — infinite retries waste resources and may never succeed
+
+
+---
+
+## Navigation
+
+[< 002 — Job Queues](002-job-queues.md) | [004 — Idempotency >](004-idempotency.md)

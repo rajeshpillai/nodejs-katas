@@ -309,3 +309,10 @@ console.log("  ...");
 - High-cardinality labels — adding `userId` as a label creates millions of time series, overwhelming your metrics backend
 - Not tracking error rates — a service returning errors might look "fast" because errors are quick to generate
 - Exposing metrics on the public port — metrics can reveal internal details. Use a separate internal port
+
+
+---
+
+## Navigation
+
+[< 002 — Health Checks](002-health-checks.md) | [004 — Crash Handling >](004-crash-handling.md)

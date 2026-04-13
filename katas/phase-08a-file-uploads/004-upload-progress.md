@@ -298,3 +298,10 @@ Final status: { id: '<hex>', status: 'complete', received: 204800, total: 204800
 - Not cleaning up SSE connections when the upload finishes — leaked connections consume server resources
 - Using `Content-Length` as the sole progress indicator — it can be absent or wrong. Always count actual bytes
 - Not handling the case where the upload ID is checked before the upload starts — race condition between starting upload and polling
+
+
+---
+
+## Navigation
+
+[< 003 — File Size Limits](003-file-size-limits.md) | [005 — Temporary Storage >](005-temporary-storage.md)

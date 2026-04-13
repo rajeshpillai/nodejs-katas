@@ -240,3 +240,10 @@ There's also `_writev(chunks, callback)` for batch writes — called when multip
 - Calling `write()` after `end()` — throws an error, the stream is closed
 - Not calling the callback in `_write()` — the stream hangs, no more data is accepted
 - Using `on('drain')` instead of `once('drain')` — the drain handler stays registered forever, creating a memory leak with many drain cycles
+
+
+---
+
+## Navigation
+
+[< 001 — Readable Streams](001-readable-streams.md) | [003 — Transform Streams >](003-transform-streams.md)

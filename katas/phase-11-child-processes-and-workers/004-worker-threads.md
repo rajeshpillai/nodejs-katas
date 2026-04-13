@@ -311,3 +311,10 @@ for (const [task, solution, why] of guide) {
 - Using workers for I/O-bound tasks — async/await is better; workers add complexity without benefit for I/O
 - Forgetting that worker thread crash kills the whole process — unlike child processes, threads aren't isolated
 - Sharing mutable state without Atomics — concurrent writes to SharedArrayBuffer cause data races
+
+
+---
+
+## Navigation
+
+[< 003 — Fork And Ipc](003-fork-and-ipc.md) | [005 — Cpu Offloading Patterns >](005-cpu-offloading-patterns.md)

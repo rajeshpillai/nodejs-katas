@@ -88,3 +88,10 @@ Node.js has a default stack size limit (~15,000 frames on most systems). You can
 - Thinking async code runs "in parallel" on a separate stack — it doesn't, it runs on the same stack later
 - Writing deeply recursive algorithms without considering stack overflow
 - Confusing the call stack (synchronous execution) with the callback queue (async scheduling)
+
+
+---
+
+## Navigation
+
+[< 005 — Why Nodejs Scales](../phase-00-what-is-nodejs/005-why-nodejs-scales.md) | [002 — Microtasks Vs Macrotasks >](002-microtasks-vs-macrotasks.md)

@@ -105,3 +105,10 @@ In production Node.js, unhandled Promise rejections terminate the process (Node 
 - Not adding `.catch()` at the end of a chain — unhandled rejection crashes the process
 - Creating a Promise inside `.then()` without returning it — breaks the chain, the outer chain can't wait for it
 - Thinking `Promise.resolve(value).then(fn)` runs `fn` synchronously — it never does
+
+
+---
+
+## Navigation
+
+[< 002 — Microtasks Vs Macrotasks](002-microtasks-vs-macrotasks.md) | [004 — Async Await >](004-async-await.md)

@@ -310,3 +310,10 @@ console.log("    4. If found, the key is valid");
 - Using `===` instead of `timingSafeEqual` for signature comparison — timing attacks can reveal the expected signature
 - Storing sensitive data in JWT payload — JWTs are base64-encoded (readable), not encrypted. Anyone can decode the payload
 - Not validating the `alg` header — the "alg: none" attack tricks servers into accepting unsigned tokens
+
+
+---
+
+## Navigation
+
+[< 003 — Encryption](003-encryption.md) | [005 — Secure Random >](005-secure-random.md)

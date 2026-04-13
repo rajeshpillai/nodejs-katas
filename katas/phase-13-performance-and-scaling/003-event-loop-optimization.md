@@ -262,3 +262,10 @@ for (let i = 0; i < checklist.length; i++) {
 - Calling `JSON.stringify` on large objects in a hot path — it's synchronous and can take 50-200ms for large objects
 - Using user-supplied regular expressions — enables ReDoS (Regular Expression Denial of Service)
 - Not monitoring event loop delay in production — you won't know the loop is blocked until users complain
+
+
+---
+
+## Navigation
+
+[< 002 — Memory Management](002-memory-management.md) | [004 — Load Testing >](004-load-testing.md)

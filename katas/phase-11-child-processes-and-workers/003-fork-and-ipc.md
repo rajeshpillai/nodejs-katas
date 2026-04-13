@@ -303,3 +303,10 @@ for (const [use, desc] of useCases) {
 - Sending large payloads via IPC — messages are serialized as JSON and copied; for large data, use files or shared memory
 - Not handling worker crashes — listen for the `exit` event and restart workers that crash unexpectedly
 - Forgetting to call `worker.disconnect()` or `worker.kill()` — orphaned workers keep running after the parent exits
+
+
+---
+
+## Navigation
+
+[< 002 — Spawn And Streaming](002-spawn-and-streaming.md) | [004 — Worker Threads >](004-worker-threads.md)

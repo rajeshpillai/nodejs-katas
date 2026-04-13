@@ -253,3 +253,10 @@ getAll('tags'): [ 'backend', 'api' ]
 - Testing routes in wrong order — a greedy pattern like `/users/:id` matches before `/users/search` if registered first
 - Not handling trailing slashes — `/users` and `/users/` should usually match the same route
 - Parsing query strings manually — use `URL` and `URLSearchParams` instead of splitting on `&` and `=`
+
+
+---
+
+## Navigation
+
+[< 005 — Scaling Websockets](../phase-07a-websockets-and-realtime/005-scaling-websockets.md) | [002 — Middleware Patterns >](002-middleware-patterns.md)

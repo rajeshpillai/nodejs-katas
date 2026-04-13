@@ -325,3 +325,10 @@ Node.js's internal HTTP parser uses option (2) — it keeps chunks in a linked l
 - Forgetting to handle zero-length messages — a frame with length 0 is valid (like a heartbeat)
 - Not limiting maximum frame size — an attacker can send a length of 2^32-1 and make you allocate 4 GB of memory
 - Using `Buffer.concat()` in a hot loop — allocates on every call. Pre-allocate or use a ring buffer for high throughput
+
+
+---
+
+## Navigation
+
+[< 004 — Timeouts And Retries](004-timeouts-and-retries.md) | [001 — Http Protocol >](../phase-07-http-from-first-principles/001-http-protocol.md)

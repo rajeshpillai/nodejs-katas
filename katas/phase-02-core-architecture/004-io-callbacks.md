@@ -122,3 +122,10 @@ await Promise.all([unlink(tmpFile), ...files.map((f) => unlink(f))]);
 - Thinking all I/O callbacks fire at once — they're processed one at a time in the poll phase
 - Not realizing that file I/O uses the thread pool and is limited to `UV_THREADPOOL_SIZE` concurrent operations
 - Using synchronous `fs.readFileSync` in a server — it blocks the entire event loop while the file is being read
+
+
+---
+
+## Navigation
+
+[< 003 — Timers](003-timers.md) | [005 — Worker Threads Intro >](005-worker-threads-intro.md)

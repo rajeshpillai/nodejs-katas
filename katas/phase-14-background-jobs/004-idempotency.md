@@ -432,3 +432,10 @@ for (const [practice, reason] of practices) {
 - Using server-generated keys — only the client knows if it's a retry or a new request
 - Never expiring keys — idempotency keys accumulate forever and slow down lookups
 - Returning different responses for duplicates — the client expects the same result it would have gotten originally
+
+
+---
+
+## Navigation
+
+[< 003 — Retry Strategies](003-retry-strategies.md) | [005 — Failure Modes >](005-failure-modes.md)

@@ -454,3 +454,10 @@ for (const [feature, express, fastify] of comparison) {
 - Not encapsulating database connections — every route file imports the pool directly. Fastify's `decorate('db', pool)` keeps it scoped and testable
 - Plugin order dependencies — registering auth before db when auth needs db. Use Fastify's async plugins to ensure dependencies are ready
 - Testing entire apps instead of plugins — Fastify plugins can be tested in isolation by creating a minimal app, registering just that plugin with mock dependencies, and injecting requests
+
+
+---
+
+## Navigation
+
+[< 004 — Validation And Serialization](004-validation-and-serialization.md) | [001 — Rest And Realtime Hybrid >](../phase-16-advanced-architectures/001-rest-and-realtime-hybrid.md)

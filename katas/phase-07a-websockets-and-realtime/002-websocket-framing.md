@@ -325,3 +325,10 @@ Server-to-client masking isn't needed because the browser is the endpoint, not a
 - Treating WebSocket as a pure byte stream — it's message-oriented. Each frame (or series of fragments) is one complete message
 - Ignoring ping frames — RFC requires responding with pong. Servers use pings to detect dead connections
 - Not handling the close handshake — when one side sends a close frame, the other must respond with a close frame before the connection terminates
+
+
+---
+
+## Navigation
+
+[< 001 — Websocket Upgrade](001-websocket-upgrade.md) | [003 — Websocket Server >](003-websocket-server.md)

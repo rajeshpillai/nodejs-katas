@@ -312,3 +312,10 @@ Unknown route:
 - Using 200 for error responses with `{ "success": false }` — use proper HTTP status codes
 - Catching errors too broadly — `catch (e) {}` silently swallows everything, including bugs
 - Not logging unhandled errors — a 500 response without a log means you'll never find the bug
+
+
+---
+
+## Navigation
+
+[< 003 — Json And Validation](003-json-and-validation.md) | [005 — Graceful Shutdown >](005-graceful-shutdown.md)

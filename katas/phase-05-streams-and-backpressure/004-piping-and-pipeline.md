@@ -276,3 +276,10 @@ This is often cleaner than creating a Transform subclass, especially for simple 
 - Forgetting that `pipe()` returns the destination, not the source — `source.pipe(a).pipe(b)` pipes `a` to `b`, not `source` to `b`
 - Not using the promise version of `pipeline` — the callback version is harder to use with async/await
 - Piping to a stream that's already ended — silently drops data or throws, depending on timing
+
+
+---
+
+## Navigation
+
+[< 003 — Transform Streams](003-transform-streams.md) | [005 — Backpressure >](005-backpressure.md)

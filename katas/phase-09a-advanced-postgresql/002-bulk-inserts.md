@@ -355,3 +355,10 @@ console.log(`
 - Exceeding the parameter limit ($65535) — split large batches to stay under the limit
 - Not using a transaction for bulk inserts — without a transaction, each INSERT is separately committed (WAL flush), which is much slower
 - Forgetting that COPY doesn't return generated IDs — if you need the IDs, use multi-row INSERT with RETURNING
+
+
+---
+
+## Navigation
+
+[< 001 — Streaming Query Results](001-streaming-query-results.md) | [003 — Pagination Strategies >](003-pagination-strategies.md)

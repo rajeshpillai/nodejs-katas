@@ -254,3 +254,10 @@ TCP's half-close (FIN) mechanism:
 - Forgetting to handle `'error'` before `'close'` — errors always precede close, and unhandled errors crash the process
 - Not setting timeouts — a socket with no timeout and no keep-alive can hang forever if the network goes down
 - Writing to a socket after it's ended — causes an `ERR_STREAM_WRITE_AFTER_END` error
+
+
+---
+
+## Navigation
+
+[< 002 — Udp Overview](002-udp-overview.md) | [004 — Timeouts And Retries >](004-timeouts-and-retries.md)

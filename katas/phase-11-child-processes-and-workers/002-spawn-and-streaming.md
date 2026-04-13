@@ -294,3 +294,10 @@ try {
 - Using `exec` for large outputs — it buffers everything; `maxBuffer` defaults to 1MB
 - Forgetting to handle the `error` event — `spawn` emits `error` if the command doesn't exist (before `close`)
 - Piping between processes without error handling — if one process in a pipe chain fails, you need to clean up the others
+
+
+---
+
+## Navigation
+
+[< 001 — Child Process Basics](001-child-process-basics.md) | [003 — Fork And Ipc >](003-fork-and-ipc.md)

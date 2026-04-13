@@ -425,3 +425,10 @@ Done
 - Not cleaning up room membership on disconnect — "ghost" users persist in room lists
 - Broadcasting to disconnected sockets — check `socket.writable` before writing
 - Not validating message format — malformed JSON from clients should be handled gracefully, not crash the server
+
+
+---
+
+## Navigation
+
+[< 003 — Websocket Server](003-websocket-server.md) | [005 — Scaling Websockets >](005-scaling-websockets.md)

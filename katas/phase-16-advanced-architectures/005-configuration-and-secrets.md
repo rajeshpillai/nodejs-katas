@@ -478,3 +478,10 @@ for (const [practice, detail] of practices) {
 - Hardcoded secrets in code — `const secret = "abc123"` in source code is visible in git history forever, even if you delete it later
 - Not validating config at startup — a missing `DB_HOST` discovered 2 hours later during the first database query is much harder to debug than a startup failure
 - Using `process.env` everywhere — scattered `process.env.X` calls throughout the codebase are hard to track. Load config once at startup and pass it explicitly
+
+
+---
+
+## Navigation
+
+[< 004 — Monolith Vs Microservices](004-monolith-vs-microservices.md)

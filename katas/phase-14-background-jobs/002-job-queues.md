@@ -367,3 +367,10 @@ console.log(`  CREATE TABLE jobs (
 - Not using `SKIP LOCKED` — without it, concurrent workers block each other waiting for the same row lock
 - Not handling stale jobs — if a worker crashes mid-processing, the job stays in "processing" forever
 - Storing large payloads in the job data — store a reference (S3 URL, file path) instead of the actual data
+
+
+---
+
+## Navigation
+
+[< 001 — Background Workers](001-background-workers.md) | [003 — Retry Strategies >](003-retry-strategies.md)

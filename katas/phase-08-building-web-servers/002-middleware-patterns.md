@@ -306,3 +306,10 @@ CORS headers: *
 - Calling `next()` multiple times — processes the rest of the pipeline twice, causing double responses
 - Not wrapping middleware in try/catch — unhandled errors crash the server instead of returning 500
 - Modifying `res` after headers are sent — calling `res.writeHead()` twice throws an error
+
+
+---
+
+## Navigation
+
+[< 001 — Routing](001-routing.md) | [003 — Json And Validation >](003-json-and-validation.md)

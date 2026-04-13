@@ -129,3 +129,10 @@ This guarantees at least 100ms between the **end** of one execution and the **st
 - Assuming `setTimeout(fn, 0)` is the same as `setImmediate` — they run in different event loop phases
 - Forgetting that `setTimeout` in Node.js returns a `Timeout` object (not a number like in browsers)
 - Not calling `clearInterval`/`clearTimeout` — leaked timers keep the process alive and waste memory
+
+
+---
+
+## Navigation
+
+[< 002 — Libuv](002-libuv.md) | [004 — Io Callbacks >](004-io-callbacks.md)

@@ -81,3 +81,10 @@ This is why consistent object shapes matter for performance in Node.js — not j
 - Thinking Node.js is slow because JavaScript is interpreted — V8 compiles to machine code
 - Confusing V8 (executes code) with libuv (handles I/O) — they do different things
 - Running heavy computation on the main thread without understanding it blocks everything else
+
+
+---
+
+## Navigation
+
+[< 001 — Nodejs Vs Browser](001-nodejs-vs-browser.md) | [003 — Single Threaded Execution >](003-single-threaded-execution.md)

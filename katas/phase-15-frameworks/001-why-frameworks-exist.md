@@ -399,3 +399,10 @@ for (const [useCase, choice, reason] of guide) {
 - Choosing Express for new projects purely by popularity — Fastify is faster, has better async support, and built-in validation. Express is fine, but evaluate both
 - Over-abstracting with middleware — 15 layers of middleware for a simple CRUD endpoint is worse than explicit code. Middleware should solve cross-cutting concerns, not business logic
 - Ignoring serialization performance — for high-throughput APIs, `JSON.stringify` is often the bottleneck. Schema-aware serialization (Fastify's approach) can be 2-5x faster
+
+
+---
+
+## Navigation
+
+[< 005 — Failure Modes](../phase-14-background-jobs/005-failure-modes.md) | [002 — Routing And Parameters >](002-routing-and-parameters.md)

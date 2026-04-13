@@ -265,3 +265,10 @@ console.log(`\n  crypto is slower but the difference is negligible for security 
 - Generating tokens that are too short — a 4-character hex token has only 65,536 possible values
 - Not using constant-time comparison for token verification — timing attacks can guess tokens character by character
 - Storing raw tokens in the database — store a hash so that a database leak doesn't compromise active tokens
+
+
+---
+
+## Navigation
+
+[< 004 — Tokens And Signatures](004-tokens-and-signatures.md) | [001 — Child Process Basics >](../phase-11-child-processes-and-workers/001-child-process-basics.md)

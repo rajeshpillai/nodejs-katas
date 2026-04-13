@@ -519,3 +519,10 @@ console.log(`  // Fastify: async errors caught automatically
 - Wrong middleware order — auth middleware after the route handler does nothing. Order matters in Express
 - Async errors in Express — `throw` inside an async route handler becomes an unhandled promise rejection. Must use `try/catch` + `next(err)` or a wrapper
 - Modifying shared state in middleware — middleware that writes to `req.user` can conflict if multiple middleware touch the same property
+
+
+---
+
+## Navigation
+
+[< 002 — Routing And Parameters](002-routing-and-parameters.md) | [004 — Validation And Serialization >](004-validation-and-serialization.md)

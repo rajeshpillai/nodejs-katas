@@ -268,3 +268,10 @@ for (const [error, cause] of causes) {
 - Not logging the error before exiting — you lose the most important debugging information
 - Relying on `process.exit()` alone — async operations (log flushing, connection closing) may not complete. Use `setTimeout(...).unref()` to give cleanup a chance
 - Not having a process manager — without auto-restart, a single uncaught exception takes your service down permanently
+
+
+---
+
+## Navigation
+
+[< 003 — Metrics](003-metrics.md) | [005 — Graceful Restart >](005-graceful-restart.md)

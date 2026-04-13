@@ -165,3 +165,10 @@ Node.js maintains a small pre-allocated memory pool (default 8 KB) for small Buf
 - Comparing Buffers with `===` — this checks reference equality, not content. Use `buf.equals()` or `Buffer.compare()`
 - Confusing string length with byte length — `"🚀".length` is 2 (UTF-16 code units), but `Buffer.from("🚀").length` is 4 (UTF-8 bytes)
 - Using `allocUnsafe` for security-sensitive data — old memory could contain passwords or keys. Always use `alloc` for crypto buffers
+
+
+---
+
+## Navigation
+
+[< 005 — Process Lifecycle](../phase-03-fs-and-os/005-process-lifecycle.md) | [002 — Encoding And Decoding >](002-encoding-and-decoding.md)

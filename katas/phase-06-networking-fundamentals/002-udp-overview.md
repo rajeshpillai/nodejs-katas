@@ -221,3 +221,10 @@ When a datagram exceeds the network MTU, IP fragmentation occurs. If any fragmen
 - Not handling the case where `send()` errors — even "fire and forget" can fail (no route to host, socket closed)
 - Assuming datagrams arrive in order — they might not, especially over the internet
 - Sending datagrams larger than the MTU — causes fragmentation and increases the chance of packet loss
+
+
+---
+
+## Navigation
+
+[< 001 — Tcp Basics](001-tcp-basics.md) | [003 — Socket Lifecycle >](003-socket-lifecycle.md)

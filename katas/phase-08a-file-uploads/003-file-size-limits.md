@@ -325,3 +325,10 @@ Oversized (header): 413 Payload too large
 - Only checking `Content-Length` header — it can be set to 0 while sending a huge body. Count bytes during transfer
 - Not destroying the request stream on rejection — the server keeps receiving data it will discard
 - Trusting the client's `Content-Type` header for the file — always verify with magic bytes
+
+
+---
+
+## Navigation
+
+[< 002 — Streaming Uploads](002-streaming-uploads.md) | [004 — Upload Progress >](004-upload-progress.md)

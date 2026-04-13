@@ -342,3 +342,10 @@ console.log(`  -- GIN index (all keys and values, supports @>, ?, ?|, ?&)
 - Querying JSONB without indexes — `WHERE data->>'type' = 'click'` does a full table scan without an expression index
 - Using `json` instead of `jsonb` — `json` preserves whitespace and key order but can't be indexed or use operators like `@>`
 - Updating JSONB by replacing the entire column — use `jsonb_set()` or `||` to update specific keys instead
+
+
+---
+
+## Navigation
+
+[< 003 — Pagination Strategies](003-pagination-strategies.md) | [005 — Query Cancellation >](005-query-cancellation.md)

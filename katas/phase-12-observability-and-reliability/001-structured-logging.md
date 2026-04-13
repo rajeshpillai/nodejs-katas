@@ -272,3 +272,10 @@ for (const [lib, desc] of libraries) {
 - Logging sensitive data (passwords, tokens, PII) — scrub sensitive fields before logging
 - Not including a request ID — without it, you can't correlate logs for a single request across services
 - Setting log level too low in production — `debug` level in production generates enormous log volume and cost
+
+
+---
+
+## Navigation
+
+[< 005 — Cpu Offloading Patterns](../phase-11-child-processes-and-workers/005-cpu-offloading-patterns.md) | [002 — Health Checks >](002-health-checks.md)

@@ -313,3 +313,10 @@ console.log("    - On macOS: least-loaded (kernel decides)");
 - Forking too many workers — more workers than CPU cores causes context switching overhead
 - Not auto-restarting crashed workers — a single uncaught exception permanently reduces capacity
 - Assuming linear scaling — database connections, shared caches, and network become bottlenecks. 8 workers doesn't mean 8x throughput
+
+
+---
+
+## Navigation
+
+[< 004 — Load Testing](004-load-testing.md) | [001 — Background Workers >](../phase-14-background-jobs/001-background-workers.md)

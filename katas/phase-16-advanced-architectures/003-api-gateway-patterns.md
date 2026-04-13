@@ -437,3 +437,10 @@ for (const [approach, pros, cons] of tradeoffs) {
 - No circuit breaker — a slow/failing backend causes the gateway to exhaust connections and fail for all services
 - Single gateway instance — the gateway is a single point of failure. Always run multiple instances behind a load balancer
 - Over-aggregation — combining 10+ service calls into one gateway endpoint makes it slow and fragile. Keep aggregations small (2-4 services)
+
+
+---
+
+## Navigation
+
+[< 002 — Streaming Apis](002-streaming-apis.md) | [004 — Monolith Vs Microservices >](004-monolith-vs-microservices.md)

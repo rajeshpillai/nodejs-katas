@@ -72,3 +72,10 @@ Node.js is single-threaded for JavaScript execution, but libuv maintains a threa
 - Thinking `setTimeout(fn, 0)` runs immediately — it doesn't, it waits for the call stack to clear
 - Using synchronous file operations (`fs.readFileSync`) in server request handlers — this blocks all other requests
 - Believing `async/await` makes code run on another thread — it doesn't, it just suspends and resumes on the same thread
+
+
+---
+
+## Navigation
+
+[< 002 — V8 And The Runtime](002-v8-and-the-runtime.md) | [004 — The Event Loop >](004-the-event-loop.md)

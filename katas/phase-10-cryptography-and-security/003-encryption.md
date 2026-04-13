@@ -251,3 +251,10 @@ for (const [algo, keySize, auth, use] of algos) {
 - Using CBC without HMAC — CBC doesn't detect tampering, enabling padding oracle attacks
 - Storing the key alongside the encrypted data — the key must be separate (environment variable, KMS, HSM)
 - Using ECB mode — encrypts identical blocks to identical ciphertext, revealing patterns
+
+
+---
+
+## Navigation
+
+[< 002 — Password Storage](002-password-storage.md) | [004 — Tokens And Signatures >](004-tokens-and-signatures.md)

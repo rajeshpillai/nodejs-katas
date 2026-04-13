@@ -243,3 +243,10 @@ This is why HTTP/1.1 needs `Content-Length` or `Transfer-Encoding: chunked` — 
 - Using `\n` instead of `\r\n` — the HTTP spec requires CRLF. Most servers accept `\n`, but it's technically non-compliant
 - Not handling `Transfer-Encoding: chunked` — many responses use chunked encoding instead of Content-Length
 - Confusing 401 and 403 — 401 means "you're not authenticated" (log in), 403 means "you're authenticated but not authorized" (access denied)
+
+
+---
+
+## Navigation
+
+[< 005 — Length Prefix Framing](../phase-06-networking-fundamentals/005-length-prefix-framing.md) | [002 — Headers And Content Types >](002-headers-and-content-types.md)

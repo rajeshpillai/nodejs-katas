@@ -309,3 +309,10 @@ for (const [tool, what, how] of tools) {
 - Benchmarking with a single request — real performance issues emerge under concurrent load
 - Ignoring p99 latency — the 1% worst-case matters more than the average for user experience
 - Using `Date.now()` for micro-benchmarks — it has millisecond resolution. Use `performance.now()` for sub-millisecond precision
+
+
+---
+
+## Navigation
+
+[< 005 — Graceful Restart](../phase-12-observability-and-reliability/005-graceful-restart.md) | [002 — Memory Management >](002-memory-management.md)

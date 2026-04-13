@@ -367,3 +367,10 @@ console.log(`\n  Radix tree: O(segments) — independent of route count`);
 - Not URL-decoding parameters — `/users/hello%20world` should give `params.name = "hello world"`, not the encoded string
 - Mixing route styles — combining `/api/v1/users` and `/api/v2/users/:id` without grouping makes the route table hard to reason about
 - Not handling trailing slashes — `/users` and `/users/` should route to the same handler (Fastify does this by default)
+
+
+---
+
+## Navigation
+
+[< 001 — Why Frameworks Exist](001-why-frameworks-exist.md) | [003 — Middleware And Hooks >](003-middleware-and-hooks.md)

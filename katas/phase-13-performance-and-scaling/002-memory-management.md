@@ -316,3 +316,10 @@ console.log(`  # Heap snapshot via inspect
 - Storing unbounded data in module-level variables — these persist for the lifetime of the process
 - Adding event listeners in request handlers without removing them — each request adds a new listener that's never cleaned up
 - Using `global` for caching — no eviction, no size limits, grows until OOM
+
+
+---
+
+## Navigation
+
+[< 001 — Profiling](001-profiling.md) | [003 — Event Loop Optimization >](003-event-loop-optimization.md)

@@ -335,3 +335,10 @@ for (const [metric, good, warn, crit] of targets) {
 - Not warming up the server — the first few hundred requests are slower (JIT compilation, connection pooling warmup)
 - Only testing happy paths — test error paths, large payloads, and slow endpoints too
 - Comparing tests with different parameters — always use the same duration, connections, and payload when comparing optimizations
+
+
+---
+
+## Navigation
+
+[< 003 — Event Loop Optimization](003-event-loop-optimization.md) | [005 — Horizontal Scaling >](005-horizontal-scaling.md)

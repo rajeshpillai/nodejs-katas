@@ -345,3 +345,10 @@ Final balances:
 - Forgetting `finally { client.release() }` — the connection leaks from the pool, eventually exhausting it
 - Not rolling back on error — the connection stays "in transaction" and is returned to the pool in a broken state
 - Holding transactions open too long — long transactions hold locks and increase contention
+
+
+---
+
+## Navigation
+
+[< 003 — Parameterized Queries](003-parameterized-queries.md) | [005 — Error Handling Db >](005-error-handling-db.md)

@@ -347,3 +347,10 @@ The first two characters identify the class. Checking `code.startsWith("23")` ca
 - Retrying non-retryable errors — retrying a unique violation forever is a bug
 - Exposing raw SQL error messages to clients — they may contain table names, column names, and constraint details
 - Not setting `statement_timeout` — a missing WHERE clause on a large table can run a query for minutes
+
+
+---
+
+## Navigation
+
+[< 004 — Transactions](004-transactions.md) | [001 — Streaming Query Results >](../phase-09a-advanced-postgresql/001-streaming-query-results.md)

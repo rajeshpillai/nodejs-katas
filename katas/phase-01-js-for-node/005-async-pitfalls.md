@@ -140,3 +140,10 @@ allSettled: [ 'ok', 'ERR: one failed', 'also ok' ]
 - Catching errors from `Promise.all` and losing the successful results — use `Promise.allSettled` when you need partial results
 - Not handling the case where `Promise.all` rejects on the first failure — the other Promises keep running but their results are discarded
 - Wrapping synchronous code in `new Promise()` unnecessarily — if it doesn't need to be async, don't make it async
+
+
+---
+
+## Navigation
+
+[< 004 — Async Await](004-async-await.md) | [001 — Event Loop Phases >](../phase-02-core-architecture/001-event-loop-phases.md)

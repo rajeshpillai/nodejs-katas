@@ -574,3 +574,10 @@ for (const [item, detail] of checklist) {
 - Ignoring partial failures — if step 2 of 4 fails, steps 1's side effects remain. Always plan compensation
 - No timeout on jobs — a hanging job blocks the worker forever. Always set execution timeouts
 - Not logging enough context — when a job fails at 3am, you need the full picture: input data, error, attempt count, timestamps
+
+
+---
+
+## Navigation
+
+[< 004 — Idempotency](004-idempotency.md) | [001 — Why Frameworks Exist >](../phase-15-frameworks/001-why-frameworks-exist.md)

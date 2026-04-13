@@ -396,3 +396,10 @@ console.log(`  // API endpoint — enqueue and return immediately
 - Not implementing retries — external services fail temporarily. Without retry, every transient failure becomes permanent
 - Retrying non-idempotent operations — sending an email twice is a bug. Make operations idempotent or deduplicate
 - Using in-memory queues in production — if the process restarts, all pending jobs are lost. Use Redis or a database
+
+
+---
+
+## Navigation
+
+[< 005 — Horizontal Scaling](../phase-13-performance-and-scaling/005-horizontal-scaling.md) | [002 — Job Queues >](002-job-queues.md)

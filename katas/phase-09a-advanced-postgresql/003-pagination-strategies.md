@@ -277,3 +277,10 @@ console.log(`  SELECT count(*) FROM posts WHERE <filters>;
 - Not adding `id` as a tiebreaker to keyset pagination — rows with the same `created_at` can be skipped or duplicated
 - Running `COUNT(*)` on every page request — cache the count or use an estimate from `pg_class.reltuples`
 - Exposing raw database IDs in cursors — encode cursors as opaque base64 tokens so clients can't manipulate them
+
+
+---
+
+## Navigation
+
+[< 002 — Bulk Inserts](002-bulk-inserts.md) | [004 — Jsonb Usage >](004-jsonb-usage.md)

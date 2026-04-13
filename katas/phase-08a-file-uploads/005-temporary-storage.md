@@ -322,3 +322,10 @@ The caveat: `rename()` fails with `EXDEV` across filesystem boundaries (e.g., `/
 - Using predictable temp file names — `upload-1.tmp`, `upload-2.tmp` creates race conditions with concurrent uploads. Use random names
 - Not running periodic sweeps — even with `finally` blocks, process crashes leave orphan files. A cron-style sweep catches them
 - Writing temp files to the application directory — use `os.tmpdir()` or a dedicated upload directory. App directories may not be writable in production
+
+
+---
+
+## Navigation
+
+[< 004 — Upload Progress](004-upload-progress.md) | [001 — Postgresql Architecture >](../phase-09-postgresql-integration/001-postgresql-architecture.md)

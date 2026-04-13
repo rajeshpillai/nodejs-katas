@@ -215,3 +215,10 @@ The `highWaterMark` controls the internal buffer size. For a file stream with `h
 - Not handling the `'error'` event — unhandled stream errors crash the process. Always add an error handler
 - Calling `stream.read()` in a loop without checking for `null` — returns `null` when no data is available
 - Forgetting `this.push(null)` in a custom Readable — the stream never ends, `for await...of` hangs forever
+
+
+---
+
+## Navigation
+
+[< 005 — Parsing Binary Protocols](../phase-04-buffers-and-encoding/005-parsing-binary-protocols.md) | [002 — Writable Streams >](002-writable-streams.md)

@@ -324,3 +324,10 @@ Default values:
 - Ignoring backpressure in manual write loops — the most common stream bug. Always check `write()` return value
 - Not understanding that `pipe()` handles backpressure automatically — no need to manually pause/resume when using pipe/pipeline
 - Using `stream.resume()` without a `'data'` handler — data is silently discarded
+
+
+---
+
+## Navigation
+
+[< 004 — Piping And Pipeline](004-piping-and-pipeline.md) | [001 — Tcp Basics >](../phase-06-networking-fundamentals/001-tcp-basics.md)

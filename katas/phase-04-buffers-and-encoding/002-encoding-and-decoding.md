@@ -185,3 +185,10 @@ Base64 encoding expands data because it uses 6 bits per character (64 = 2^6) whi
 - Double-encoding: `Buffer.from(Buffer.from("hello").toString("base64"))` creates a Buffer of the base64 *string*, not the original data. You need `Buffer.from(str, "base64")` to decode
 - Ignoring encoding when reading files — `readFile(path)` returns a Buffer, `readFile(path, "utf-8")` returns a string
 - Assuming string length equals byte length — true only for ASCII. UTF-8 characters can be 1–4 bytes
+
+
+---
+
+## Navigation
+
+[< 001 — What Is A Buffer](001-what-is-a-buffer.md) | [003 — Buffer Operations >](003-buffer-operations.md)

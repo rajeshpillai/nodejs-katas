@@ -430,3 +430,10 @@ Node.js cluster module supports rolling restart natively. Blue/green and canary 
 - Not auto-restarting crashed workers — one uncaught exception permanently reduces your worker count
 - Setting the drain timeout too high — a single slow request can block the entire deploy
 - Forgetting to handle SIGTERM in workers — Kubernetes sends SIGTERM before SIGKILL. Workers must shut down gracefully within the termination grace period
+
+
+---
+
+## Navigation
+
+[< 004 — Crash Handling](004-crash-handling.md) | [001 — Profiling >](../phase-13-performance-and-scaling/001-profiling.md)

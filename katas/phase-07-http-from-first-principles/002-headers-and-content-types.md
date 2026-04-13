@@ -259,3 +259,10 @@ The `Content-Length` header is in **bytes**, not characters. For ASCII text, byt
 - Sending JSON with `Content-Type: text/plain` — clients won't auto-parse it
 - Not setting `charset=utf-8` on HTML responses — browsers may guess wrong encoding
 - Sending multiple `Content-Type` headers — only the last one takes effect in most implementations
+
+
+---
+
+## Navigation
+
+[< 001 — Http Protocol](001-http-protocol.md) | [003 — Request Response Lifecycle >](003-request-response-lifecycle.md)

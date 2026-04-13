@@ -467,3 +467,10 @@ console.log(`  app.post('/users', {
 - Not validating response schemas — without response validation, a handler bug can leak `password_hash` or internal IDs
 - Over-validating — checking every possible edge case in manual `if` statements instead of using schema-based validation
 - Ignoring validation performance — for high-throughput APIs, interpreted validation (checking rules one by one) is much slower than compiled validation (ajv). Pre-compile schemas at startup
+
+
+---
+
+## Navigation
+
+[< 003 — Middleware And Hooks](003-middleware-and-hooks.md) | [005 — Plugins And Encapsulation >](005-plugins-and-encapsulation.md)

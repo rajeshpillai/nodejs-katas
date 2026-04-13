@@ -401,3 +401,10 @@ console.log(`\n  Ask yourself: is the team/scaling benefit worth this overhead?`
 - Distributed monolith — microservices that share a database or must be deployed together. All the complexity of microservices with none of the benefits
 - Ignoring the network — function calls are nanoseconds; network calls are milliseconds. A monolith operation that calls 5 modules takes microseconds; a microservice operation that calls 5 services takes 50ms+
 - Not considering the team — microservices solve team scaling problems (independent deployment, ownership boundaries). If you have one team, microservices add complexity without solving a real problem
+
+
+---
+
+## Navigation
+
+[< 003 — Api Gateway Patterns](003-api-gateway-patterns.md) | [005 — Configuration And Secrets >](005-configuration-and-secrets.md)

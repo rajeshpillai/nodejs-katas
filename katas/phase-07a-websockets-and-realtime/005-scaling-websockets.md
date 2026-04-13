@@ -435,3 +435,10 @@ Memory per connection matters at scale. An idle WebSocket with `ws` library uses
 - Not unsubscribing from channels when the last local client leaves a room — leaked subscriptions consume broker resources
 - Assuming message ordering across servers — pub/sub may deliver out of order. Include timestamps for ordering
 - Not handling broker disconnections — if Redis goes down, your pub/sub backbone breaks. Implement reconnection logic
+
+
+---
+
+## Navigation
+
+[< 004 — Realtime State](004-realtime-state.md) | [001 — Routing >](../phase-08-building-web-servers/001-routing.md)

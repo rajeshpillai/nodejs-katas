@@ -139,3 +139,10 @@ Cleaned up
 - Using `__dirname` in ESM modules — it doesn't exist. Use `fileURLToPath(import.meta.url)` with `path.dirname()`
 - Forgetting `{ recursive: true }` in `mkdir` for nested directories — throws `ENOENT` if parent doesn't exist
 - Not using `{ withFileTypes: true }` in `readdir` — requires a separate `stat` call to check if entries are files or directories
+
+
+---
+
+## Navigation
+
+[< 001 — Reading And Writing Files](001-reading-and-writing-files.md) | [003 — Os And System Info >](003-os-and-system-info.md)

@@ -277,3 +277,10 @@ With parameterized queries, all attacks fail:
 - Parameterizing column names or table names — `$1` only works for values, not identifiers. Whitelist identifiers instead
 - Forgetting that `IN ($1)` doesn't work with arrays — use `= ANY($1)` and pass a JavaScript array
 - Using `parseInt()` on user input and putting it directly in SQL — this seems safe but is fragile. Use parameters always
+
+
+---
+
+## Navigation
+
+[< 002 — Connection Pooling](002-connection-pooling.md) | [004 — Transactions >](004-transactions.md)

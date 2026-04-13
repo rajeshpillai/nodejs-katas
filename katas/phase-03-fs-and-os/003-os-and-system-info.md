@@ -124,3 +124,10 @@ for (const [name, addrs] of Object.entries(nets)) {
 - Hardcoding CPU counts or memory sizes instead of reading them from `os`
 - Using `os.tmpdir()` without checking it exists — it always exists, but temp files may be cleaned by the OS
 - Assuming `os.hostname()` returns a fully qualified domain name — it usually returns the short hostname
+
+
+---
+
+## Navigation
+
+[< 002 — Paths And Directories](002-paths-and-directories.md) | [004 — Process And Environment >](004-process-and-environment.md)

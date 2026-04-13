@@ -314,3 +314,10 @@ The `application/x-www-form-urlencoded` content type is for simple form fields o
 - Not validating the boundary exists in the `Content-Type` header — crash on missing boundary
 - Assuming parts arrive in a specific order — the spec doesn't guarantee ordering
 - Not handling the case where `filename` is present but empty — some browsers send `filename=""` for empty file inputs
+
+
+---
+
+## Navigation
+
+[< 005 — Graceful Shutdown](../phase-08-building-web-servers/005-graceful-shutdown.md) | [002 — Streaming Uploads >](002-streaming-uploads.md)

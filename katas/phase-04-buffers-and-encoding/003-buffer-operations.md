@@ -196,3 +196,10 @@ For performance-critical code, views are essential. If you're parsing a 10 MB ne
 - Using `Buffer.concat()` in a loop — each call allocates a new buffer and copies everything. Collect parts in an array, then concat once
 - Forgetting that `buf.write()` returns bytes written, not characters written — important for multi-byte characters
 - Not tracking offsets when building binary messages — off-by-one errors in binary protocols cause cascading parse failures
+
+
+---
+
+## Navigation
+
+[< 002 — Encoding And Decoding](002-encoding-and-decoding.md) | [004 — Typed Arrays And Dataview >](004-typed-arrays-and-dataview.md)
