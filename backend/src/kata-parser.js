@@ -92,7 +92,9 @@ export async function loadAllKatas(katasDir) {
   for (const dir of phaseDirs) {
     const dirPath = join(katasDir, dir);
     const files = await readdir(dirPath);
-    const mdFiles = files.filter((f) => f.endsWith(".md")).sort();
+    const mdFiles = files
+      .filter((f) => f.endsWith(".md") && f.toLowerCase() !== "readme.md")
+      .sort();
     for (const file of mdFiles) {
       const filePath = join(dirPath, file);
       const content = await readFile(filePath, "utf-8");
