@@ -15,27 +15,34 @@ function NeighborLink(props: {
   neighbor: KataNeighbor | null;
 }) {
   const label = props.direction === "prev" ? "← Prev" : "Next →";
-  if (!props.neighbor) {
-    return (
-      <span
-        class="px-2 py-1 text-xs rounded opacity-40 cursor-not-allowed"
-        style={{ color: "var(--text-muted)" }}
-        aria-disabled="true"
-      >
-        {label}
-      </span>
-    );
-  }
-  const n = props.neighbor;
+  // Read `props.neighbor` reactively via <Show>: this component is created once
+  // and reused as the user navigates between katas, so capturing the neighbor in
+  // a local const (or an early return) would freeze the href at the first kata's
+  // value and break Next/Prev after the first click.
   return (
-    <A
-      href={`/katas/${n.phase}/${n.id}`}
-      class="px-2 py-1 text-xs rounded hover:underline focus:outline-none focus:ring-2"
-      style={{ color: "var(--accent)" }}
-      title={`Phase ${n.phase} · ${n.sequence}. ${n.title}`}
+    <Show
+      when={props.neighbor}
+      fallback={
+        <span
+          class="px-2 py-1 text-xs rounded opacity-40 cursor-not-allowed"
+          style={{ color: "var(--text-muted)" }}
+          aria-disabled="true"
+        >
+          {label}
+        </span>
+      }
     >
-      {label}
-    </A>
+      {(n) => (
+        <A
+          href={`/katas/${n().phase}/${n().id}`}
+          class="px-2 py-1 text-xs rounded hover:underline focus:outline-none focus:ring-2"
+          style={{ color: "var(--accent)" }}
+          title={`Phase ${n().phase} · ${n().sequence}. ${n().title}`}
+        >
+          {label}
+        </A>
+      )}
+    </Show>
   );
 }
 
