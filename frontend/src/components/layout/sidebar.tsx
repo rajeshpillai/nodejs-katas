@@ -1,4 +1,4 @@
-import { createResource, createSignal, For, Show } from "solid-js";
+import { createEffect, createResource, createSignal, For, Show } from "solid-js";
 import { A, useParams } from "@solidjs/router";
 import { apiGet, type KataListResponse } from "../../lib/api-client";
 
@@ -10,6 +10,33 @@ export default function Sidebar(props: SidebarProps) {
   const params = useParams();
   const [data] = createResource(() => apiGet<KataListResponse>("/katas"));
   const [expandedPhases, setExpandedPhases] = createSignal<Set<number>>(new Set([0]));
+
+  let asideRef: HTMLElement | undefined;
+
+  // Keep the sidebar in sync with the current kata: whenever the active kata
+  // changes (e.g. via the Next/Prev buttons), auto-expand the phase that
+  // contains it so the highlighted item is actually visible — otherwise
+  // navigating into a collapsed phase leaves the active kata hidden.
+  createEffect(() => {
+    const d = data();
+    const kid = params.kataId;
+    if (!d || !kid) return;
+    const phase = d.phases.find((p) => p.katas.some((k) => k.id === kid));
+    if (!phase) return;
+    setExpandedPhases((prev) =>
+      prev.has(phase.phase) ? prev : new Set(prev).add(phase.phase)
+    );
+  });
+
+  // Once the active link is mounted (after its phase expands), scroll it into
+  // view so it's never stuck off-screen in a long list.
+  createEffect(() => {
+    const kid = params.kataId;
+    expandedPhases(); // re-run after the containing phase expands
+    if (!kid || !asideRef) return;
+    const active = asideRef.querySelector<HTMLElement>(`a[href$="/${kid}"]`);
+    active?.scrollIntoView({ block: "nearest" });
+  });
 
   const togglePhase = (phase: number) => {
     setExpandedPhases((prev) => {
@@ -25,6 +52,7 @@ export default function Sidebar(props: SidebarProps) {
 
   return (
     <aside
+      ref={asideRef}
       class="flex flex-col border-r overflow-y-auto overflow-x-hidden transition-all duration-200 shrink-0"
       style={{
         width: props.collapsed ? "0px" : "280px",
