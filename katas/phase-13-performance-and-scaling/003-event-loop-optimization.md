@@ -56,14 +56,21 @@ console.log("=== Event Loop Optimization ===\n");
 
 console.log("--- Measuring event loop delay ---\n");
 
-async function measureLoopDelay(label, workFn, durationMs = 300) {
-  const histogram = monitorEventLoopDelay({ resolution: 10 });
+async function measureLoopDelay(label, workFn) {
+  // resolution is the sampling interval AND the noise floor: every reading is at
+  // least ~resolution ms, so a coarse resolution (e.g. 10) hides anything smaller.
+  // Use 1ms so an idle loop reads ~1ms and real stalls stand out.
+  const histogram = monitorEventLoopDelay({ resolution: 1 });
   histogram.enable();
 
-  const startTime = Date.now();
+  // Warm-up: give the sampler a few clean turns to arm and record a baseline
+  // BEFORE the work starts. Without this, a synchronous workFn runs before the
+  // sampler's first tick is ever scheduled — so the stall is never measured.
+  await new Promise(r => setTimeout(r, 50));
+
   await workFn();
 
-  // Let a few more ticks happen to collect measurements
+  // Let a few more ticks happen to collect post-work measurements
   await new Promise(r => setTimeout(r, 50));
 
   histogram.disable();
@@ -152,10 +159,12 @@ console.log(`  Dangerous regex (/^(a+)+$/ with 25 a's + !): ${dangerousTime.toFi
 console.log(`  With 30 a's this would take minutes!\n`);
 
 console.log(`  Prevention:`);
-console.log(`    1. Avoid nested quantifiers: (a+)+, (a*)*`);
-console.log(`    2. Use atomic groups or possessive quantifiers`);
-console.log(`    3. Set a regex timeout or use re2 (linear-time regex)`);
+console.log(`    1. Avoid nested/ambiguous quantifiers: (a+)+, (a*)*, (a|a)*`);
+console.log(`    2. Rewrite to remove ambiguity, e.g. /^a+$/ instead of /^(a+)+$/`);
+console.log(`    3. Use re2 (linear-time regex) for untrusted patterns/input`);
 console.log(`    4. Validate input length before regex matching`);
+console.log(`    Note: JS regex has NO atomic groups (?>...) or possessive`);
+console.log(`    quantifiers (a++) — those are PCRE/Java features that throw here.`);
 
 // --- Demo 4: Sync vs async I/O impact ---
 
@@ -235,11 +244,11 @@ for (let i = 0; i < checklist.length; i++) {
 --- Measuring event loop delay ---
 
   Idle (baseline):
-    p50=~0.01ms  p99=~0.1ms  max=~1ms
+    p50=~1.1ms  p99=~1.4ms  max=~2ms     min=~1ms
   Blocking (sync computation):
-    p50=~0.01ms  p99=~50ms  max=~100ms
+    p50=~1.1ms  p99=~2.5ms  max=~230ms   min=~0ms
   Non-blocking (chunked):
-    p50=~0.01ms  p99=~1ms  max=~5ms
+    p50=~1.3ms  p99=~3.8ms  max=~7ms     min=~0.7ms
 
 --- JSON parsing: small vs large ---
 
@@ -249,6 +258,14 @@ for (let i = 0; i < checklist.length; i++) {
     1 parse: ~20ms ← blocks event loop!
   ...
 ```
+
+Read the **`max`** column, not `p50`. The blocking run spends most of its samples
+idle (so its p50 stays ~1ms, same as baseline) but freezes the loop for one
+~230ms stretch — that single stall is the bug, and only `max`/high percentiles
+reveal it. Chunking trades a slightly higher p50 for a `max` that stays in
+single-digit milliseconds: the tail latency every request feels is now bounded.
+(Exact numbers vary by machine; the *shape* — blocking `max` orders of magnitude
+above idle, chunked `max` close to idle — is the point.)
 
 ## Challenge
 

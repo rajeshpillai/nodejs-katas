@@ -67,17 +67,33 @@ readFile(import.meta.filename ?? __filename, () => {
 
 0. synchronous
 
-1. nextTick (between phases)
-2. setTimeout  (timers phase)
-3. setImmediate (check phase)
-
 === Inside I/O callback ===
 
-I/O callback fired (poll phase)
+1. nextTick (between phases)
+3. setImmediate (check phase)      ┓ these three lines race — order varies
+2. setTimeout  (timers phase)      ┃ run to run (see notes below)
+I/O callback fired (poll phase)    ┛
   nextTick (runs before either)
   setImmediate (check phase — runs first!)
   setTimeout  (next tick of timers phase)
 ```
+
+What's guaranteed here and what isn't:
+
+- **Both heading lines are synchronous.** `=== Inside I/O callback ===` is a
+  plain `console.log` that runs *before* `readFile`'s callback is ever scheduled,
+  so it prints during the synchronous pass — right after `0. synchronous`, not
+  next to the I/O output.
+- **`1. nextTick` is always first** of the async lines (microtasks drain before
+  any phase).
+- **Lines `2`, `3`, and `I/O callback fired` race.** At the top level
+  `setTimeout(0)` vs `setImmediate` is undefined (often `3` prints before `2`),
+  and the `readFile` callback may land before *or* after the top-level timer
+  depending on how fast the read completes. Run it a few times — the order of
+  these three shifts.
+- **The indented block is deterministic.** Inside the I/O callback you're in the
+  poll phase, so `nextTick` → `setImmediate` → `setTimeout` is fixed: the check
+  phase always runs before the next timers phase.
 
 ## Challenge
 

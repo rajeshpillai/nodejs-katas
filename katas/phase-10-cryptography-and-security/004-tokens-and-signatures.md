@@ -49,6 +49,17 @@ import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 
 console.log("=== Tokens and Signatures ===\n");
 
+// timingSafeEqual THROWS a RangeError if the two buffers differ in length, so an
+// attacker can crash a naive verifier just by sending a short signature. Always
+// length-check first and return false (not throw) on mismatch. The length of an
+// HMAC signature is not secret, so this leaks nothing useful.
+function safeEqual(a, b) {
+  const bufA = Buffer.isBuffer(a) ? a : Buffer.from(a);
+  const bufB = Buffer.isBuffer(b) ? b : Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
+
 // --- Demo 1: HMAC basics ---
 
 console.log("--- HMAC (Hash-based Message Authentication Code) ---\n");
@@ -119,10 +130,9 @@ function verifyJWT(token, secret) {
     .update(signingInput)
     .digest("base64url");
 
-  const sigValid = timingSafeEqual(
-    Buffer.from(expected),
-    Buffer.from(signatureB64)
-  );
+  // Length-checked compare: a tampered/short signatureB64 returns false here
+  // instead of throwing a RangeError out of timingSafeEqual.
+  const sigValid = safeEqual(expected, signatureB64);
 
   if (!sigValid) return { valid: false, error: "Invalid signature" };
 
@@ -219,11 +229,10 @@ function verifyWebhook(payload, sigHeader, secret) {
   const age = Math.floor(Date.now() / 1000) - timestamp;
   if (age > 300) return { valid: false, error: "Webhook too old" };
 
+  // Guard against a missing/short sigPart — safeEqual returns false rather than
+  // letting timingSafeEqual throw on a length mismatch.
   const expected = signWebhook(payload, secret, timestamp);
-  const valid = timingSafeEqual(
-    Buffer.from(expected),
-    Buffer.from(sigPart)
-  );
+  const valid = sigPart ? safeEqual(expected, sigPart) : false;
 
   return { valid, timestamp, age };
 }
@@ -308,6 +317,7 @@ console.log("    4. If found, the key is valid");
 - Storing JWT secrets in source code — use environment variables or a secrets manager
 - Not checking token expiration (`exp`) — expired tokens should be rejected
 - Using `===` instead of `timingSafeEqual` for signature comparison — timing attacks can reveal the expected signature
+- Calling `timingSafeEqual` on attacker-controlled input without a length check first — it throws `RangeError` when the buffers differ in length, turning a forged short signature into a crash instead of a clean rejection. Always compare lengths and return false before calling it (see `safeEqual`)
 - Storing sensitive data in JWT payload — JWTs are base64-encoded (readable), not encrypted. Anyone can decode the payload
 - Not validating the `alg` header — the "alg: none" attack tricks servers into accepting unsigned tokens
 

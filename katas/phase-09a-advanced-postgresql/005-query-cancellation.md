@@ -27,9 +27,22 @@ SET idle_in_transaction_session_timeout = '30000';  -- Kill idle transactions af
 **3. Cancel from Node.js using `pg`:**
 ```js
 const client = await pool.connect();
-const timeout = setTimeout(() => {
-  // Send cancel signal to PostgreSQL backend
-  client.query('SELECT pg_cancel_backend(pg_backend_pid())');
+
+// Capture this client's backend PID up front. We CANNOT send the cancel
+// over `client` itself — it is busy awaiting the long query, so any query
+// we queue on it just waits behind the one we want to cancel. The cancel
+// must travel over a SEPARATE connection.
+const { rows } = await client.query('SELECT pg_backend_pid() AS pid');
+const backendPid = rows[0].pid;
+
+const timeout = setTimeout(async () => {
+  // Open a fresh connection to deliver the cancel signal.
+  const canceller = await pool.connect();
+  try {
+    await canceller.query('SELECT pg_cancel_backend($1)', [backendPid]);
+  } finally {
+    canceller.release();
+  }
 }, 5000);
 
 try {
@@ -37,10 +50,15 @@ try {
   clearTimeout(timeout);
 } catch (err) {
   if (err.code === '57014') {
-    console.log('Query cancelled due to timeout');
+    console.log('Query cancelled');
   }
+} finally {
+  clearTimeout(timeout);
+  client.release();
 }
 ```
+
+> The `pg` driver also exposes a lower-level out-of-band cancel: `pool.connect()` gives you a client whose underlying connection can issue a PostgreSQL **CancelRequest** on a separate socket. Either way, the rule is the same — **a cancel never travels over the connection running the query it cancels.**
 
 **4. AbortController (modern approach):**
 ```js

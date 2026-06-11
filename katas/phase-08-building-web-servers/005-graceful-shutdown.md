@@ -207,6 +207,8 @@ const server = createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({
         status: shutdown.isShuttingDown ? "shutting_down" : "healthy",
+        // Note: this counts the health request itself (incremented above), so a
+        // lone health check reports 1. Use `activeRequests - 1` for "other work."
         activeRequests,
         dbConnected: db.connected,
       }));
@@ -273,7 +275,7 @@ Server listening on port <port>
 
 --- Normal operation ---
 
-Health: { status: 'healthy', activeRequests: 0, dbConnected: true }
+Health: { status: 'healthy', activeRequests: 1, dbConnected: true }
 
 Starting slow request...
 
@@ -281,7 +283,7 @@ Starting slow request...
 
 [shutdown] Starting graceful shutdown...
 [shutdown] Step 1: Closing servers...
-Request during shutdown: 503 { error: 'Service shutting down' }
+Request during shutdown failed: fetch failed
 
 Slow request completed: { result: 'slow response', active: 1 }
   [server] Stopped accepting connections
@@ -293,6 +295,21 @@ Slow request completed: { result: 'slow response', active: 1 }
   [database] Closed
 [shutdown] Complete (exit code: 0)
 ```
+
+Two details in that output are worth understanding:
+
+- **`activeRequests: 1`, not 0.** The handler increments `activeRequests` *before*
+  the `/health` branch reads it, so a lone health check counts itself. In-flight
+  counters always include the request doing the counting — exclude it (`activeRequests - 1`)
+  if you want "other work in progress."
+- **The during-shutdown request shows `fetch failed`, not `503`.** This single-process
+  demo calls `server.close()` immediately, which stops the server from accepting
+  **new TCP connections** — so a brand-new `fetch()` can't even connect, and the 503
+  branch is never reached. The 503 guard still matters in production: behind a load
+  balancer, clients reuse **already-open keep-alive connections**, and requests can
+  arrive on those after shutdown begins. *Those* hit the handler and get a clean 503.
+  To see the 503 here you would have to defer `server.close()` (drain at the app layer
+  first) or send the request over a pre-established connection.
 
 ## Challenge
 

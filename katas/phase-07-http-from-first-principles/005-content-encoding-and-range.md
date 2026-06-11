@@ -115,22 +115,57 @@ const server = createServer(async (req, res) => {
     const rangeHeader = req.headers.range;
 
     if (rangeHeader) {
-      // Parse Range header: "bytes=start-end"
-      const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
-      if (match) {
-        const start = parseInt(match[1]);
-        const end = match[2] ? parseInt(match[2]) : content.length - 1;
-        const chunkSize = end - start + 1;
+      // Parse "bytes=start-end". Three legal forms:
+      //   bytes=200-999  → explicit start and end
+      //   bytes=200-     → from 200 to the end of the file
+      //   bytes=-500     → the LAST 500 bytes (suffix range)
+      const match = rangeHeader.match(/^bytes=(\d*)-(\d*)$/);
+      const total = content.length;
 
+      // A syntactically valid Range we can't satisfy must get a 416, NOT a
+      // bogus 206 with a wrong/negative Content-Length.
+      const invalidRange = () => {
+        res.writeHead(416, {
+          "Content-Range": `bytes */${total}`,  // tell the client the real size
+          "Content-Type": "text/plain",
+        });
+        res.end("Range Not Satisfiable");
+      };
+
+      if (match) {
+        const [, startStr, endStr] = match;
+        let start, end;
+
+        if (startStr === "" && endStr === "") {
+          return invalidRange();           // "bytes=-" is meaningless
+        } else if (startStr === "") {
+          // Suffix range: last N bytes. Clamp N to the file size.
+          const suffixLength = Math.min(parseInt(endStr), total);
+          start = total - suffixLength;
+          end = total - 1;
+        } else {
+          start = parseInt(startStr);
+          // Open-ended or explicit end; clamp end to the last valid byte.
+          end = endStr === "" ? total - 1 : Math.min(parseInt(endStr), total - 1);
+        }
+
+        // Reject ranges that start past EOF or are inverted.
+        if (start > end || start >= total || start < 0) {
+          return invalidRange();
+        }
+
+        const chunkSize = end - start + 1;
         res.writeHead(206, {
-          "Content-Range": `bytes ${start}-${end}/${content.length}`,
+          "Content-Range": `bytes ${start}-${end}/${total}`,
           "Accept-Ranges": "bytes",
           "Content-Length": chunkSize,
           "Content-Type": "application/octet-stream",
         });
-        res.end(content.slice(start, end + 1));
+        res.end(content.subarray(start, end + 1));
         return;
       }
+
+      // Header present but unparseable → ignore the range, send full 200.
     }
 
     // Full response
@@ -204,7 +239,7 @@ console.log("\nRange bytes=10-19:", range2Res.status);
 console.log("  Content-Range:", range2Res.headers.get("content-range"));
 console.log("  Body:", range2Body.toString());
 
-// Range request: last 16 bytes (suffix range)
+// Open-ended range: from byte 1584 to the end
 const range3Res = await fetch(`${base}/file`, {
   headers: { "Range": "bytes=1584-" },
 });
@@ -212,6 +247,21 @@ const range3Body = Buffer.from(await range3Res.arrayBuffer());
 console.log("\nRange bytes=1584-:", range3Res.status);
 console.log("  Content-Range:", range3Res.headers.get("content-range"));
 console.log("  Body length:", range3Body.length, "bytes");
+
+// Suffix range: the LAST 16 bytes
+const range4Res = await fetch(`${base}/file`, {
+  headers: { "Range": "bytes=-16" },
+});
+console.log("\nRange bytes=-16 (suffix):", range4Res.status);
+console.log("  Content-Range:", range4Res.headers.get("content-range"));
+
+// Unsatisfiable range: starts past EOF → 416, NOT a bogus 206
+const range5Res = await fetch(`${base}/file`, {
+  headers: { "Range": "bytes=2000-3000" },
+});
+await range5Res.arrayBuffer();
+console.log("\nRange bytes=2000-3000 (out of bounds):", range5Res.status, range5Res.statusText);
+console.log("  Content-Range:", range5Res.headers.get("content-range"));
 
 console.log("\n=== Compression Ratios by Content Type ===\n");
 
@@ -271,7 +321,15 @@ Range bytes=10-19: 206
   Content-Range: bytes 10-19/1600
   Body: ABCDEF0123
 
-...
+Range bytes=1584-: 206
+  Content-Range: bytes 1584-1599/1600
+  Body length: 16 bytes
+
+Range bytes=-16 (suffix): 206
+  Content-Range: bytes 1584-1599/1600
+
+Range bytes=2000-3000 (out of bounds): 416 Range Not Satisfiable
+  Content-Range: bytes */1600
 
 === Compression Ratios by Content Type ===
 

@@ -26,7 +26,7 @@ The backpressure chain works like this:
 
 When you use `pipe()` or `pipeline()`, this entire dance happens automatically. When you write data manually, **you** are responsible for checking `write()` return values and waiting for `'drain'`.
 
-The `highWaterMark` (default 16 KB for byte streams, 16 objects for object streams) controls when backpressure kicks in. It's not a hard limit — it's a suggestion. Data can exceed it, but the stream signals to slow down.
+The `highWaterMark` (default 64 KiB for byte streams in current Node — it was 16 KiB before; 16 objects for object streams) controls when backpressure kicks in. It's not a hard limit — it's a suggestion. Data can exceed it, but the stream signals to slow down.
 
 ## Key Insight
 
@@ -312,10 +312,10 @@ The `highWaterMark` is often misunderstood. It's not a maximum buffer size — i
 
 The actual buffer can exceed the high water mark by one chunk — the overshoot is by design. If `highWaterMark` is 16 KB and a chunk is 64 KB, the buffer will hold 64 KB before signaling backpressure.
 
-Default values:
-- Byte streams: 16,384 bytes (16 KB)
+Default values (current Node; defaults were 16 KiB in older versions):
+- Byte streams (generic Readable/Writable): 65,536 bytes (64 KiB)
+- `fs.createReadStream` / `fs.createWriteStream`: 65,536 bytes (64 KiB)
 - Object streams: 16 objects
-- `fs.createReadStream`: 65,536 bytes (64 KB)
 
 ## Common Mistakes
 

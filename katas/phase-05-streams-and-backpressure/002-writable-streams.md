@@ -211,7 +211,7 @@ Event order: open → ready → finish → close
 === Stream Properties ===
 
 writable: true
-writableHighWaterMark: 16384
+writableHighWaterMark: 65536
 writableLength: 0 (buffered bytes)
 writableLength after write: <number>
 writableFinished: true

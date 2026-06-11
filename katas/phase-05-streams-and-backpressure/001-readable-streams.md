@@ -205,7 +205,7 @@ Cleaned up
 
 ## Deep Dive
 
-The `highWaterMark` controls the internal buffer size. For a file stream with `highWaterMark: 16384` (16 KB, the default), Node.js reads up to 16 KB at a time from disk. If the consumer is slow, data accumulates in the internal buffer up to the high water mark, then reading pauses until the consumer drains it.
+The `highWaterMark` controls the internal buffer size. For a file stream the default is `highWaterMark: 65536` (64 KiB) — so `fs.createReadStream()` reads up to 64 KiB at a time from disk. (The default was 16 KiB in older Node versions; it was raised to 64 KiB, so don't hard-code assumptions about it — read `stream.readableHighWaterMark` if you need the real value.) If the consumer is slow, data accumulates in the internal buffer up to the high water mark, then reading pauses until the consumer drains it.
 
 `objectMode: true` changes the stream from byte mode to object mode. In byte mode, chunks are Buffers and `highWaterMark` is in bytes. In object mode, chunks can be any JavaScript value and `highWaterMark` is in number of objects.
 

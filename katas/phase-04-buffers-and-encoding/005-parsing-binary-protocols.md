@@ -194,7 +194,11 @@ console.log("\n=== Error Handling ===\n");
 // Test protocol robustness
 const badInputs = [
   { name: "Empty buffer", data: Buffer.alloc(0) },
-  { name: "Wrong magic", data: Buffer.from("BADMAGIC00000000", "hex") },
+  // 8 bytes so it passes the length check and reaches the magic check.
+  // First 4 bytes (0xdeadbeef) are not the "NODE" magic (0x4e4f4445).
+  // Note: "BADMAGIC" is NOT valid hex — Buffer.from(_, "hex") stops at the
+  // first non-hex char and would yield a 1-byte buffer, hitting "too short".
+  { name: "Wrong magic", data: Buffer.from("deadbeef00000000", "hex") },
   { name: "Truncated", data: Buffer.from("4E4F44450100", "hex") },
 ];
 
@@ -251,7 +255,7 @@ Decoded: { type: 2, priority: 3, encrypted: true, compressed: false, reserved: 0
 === Error Handling ===
 
 Empty buffer: Message too short: 0 bytes (minimum 8)
-Wrong magic: Invalid magic: 0xbadmagic (expected 0x4e4f4445)
+Wrong magic: Invalid magic: 0xdeadbeef (expected 0x4e4f4445)
 Truncated: Message too short: 6 bytes (minimum 8)
 ```
 

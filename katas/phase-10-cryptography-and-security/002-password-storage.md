@@ -277,7 +277,7 @@ console.log(`  // Registration
 
 - Using SHA-256/MD5 for passwords — too fast, GPU-crackable in seconds
 - Not using a salt — identical passwords get identical hashes, enabling rainbow table attacks
-- Using `===` instead of `timingSafeEqual` — timing attacks can reveal the hash character by character
+- Comparing hashes with `===` instead of `timingSafeEqual` — a short-circuiting compare leaks *how many leading bytes matched* via timing, which in theory lets an attacker recover a target value byte-by-byte (the classic HMAC/token attack). For password *verification* the risk is smaller in practice: the scrypt/bcrypt KDF dominates the timing and you're comparing derived hashes, not the password itself. Still use `timingSafeEqual` — it's the correct default — but know that Node's docs explicitly warn it does **not** make the surrounding code timing-safe; it only makes the one comparison constant-time
 - Logging passwords or hashes — never log authentication data, even in error handlers
 - Using a fixed salt for all users — defeats the purpose; each user needs a unique random salt
 
