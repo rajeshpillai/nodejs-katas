@@ -100,3 +100,30 @@ body {
   margin: 1rem 0;
 }
 .markdown-body strong { font-weight: 600; }
+
+/* GFM tables. The wrapper scrolls rather than the page — wide comparison
+   tables are common in the framework and protocol katas. */
+.markdown-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9375rem;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.6;
+}
+.markdown-body th {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+}
+.markdown-body tbody tr:nth-child(even) {
+  background: var(--bg-secondary);
+}
