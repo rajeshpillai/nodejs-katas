@@ -14,24 +14,24 @@ estimated_minutes: 15
 
 JavaScript's typed array system has three layers:
 
-1. **`ArrayBuffer`** — a raw chunk of memory (you can't read/write it directly)
-2. **Typed Arrays** (`Uint8Array`, `Int16Array`, `Float64Array`, etc.) — a view over an ArrayBuffer that interprets the bytes as a specific numeric type
-3. **`DataView`** — a flexible view that lets you read/write any type at any offset, with explicit endianness control
+1. **`ArrayBuffer`**: a raw chunk of memory (you can't read/write it directly)
+2. **Typed Arrays** (`Uint8Array`, `Int16Array`, `Float64Array`, etc.): a view over an ArrayBuffer that interprets the bytes as a specific numeric type
+3. **`DataView`**: a flexible view that lets you read/write any type at any offset, with explicit endianness control
 
 `Buffer` is a Node.js subclass of `Uint8Array`. This means every Buffer has an underlying `ArrayBuffer`, and you can create other typed array views over the same memory.
 
-This matters for binary protocols. When a network packet contains a 32-bit integer at byte offset 4, you need `DataView` to read it correctly — especially when the protocol uses big-endian byte order (network byte order) while your CPU uses little-endian.
+This matters for binary protocols. When a network packet contains a 32-bit integer at byte offset 4, you need `DataView` to read it correctly: especially when the protocol uses big-endian byte order (network byte order) while your CPU uses little-endian.
 
 ## Key Insight
 
-> Endianness is the #1 source of binary protocol bugs. Network protocols (TCP, HTTP/2, DNS) use big-endian (most significant byte first). x86/ARM CPUs use little-endian. `DataView` forces you to be explicit about byte order — use it for any multi-byte reads from external data.
+> Endianness is the #1 source of binary protocol bugs. Network protocols (TCP, HTTP/2, DNS) use big-endian (most significant byte first). x86/ARM CPUs use little-endian. `DataView` forces you to be explicit about byte order. Use it for any multi-byte reads from external data.
 
 ## Experiment
 
 ```js
 console.log("=== ArrayBuffer and Typed Arrays ===\n");
 
-// ArrayBuffer is raw memory — can't read/write directly
+// ArrayBuffer is raw memory: can't read/write directly
 const rawMem = new ArrayBuffer(16);
 console.log("ArrayBuffer:", rawMem);
 console.log("  byteLength:", rawMem.byteLength);
@@ -185,20 +185,20 @@ readInt16BE(6): -1
 
 ## Deep Dive
 
-Why endianness exists: When a CPU stores a 32-bit integer in memory, it must decide which byte goes at the lowest address. Intel/AMD (x86) and ARM (in default mode) put the least significant byte first — **little-endian**. Network protocols historically used **big-endian** (also called "network byte order") because it reads left-to-right like humans read numbers.
+Why endianness exists: When a CPU stores a 32-bit integer in memory, it must decide which byte goes at the lowest address. Intel/AMD (x86) and ARM (in default mode) put the least significant byte first: **little-endian**. Network protocols historically used **big-endian** (also called "network byte order") because it reads left-to-right like humans read numbers.
 
 The typed array system always uses the CPU's native endianness for performance. `DataView` lets you specify endianness explicitly, making it essential for cross-platform binary data.
 
 ## Common Mistakes
 
-- Using typed arrays directly for network data — they use CPU-native endianness, which is usually little-endian. Network protocols expect big-endian. Use `DataView` instead
-- Forgetting alignment requirements — `Uint32Array` views must start at 4-byte aligned offsets. `DataView` has no alignment requirement
-- Assuming Buffer and its ArrayBuffer share the same offset — `buf.byteOffset` may not be 0 (Buffer can reference a slice of a larger ArrayBuffer pool)
-- Mixing signed and unsigned reads — `readInt16BE` vs `readUInt16BE` interpret the same bytes differently
+- Using typed arrays directly for network data. They use CPU-native endianness, which is usually little-endian. Network protocols expect big-endian. Use `DataView` instead
+- Forgetting alignment requirements: `Uint32Array` views must start at 4-byte aligned offsets. `DataView` has no alignment requirement
+- Assuming Buffer and its ArrayBuffer share the same offset: `buf.byteOffset` may not be 0 (Buffer can reference a slice of a larger ArrayBuffer pool)
+- Mixing signed and unsigned reads: `readInt16BE` vs `readUInt16BE` interpret the same bytes differently
 
 
 ---
 
 ## Navigation
 
-[< 003 — Buffer Operations](003-buffer-operations.md) | [005 — Parsing Binary Protocols >](005-parsing-binary-protocols.md)
+[< 003 - Buffer Operations](003-buffer-operations.md) | [005 - Parsing Binary Protocols >](005-parsing-binary-protocols.md)

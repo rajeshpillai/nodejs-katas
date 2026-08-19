@@ -12,11 +12,11 @@ estimated_minutes: 12
 
 ## Concept
 
-A `Buffer` is Node.js's way of working with raw binary data — sequences of bytes outside V8's heap. Before JavaScript had `ArrayBuffer` and `Uint8Array`, Node.js invented `Buffer` to handle file I/O, network packets, and binary protocols.
+A `Buffer` is Node.js's way of working with raw binary data: sequences of bytes outside V8's heap. Before JavaScript had `ArrayBuffer` and `Uint8Array`, Node.js invented `Buffer` to handle file I/O, network packets, and binary protocols.
 
 A Buffer is:
 - A fixed-size chunk of memory allocated **outside** V8's JavaScript heap
-- A subclass of `Uint8Array` — so all typed array methods work
+- A subclass of `Uint8Array`: so all typed array methods work
 - The default return type of `fs.readFile()` when no encoding is specified
 - How Node.js represents binary data everywhere: files, network sockets, crypto operations
 
@@ -24,7 +24,7 @@ Every byte in a Buffer is a number from 0 to 255 (one octet). When you read a fi
 
 ## Key Insight
 
-> Buffers are raw bytes. Strings are decoded text. They are fundamentally different things. When you call `buffer.toString("utf-8")`, you are *interpreting* bytes as text — not converting between equivalent formats. A JPEG file's bytes are valid Buffer content but meaningless as a UTF-8 string.
+> Buffers are raw bytes. Strings are decoded text. They are fundamentally different things. When you call `buffer.toString("utf-8")`, you are *interpreting* bytes as text. Not converting between equivalent formats. A JPEG file's bytes are valid Buffer content but meaningless as a UTF-8 string.
 
 ## Experiment
 
@@ -91,7 +91,7 @@ const a = Buffer.from("abc");
 const b = Buffer.from("abc");
 const c = Buffer.from("abd");
 
-console.log("a === b:", a === b, "(reference equality — always false)");
+console.log("a === b:", a === b, "(reference equality. Always false)");
 console.log("a.equals(b):", a.equals(b), "(content equality)");
 console.log("Buffer.compare(a, c):", Buffer.compare(a, c), "(< 0 means a comes first)");
 ```
@@ -139,36 +139,36 @@ Japanese: 日本語
 
 === Comparing Buffers ===
 
-a === b: false (reference equality — always false)
+a === b: false (reference equality. Always false)
 a.equals(b): true (content equality)
 Buffer.compare(a, c): -1 (< 0 means a comes first)
 ```
 
 ## Challenge
 
-1. Create a Buffer containing the bytes `[0xFF, 0xFE]` — this is the UTF-16 Little Endian BOM (Byte Order Mark). What happens if you `toString("utf-8")` it?
+1. Create a Buffer containing the bytes `[0xFF, 0xFE]`. This is the UTF-16 Little Endian BOM (Byte Order Mark). What happens if you `toString("utf-8")` it?
 2. What is the difference between `Buffer.alloc(1024)` and `Buffer.allocUnsafe(1024)`? When would you use each?
-3. Create a Buffer from the string `"café"` in UTF-8, then decode it as `"latin1"` — what do you get and why?
+3. Create a Buffer from the string `"café"` in UTF-8, then decode it as `"latin1"`: what do you get and why?
 
 ## Deep Dive
 
 Buffer memory allocation:
-- `Buffer.alloc(size)` — allocates and zero-fills. Safe but slower for large buffers
-- `Buffer.allocUnsafe(size)` — allocates without zeroing. Fast but may contain old data from memory. Use when you'll immediately overwrite every byte (e.g., reading from a file)
-- `Buffer.allocUnsafeSlow(size)` — like `allocUnsafe` but doesn't use the internal memory pool
+- `Buffer.alloc(size)`: allocates and zero-fills. Safe but slower for large buffers
+- `Buffer.allocUnsafe(size)`: allocates without zeroing. Fast but may contain old data from memory. Use when you'll immediately overwrite every byte (e.g., reading from a file)
+- `Buffer.allocUnsafeSlow(size)`: like `allocUnsafe` but doesn't use the internal memory pool
 
 Node.js maintains a small pre-allocated memory pool (default 8 KB) for small Buffer allocations. `Buffer.allocUnsafe()` draws from this pool for buffers smaller than half the pool size, making small allocations extremely fast.
 
 ## Common Mistakes
 
-- Using `new Buffer()` — deprecated and potentially unsafe. Always use `Buffer.from()`, `Buffer.alloc()`, or `Buffer.allocUnsafe()`
-- Comparing Buffers with `===` — this checks reference equality, not content. Use `buf.equals()` or `Buffer.compare()`
-- Confusing string length with byte length — `"🚀".length` is 2 (UTF-16 code units), but `Buffer.from("🚀").length` is 4 (UTF-8 bytes)
-- Using `allocUnsafe` for security-sensitive data — old memory could contain passwords or keys. Always use `alloc` for crypto buffers
+- Using `new Buffer()`: deprecated and potentially unsafe. Always use `Buffer.from()`, `Buffer.alloc()`, or `Buffer.allocUnsafe()`
+- Comparing Buffers with `===`. This checks reference equality, not content. Use `buf.equals()` or `Buffer.compare()`
+- Confusing string length with byte length: `"🚀".length` is 2 (UTF-16 code units), but `Buffer.from("🚀").length` is 4 (UTF-8 bytes)
+- Using `allocUnsafe` for security-sensitive data: old memory could contain passwords or keys. Always use `alloc` for crypto buffers
 
 
 ---
 
 ## Navigation
 
-[< 005 — Process Lifecycle](../phase-03-fs-and-os/005-process-lifecycle.md) | [002 — Encoding And Decoding >](002-encoding-and-decoding.md)
+[< 005 - Process Lifecycle](../phase-03-fs-and-os/005-process-lifecycle.md) | [002 - Encoding And Decoding >](002-encoding-and-decoding.md)

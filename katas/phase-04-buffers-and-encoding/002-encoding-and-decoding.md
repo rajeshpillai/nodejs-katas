@@ -18,19 +18,19 @@ Node.js supports these encodings:
 
 | Encoding | Description | Use Case |
 |----------|-------------|----------|
-| `utf-8` | Variable-width Unicode (1–4 bytes per character) | Default for text files, JSON, HTML |
-| `ascii` | 7-bit ASCII (0–127 only) | Legacy protocols |
-| `latin1` | 8-bit single-byte (0–255) | Binary-to-string conversion, legacy |
+| `utf-8` | Variable-width Unicode (1-4 bytes per character) | Default for text files, JSON, HTML |
+| `ascii` | 7-bit ASCII (0-127 only) | Legacy protocols |
+| `latin1` | 8-bit single-byte (0-255) | Binary-to-string conversion, legacy |
 | `base64` | 6-bit encoding into printable ASCII | Embedding binary in JSON, email, data URIs |
 | `base64url` | URL-safe base64 (`-` and `_` instead of `+` and `/`) | JWTs, URLs |
 | `hex` | Each byte as two hex characters | Hashes, debugging, binary inspection |
 | `utf16le` | 2 or 4 bytes per character, little-endian | Windows APIs, some file formats |
 
-The critical concept: **encoding is not encryption**. Base64 doesn't protect data — it just represents binary bytes using printable characters so they can travel through text-only channels (JSON, URLs, email).
+The critical concept: **encoding is not encryption**. Base64 doesn't protect data. It just represents binary bytes using printable characters so they can travel through text-only channels (JSON, URLs, email).
 
 ## Key Insight
 
-> Every string in JavaScript is internally UTF-16. Every file on disk is just bytes. Encoding is the contract that says "these bytes mean this text." Get the encoding wrong and you get garbage — not an error. This is why `Content-Type: text/html; charset=utf-8` matters.
+> Every string in JavaScript is internally UTF-16. Every file on disk is just bytes. Encoding is the contract that says "these bytes mean this text." Get the encoding wrong and you get garbage. Not an error. This is why `Content-Type: text/html; charset=utf-8` matters.
 
 ## Experiment
 
@@ -169,26 +169,26 @@ Decoded back:
 
 ## Challenge
 
-1. Encode the string `"secret:password"` as base64 — this is how HTTP Basic Authentication works. What header value would you send?
+1. Encode the string `"secret:password"` as base64. This is how HTTP Basic Authentication works. What header value would you send?
 2. Take a hex hash like `"a3f2b8c1"` and convert it to base64. Why might you want to do this? (Hint: shorter representation)
 3. Read a file as a Buffer, convert to base64, then convert back and verify the bytes match using `Buffer.compare()`
 
 ## Deep Dive
 
-Why base64 exists: Binary data (bytes 0–255) can include values that break text protocols. A null byte (0x00) terminates C strings. Control characters corrupt terminals. Base64 re-encodes binary using only 64 "safe" printable characters (`A-Z`, `a-z`, `0-9`, `+`, `/`), at the cost of ~33% size increase.
+Why base64 exists: Binary data (bytes 0-255) can include values that break text protocols. A null byte (0x00) terminates C strings. Control characters corrupt terminals. Base64 re-encodes binary using only 64 "safe" printable characters (`A-Z`, `a-z`, `0-9`, `+`, `/`), at the cost of ~33% size increase.
 
-Base64 encoding expands data because it uses 6 bits per character (64 = 2^6) while a byte has 8 bits. Three bytes (24 bits) become four base64 characters (24 bits). So the ratio is 4/3 — every 3 bytes become 4 characters.
+Base64 encoding expands data because it uses 6 bits per character (64 = 2^6) while a byte has 8 bits. Three bytes (24 bits) become four base64 characters (24 bits). So the ratio is 4/3: every 3 bytes become 4 characters.
 
 ## Common Mistakes
 
-- Treating base64 as encryption — it's trivially reversible, not a security measure
+- Treating base64 as encryption. It's trivially reversible, not a security measure
 - Double-encoding: `Buffer.from(Buffer.from("hello").toString("base64"))` creates a Buffer of the base64 *string*, not the original data. You need `Buffer.from(str, "base64")` to decode
-- Ignoring encoding when reading files — `readFile(path)` returns a Buffer, `readFile(path, "utf-8")` returns a string
-- Assuming string length equals byte length — true only for ASCII. UTF-8 characters can be 1–4 bytes
+- Ignoring encoding when reading files: `readFile(path)` returns a Buffer, `readFile(path, "utf-8")` returns a string
+- Assuming string length equals byte length: true only for ASCII. UTF-8 characters can be 1-4 bytes
 
 
 ---
 
 ## Navigation
 
-[< 001 — What Is A Buffer](001-what-is-a-buffer.md) | [003 — Buffer Operations >](003-buffer-operations.md)
+[< 001 - What Is A Buffer](001-what-is-a-buffer.md) | [003 - Buffer Operations >](003-buffer-operations.md)

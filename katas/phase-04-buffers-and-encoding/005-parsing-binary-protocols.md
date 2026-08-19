@@ -12,21 +12,21 @@ estimated_minutes: 15
 
 ## Concept
 
-Binary protocols encode structured data as a sequence of bytes with fixed layouts. Unlike JSON (text-based, self-describing), binary protocols are compact and fast to parse — but you must know the exact format to read them.
+Binary protocols encode structured data as a sequence of bytes with fixed layouts. Unlike JSON (text-based, self-describing), binary protocols are compact and fast to parse: but you must know the exact format to read them.
 
 Common patterns in binary protocols:
 
-- **Magic bytes** — fixed bytes at the start to identify the format (PNG starts with `89 50 4E 47`)
-- **Fixed-width fields** — a 4-byte integer, a 2-byte port number
-- **Length-prefixed data** — a length field followed by that many bytes of payload
-- **Null-terminated strings** — bytes until a `0x00` is found
-- **Flags / bitfields** — individual bits packed into a byte
+- **Magic bytes**: fixed bytes at the start to identify the format (PNG starts with `89 50 4E 47`)
+- **Fixed-width fields**: a 4-byte integer, a 2-byte port number
+- **Length-prefixed data**: a length field followed by that many bytes of payload
+- **Null-terminated strings**: bytes until a `0x00` is found
+- **Flags / bitfields**: individual bits packed into a byte
 
 Real-world binary protocols you'll encounter: TCP/IP headers, DNS packets, WebSocket frames, PNG/JPEG headers, Protocol Buffers (wire format), MessagePack.
 
 ## Key Insight
 
-> Every binary protocol is just a contract: "byte 0 means X, bytes 1–2 mean Y (big-endian), bytes 3–N are the payload where N is read from bytes 1–2." Parsing is just walking through the buffer with an offset, reading the right type at each position. Get the offset wrong by even one byte, and everything after it is garbage.
+> Every binary protocol is just a contract: "byte 0 means X, bytes 1-2 mean Y (big-endian), bytes 3–N are the payload where N is read from bytes 1-2." Parsing is just walking through the buffer with an offset, reading the right type at each position. Get the offset wrong by even one byte, and everything after it is garbage.
 
 ## Experiment
 
@@ -196,7 +196,7 @@ const badInputs = [
   { name: "Empty buffer", data: Buffer.alloc(0) },
   // 8 bytes so it passes the length check and reaches the magic check.
   // First 4 bytes (0xdeadbeef) are not the "NODE" magic (0x4e4f4445).
-  // Note: "BADMAGIC" is NOT valid hex — Buffer.from(_, "hex") stops at the
+  // Note: "BADMAGIC" is NOT valid hex: Buffer.from(_, "hex") stops at the
   // first non-hex char and would yield a 1-byte buffer, hitting "too short".
   { name: "Wrong magic", data: Buffer.from("deadbeef00000000", "hex") },
   { name: "Truncated", data: Buffer.from("4E4F44450100", "hex") },
@@ -263,7 +263,7 @@ Truncated: Message too short: 6 bytes (minimum 8)
 
 1. Extend the protocol with a CRC-32 checksum: compute a 4-byte checksum of the payload and append it. Verify on decode. (Use Node.js `zlib.crc32` or implement a simple checksum)
 2. Add a null-terminated string field to the header (e.g., a sender name). The parser must scan for `0x00` to find the end
-3. Parse a real protocol: decode a simplified PNG file header — read the 8-byte magic, then parse the first IHDR chunk (4-byte length, 4-byte type, width, height, bit depth, color type)
+3. Parse a real protocol: decode a simplified PNG file header: read the 8-byte magic, then parse the first IHDR chunk (4-byte length, 4-byte type, width, height, bit depth, color type)
 
 ## Deep Dive
 
@@ -276,15 +276,15 @@ Length-prefix is almost always better for binary protocols. Delimiter-based is f
 
 ## Common Mistakes
 
-- Not validating magic bytes — leads to silently parsing garbage data as valid messages
-- Forgetting to check buffer length before reading — causes RangeError or reads past the end
-- Using wrong endianness — the most common binary protocol bug. Always document and verify byte order
-- Building strings with `buf.toString()` on the entire buffer instead of the payload slice — includes header bytes in the text
-- Not handling partial messages in streams — TCP delivers bytes, not messages. A single `data` event may contain half a message or three and a half messages
+- Not validating magic bytes: leads to silently parsing garbage data as valid messages
+- Forgetting to check buffer length before reading: causes RangeError or reads past the end
+- Using wrong endianness: the most common binary protocol bug. Always document and verify byte order
+- Building strings with `buf.toString()` on the entire buffer instead of the payload slice: includes header bytes in the text
+- Not handling partial messages in streams: TCP delivers bytes, not messages. A single `data` event may contain half a message or three and a half messages
 
 
 ---
 
 ## Navigation
 
-[< 004 — Typed Arrays And Dataview](004-typed-arrays-and-dataview.md) | [001 — Readable Streams >](../phase-05-streams-and-backpressure/001-readable-streams.md)
+[< 004 - Typed Arrays And Dataview](004-typed-arrays-and-dataview.md) | [001 - Readable Streams >](../phase-05-streams-and-backpressure/001-readable-streams.md)

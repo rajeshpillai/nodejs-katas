@@ -1,4 +1,4 @@
-# Phase 4 — Buffers, Binary Data & Encoding
+# Phase 4: Buffers, Binary Data & Encoding
 
 Work with raw binary data in Node.js. Understand what Buffers are, how text encoding and decoding works, common Buffer operations, Typed Arrays and DataView, and how to parse binary protocols.
 
@@ -18,4 +18,4 @@ Work with raw binary data in Node.js. Understand what Buffers are, how text enco
 
 ## Navigation
 
-[< Phase 3 — File System & OS Interaction](../phase-03-fs-and-os/README.md) | [Phase 5 — Streams & Backpressure >](../phase-05-streams-and-backpressure/README.md)
+[< Phase 3: File System & OS Interaction](../phase-03-fs-and-os/README.md) | [Phase 5: Streams & Backpressure >](../phase-05-streams-and-backpressure/README.md)
