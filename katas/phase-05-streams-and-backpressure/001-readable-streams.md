@@ -12,23 +12,23 @@ estimated_minutes: 15
 
 ## Concept
 
-A Readable stream is a source of data that produces chunks over time. Instead of loading an entire file or response into memory at once, a Readable delivers data piece by piece — letting you process gigabytes of data with kilobytes of memory.
+A Readable stream is a source of data that produces chunks over time. Instead of loading an entire file or response into memory at once, a Readable delivers data piece by piece: letting you process gigabytes of data with kilobytes of memory.
 
 Readable streams have two modes:
 
-1. **Flowing mode** — data is pushed to you as fast as possible via `'data'` events
-2. **Paused mode** (default) — you pull data by calling `stream.read()`
+1. **Flowing mode**. Data is pushed to you as fast as possible via `'data'` events
+2. **Paused mode** (default). You pull data by calling `stream.read()`
 
 In practice, you rarely use either mode directly. Modern Node.js provides two better approaches:
 
-- **`for await...of`** — async iteration over chunks (cleanest API)
-- **`stream.pipe(dest)`** — connect a readable to a writable with automatic backpressure
+- **`for await...of`**: async iteration over chunks (cleanest API)
+- **`stream.pipe(dest)`**: connect a readable to a writable with automatic backpressure
 
 Every `fs.createReadStream()`, HTTP request body, `process.stdin`, TCP socket, and child process stdout is a Readable stream.
 
 ## Key Insight
 
-> Streams exist because data often doesn't fit in memory — or shouldn't. A 10 GB log file, a continuous network feed, an infinite sensor stream. Readable streams let you process data as it arrives, one chunk at a time, using constant memory regardless of total data size.
+> Streams exist because data often doesn't fit in memory: or shouldn't. A 10 GB log file, a continuous network feed, an infinite sensor stream. Readable streams let you process data as it arrives, one chunk at a time, using constant memory regardless of total data size.
 
 ## Experiment
 
@@ -200,25 +200,25 @@ Cleaned up
 ## Challenge
 
 1. Create a Readable stream that emits the Fibonacci sequence indefinitely. Consume the first 20 numbers using `for await...of` with a manual break
-2. Read a file stream with encoding set to `"utf-8"` — how does the chunk type change from Buffer to string? What happens with multi-byte characters split across chunks?
-3. Build a Readable that reads from an API with pagination — each `_read()` call fetches the next page and pushes the results
+2. Read a file stream with encoding set to `"utf-8"`: how does the chunk type change from Buffer to string? What happens with multi-byte characters split across chunks?
+3. Build a Readable that reads from an API with pagination. Each `_read()` call fetches the next page and pushes the results
 
 ## Deep Dive
 
-The `highWaterMark` controls the internal buffer size. For a file stream the default is `highWaterMark: 65536` (64 KiB) — so `fs.createReadStream()` reads up to 64 KiB at a time from disk. (The default was 16 KiB in older Node versions; it was raised to 64 KiB, so don't hard-code assumptions about it — read `stream.readableHighWaterMark` if you need the real value.) If the consumer is slow, data accumulates in the internal buffer up to the high water mark, then reading pauses until the consumer drains it.
+The `highWaterMark` controls the internal buffer size. For a file stream the default is `highWaterMark: 65536` (64 KiB). So `fs.createReadStream()` reads up to 64 KiB at a time from disk. (The default was 16 KiB in older Node versions; it was raised to 64 KiB, so don't hard-code assumptions about it: read `stream.readableHighWaterMark` if you need the real value.) If the consumer is slow, data accumulates in the internal buffer up to the high water mark, then reading pauses until the consumer drains it.
 
 `objectMode: true` changes the stream from byte mode to object mode. In byte mode, chunks are Buffers and `highWaterMark` is in bytes. In object mode, chunks can be any JavaScript value and `highWaterMark` is in number of objects.
 
 ## Common Mistakes
 
-- Listening to `'data'` without handling backpressure — in flowing mode, data arrives as fast as the source can produce it, potentially overwhelming the consumer
-- Not handling the `'error'` event — unhandled stream errors crash the process. Always add an error handler
-- Calling `stream.read()` in a loop without checking for `null` — returns `null` when no data is available
-- Forgetting `this.push(null)` in a custom Readable — the stream never ends, `for await...of` hangs forever
+- Listening to `'data'` without handling backpressure: in flowing mode, data arrives as fast as the source can produce it, potentially overwhelming the consumer
+- Not handling the `'error'` event: unhandled stream errors crash the process. Always add an error handler
+- Calling `stream.read()` in a loop without checking for `null`: returns `null` when no data is available
+- Forgetting `this.push(null)` in a custom Readable. The stream never ends, `for await...of` hangs forever
 
 
 ---
 
 ## Navigation
 
-[< 005 — Parsing Binary Protocols](../phase-04-buffers-and-encoding/005-parsing-binary-protocols.md) | [002 — Writable Streams >](002-writable-streams.md)
+[< 005 - Parsing Binary Protocols](../phase-04-buffers-and-encoding/005-parsing-binary-protocols.md) | [002 - Writable Streams >](002-writable-streams.md)

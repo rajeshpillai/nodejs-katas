@@ -1,6 +1,6 @@
-# Phase 5 — Streams & Backpressure
+# Phase 5. Streams & Backpressure
 
-Master Node.js streams — the core abstraction for handling data flow efficiently. Learn Readable, Writable, and Transform streams, piping with pipeline, and the critical concept of backpressure.
+Master Node.js streams: the core abstraction for handling data flow efficiently. Learn Readable, Writable, and Transform streams, piping with pipeline, and the critical concept of backpressure.
 
 **Mental Model Level:** 5. Streams & Backpressure
 
@@ -18,4 +18,4 @@ Master Node.js streams — the core abstraction for handling data flow efficient
 
 ## Navigation
 
-[< Phase 4 — Buffers, Binary Data & Encoding](../phase-04-buffers-and-encoding/README.md) | [Phase 6 — Networking Fundamentals >](../phase-06-networking-fundamentals/README.md)
+[< Phase 4: Buffers, Binary Data & Encoding](../phase-04-buffers-and-encoding/README.md) | [Phase 6: Networking Fundamentals >](../phase-06-networking-fundamentals/README.md)

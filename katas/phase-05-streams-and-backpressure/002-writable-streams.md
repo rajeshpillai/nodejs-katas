@@ -12,19 +12,19 @@ estimated_minutes: 15
 
 ## Concept
 
-A Writable stream is a destination for data — a file, a network socket, an HTTP response, `process.stdout`. You push chunks into it, and it writes them somewhere.
+A Writable stream is a destination for data: a file, a network socket, an HTTP response, `process.stdout`. You push chunks into it, and it writes them somewhere.
 
 The critical method is `writable.write(chunk)`. It returns:
-- **`true`** — the internal buffer is below the high water mark, keep writing
-- **`false`** — the buffer is full, **stop writing** and wait for the `'drain'` event
+- **`true`**: the internal buffer is below the high water mark, keep writing
+- **`false`**: the buffer is full, **stop writing** and wait for the `'drain'` event
 
-This return value is the heart of backpressure. If you ignore it and keep calling `write()`, the internal buffer grows unbounded — you'll consume all available memory. Respecting `write()` returning `false` is what makes streams memory-safe.
+This return value is the heart of backpressure. If you ignore it and keep calling `write()`, the internal buffer grows unbounded: you'll consume all available memory. Respecting `write()` returning `false` is what makes streams memory-safe.
 
 Every `fs.createWriteStream()`, HTTP response, `process.stdout`, TCP socket, and child process stdin is a Writable stream.
 
 ## Key Insight
 
-> The `write()` method returning `false` is not an error — it's a signal. It says "I'm overwhelmed, stop sending data until I say I'm ready." This is backpressure, and respecting it is the difference between a program that handles any data size and one that crashes on large inputs.
+> The `write()` method returning `false` is not an error. It's a signal. It says "I'm overwhelmed, stop sending data until I say I'm ready." This is backpressure, and respecting it is the difference between a program that handles any data size and one that crashes on large inputs.
 
 ## Experiment
 
@@ -88,7 +88,7 @@ async function writeWithBackpressure(stream, data) {
   for (const chunk of data) {
     const ok = stream.write(chunk);
     if (!ok) {
-      // Buffer full — wait for drain before continuing
+      // Buffer full: wait for drain before continuing
       await new Promise(resolve => stream.once("drain", resolve));
     }
   }
@@ -221,29 +221,29 @@ Cleaned up
 
 ## Challenge
 
-1. Write a Writable stream that counts words and lines in the incoming data — report totals in the `_final()` callback
+1. Write a Writable stream that counts words and lines in the incoming data: report totals in the `_final()` callback
 2. Implement a rate-limited writable that writes at most N bytes per second, using `setTimeout` in `_write()` to delay the callback
-3. Write 1 GB of data to a file using proper backpressure — verify memory usage stays constant using `process.memoryUsage()`
+3. Write 1 GB of data to a file using proper backpressure: verify memory usage stays constant using `process.memoryUsage()`
 
 ## Deep Dive
 
 The `_write(chunk, encoding, callback)` method in custom Writables:
-- `chunk` — the data to write (Buffer in byte mode, any value in object mode)
-- `encoding` — the encoding if chunk was a string (usually `'utf-8'` or `'buffer'`)
-- `callback(err?)` — **must be called** when done processing. Call with an Error to signal failure. If you never call the callback, the stream stalls forever
+- `chunk`: the data to write (Buffer in byte mode, any value in object mode)
+- `encoding`: the encoding if chunk was a string (usually `'utf-8'` or `'buffer'`)
+- `callback(err?)`: **must be called** when done processing. Call with an Error to signal failure. If you never call the callback, the stream stalls forever
 
-There's also `_writev(chunks, callback)` for batch writes — called when multiple writes are queued. Each item in `chunks` is `{ chunk, encoding }`. This is useful for database batch inserts or network write coalescing.
+There's also `_writev(chunks, callback)` for batch writes: called when multiple writes are queued. Each item in `chunks` is `{ chunk, encoding }`. This is useful for database batch inserts or network write coalescing.
 
 ## Common Mistakes
 
-- Ignoring the return value of `write()` — leads to unbounded memory growth with large data
-- Calling `write()` after `end()` — throws an error, the stream is closed
-- Not calling the callback in `_write()` — the stream hangs, no more data is accepted
-- Using `on('drain')` instead of `once('drain')` — the drain handler stays registered forever, creating a memory leak with many drain cycles
+- Ignoring the return value of `write()`: leads to unbounded memory growth with large data
+- Calling `write()` after `end()`: throws an error, the stream is closed
+- Not calling the callback in `_write()`. The stream hangs, no more data is accepted
+- Using `on('drain')` instead of `once('drain')`: the drain handler stays registered forever, creating a memory leak with many drain cycles
 
 
 ---
 
 ## Navigation
 
-[< 001 — Readable Streams](001-readable-streams.md) | [003 — Transform Streams >](003-transform-streams.md)
+[< 001 - Readable Streams](001-readable-streams.md) | [003 - Transform Streams >](003-transform-streams.md)

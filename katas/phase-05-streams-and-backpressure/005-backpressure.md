@@ -18,15 +18,15 @@ The backpressure chain works like this:
 
 1. A Readable produces data faster than the Writable can consume it
 2. The Writable's internal buffer fills up past its `highWaterMark`
-3. `writable.write()` returns `false` — "stop sending"
+3. `writable.write()` returns `false`: "stop sending"
 4. The Readable pauses (stops reading from its source)
 5. The Writable drains its buffer (writes to disk/network)
-6. The Writable emits `'drain'` — "ready for more"
+6. The Writable emits `'drain'`: "ready for more"
 7. The Readable resumes
 
 When you use `pipe()` or `pipeline()`, this entire dance happens automatically. When you write data manually, **you** are responsible for checking `write()` return values and waiting for `'drain'`.
 
-The `highWaterMark` (default 64 KiB for byte streams in current Node — it was 16 KiB before; 16 objects for object streams) controls when backpressure kicks in. It's not a hard limit — it's a suggestion. Data can exceed it, but the stream signals to slow down.
+The `highWaterMark` (default 64 KiB for byte streams in current Node. It was 16 KiB before; 16 objects for object streams) controls when backpressure kicks in. It's not a hard limit. It's a suggestion. Data can exceed it, but the stream signals to slow down.
 
 ## Key Insight
 
@@ -93,7 +93,7 @@ console.log("  (drain > 0 means backpressure was applied)");
 
 console.log("\n=== Manual Backpressure ===\n");
 
-// Without pipe() — you must handle backpressure yourself
+// Without pipe(). You must handle backpressure yourself
 async function writeWithBackpressure(writable, items) {
   let backpressureCount = 0;
 
@@ -125,7 +125,7 @@ console.log("Backpressure pauses:", bpCount);
 
 console.log("\n=== What Happens WITHOUT Backpressure ===\n");
 
-// Ignoring write() return value — buffer grows unbounded
+// Ignoring write() return value: buffer grows unbounded
 class MemoryTracker extends Writable {
   constructor() {
     super({ highWaterMark: 16 });  // 16 byte buffer
@@ -301,16 +301,16 @@ Object mode:
 ## Challenge
 
 1. Build a pipeline that reads a large file and writes it to a slow destination (simulate with `setTimeout` in `_write`). Log memory usage (`process.memoryUsage().rss`) every 100ms to prove memory stays bounded
-2. Implement a "throttled" transform that limits throughput to N bytes per second using backpressure — delay the `callback()` in `_transform` based on how many bytes have been processed
+2. Implement a "throttled" transform that limits throughput to N bytes per second using backpressure: delay the `callback()` in `_transform` based on how many bytes have been processed
 3. What happens when you have a Transform with a very small `highWaterMark` between a fast producer and a fast consumer? How does it affect throughput?
 
 ## Deep Dive
 
-The `highWaterMark` is often misunderstood. It's not a maximum buffer size — it's a threshold. When the buffer exceeds the high water mark:
+The `highWaterMark` is often misunderstood. It's not a maximum buffer size. It's a threshold. When the buffer exceeds the high water mark:
 - For Readables: `_read()` stops being called until the buffer drains
 - For Writables: `write()` returns `false` until the buffer drains below the mark
 
-The actual buffer can exceed the high water mark by one chunk — the overshoot is by design. If `highWaterMark` is 16 KB and a chunk is 64 KB, the buffer will hold 64 KB before signaling backpressure.
+The actual buffer can exceed the high water mark by one chunk: the overshoot is by design. If `highWaterMark` is 16 KB and a chunk is 64 KB, the buffer will hold 64 KB before signaling backpressure.
 
 Default values (current Node; defaults were 16 KiB in older versions):
 - Byte streams (generic Readable/Writable): 65,536 bytes (64 KiB)
@@ -319,15 +319,15 @@ Default values (current Node; defaults were 16 KiB in older versions):
 
 ## Common Mistakes
 
-- Setting `highWaterMark` too small — causes excessive pausing and resuming, reducing throughput
-- Setting `highWaterMark` too large — reduces the responsiveness of backpressure, allowing more memory usage
-- Ignoring backpressure in manual write loops — the most common stream bug. Always check `write()` return value
-- Not understanding that `pipe()` handles backpressure automatically — no need to manually pause/resume when using pipe/pipeline
-- Using `stream.resume()` without a `'data'` handler — data is silently discarded
+- Setting `highWaterMark` too small: causes excessive pausing and resuming, reducing throughput
+- Setting `highWaterMark` too large: reduces the responsiveness of backpressure, allowing more memory usage
+- Ignoring backpressure in manual write loops: the most common stream bug. Always check `write()` return value
+- Not understanding that `pipe()` handles backpressure automatically. No need to manually pause/resume when using pipe/pipeline
+- Using `stream.resume()` without a `'data'` handler. Data is silently discarded
 
 
 ---
 
 ## Navigation
 
-[< 004 — Piping And Pipeline](004-piping-and-pipeline.md) | [001 — Tcp Basics >](../phase-06-networking-fundamentals/001-tcp-basics.md)
+[< 004 - Piping And Pipeline](004-piping-and-pipeline.md) | [001 - Tcp Basics >](../phase-06-networking-fundamentals/001-tcp-basics.md)

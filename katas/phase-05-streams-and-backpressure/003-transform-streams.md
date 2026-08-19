@@ -12,12 +12,12 @@ estimated_minutes: 15
 
 ## Concept
 
-A Transform stream is both Readable and Writable — data goes in one side, gets transformed, and comes out the other. It's a data processing pipeline stage.
+A Transform stream is both Readable and Writable. Data goes in one side, gets transformed, and comes out the other. It's a data processing pipeline stage.
 
 Common built-in transforms:
-- `zlib.createGzip()` / `zlib.createGunzip()` — compression/decompression
-- `crypto.createCipheriv()` / `crypto.createDecipheriv()` — encryption/decryption
-- `stream.PassThrough` — passes data through unchanged (useful for tapping/monitoring)
+- `zlib.createGzip()` / `zlib.createGunzip()`: compression/decompression
+- `crypto.createCipheriv()` / `crypto.createDecipheriv()`: encryption/decryption
+- `stream.PassThrough`: passes data through unchanged (useful for tapping/monitoring)
 
 You build custom transforms by implementing `_transform(chunk, encoding, callback)`. Call `this.push(outputChunk)` to emit transformed data, then call `callback()` to signal you're ready for the next chunk. You can push zero, one, or many output chunks per input chunk.
 
@@ -58,7 +58,7 @@ console.log("Uppercased:", chunks.join(""));
 
 console.log("\n=== Transform with State ===\n");
 
-// Line counter transform — adds line numbers
+// Line counter transform: adds line numbers
 class LineNumberer extends Transform {
   constructor() {
     super();
@@ -161,7 +161,7 @@ records.forEach(r => console.log(" ", r));
 
 console.log("\n=== Chaining Transforms ===\n");
 
-// Filter transform — only passes through items matching a predicate
+// Filter transform. Only passes through items matching a predicate
 class FilterTransform extends Transform {
   constructor(predicate) {
     super({ objectMode: true });
@@ -276,8 +276,8 @@ Bytes monitored: 18
 
 ## Challenge
 
-1. Build a JSON lines (NDJSON) parser transform — each line of input is a JSON object, emit the parsed objects in object mode
-2. Create a transform that implements a sliding window average — for each incoming number, emit the average of the last N numbers
+1. Build a JSON lines (NDJSON) parser transform. Each line of input is a JSON object, emit the parsed objects in object mode
+2. Create a transform that implements a sliding window average: for each incoming number, emit the average of the last N numbers
 3. Write a compression pipeline: read a file → gzip transform → write compressed file. Then read compressed → gunzip → verify contents match
 
 ## Deep Dive
@@ -291,14 +291,14 @@ If your transform doesn't implement `_flush`, any buffered state is silently los
 
 ## Common Mistakes
 
-- Forgetting `_flush()` — data buffered in the transform is lost when the source ends
-- Not calling `callback()` in `_transform` — the stream stalls, no more data is processed
-- Mixing object mode and byte mode in a pipeline — a byte-mode transform receiving objects will call `.toString()` on them, producing `"[object Object]"`
-- Pushing in the callback instead of before it — `callback()` signals "ready for next chunk." Push first, then call callback
+- Forgetting `_flush()`. Data buffered in the transform is lost when the source ends
+- Not calling `callback()` in `_transform`. The stream stalls, no more data is processed
+- Mixing object mode and byte mode in a pipeline: a byte-mode transform receiving objects will call `.toString()` on them, producing `"[object Object]"`
+- Pushing in the callback instead of before it: `callback()` signals "ready for next chunk." Push first, then call callback
 
 
 ---
 
 ## Navigation
 
-[< 002 — Writable Streams](002-writable-streams.md) | [004 — Piping And Pipeline >](004-piping-and-pipeline.md)
+[< 002 - Writable Streams](002-writable-streams.md) | [004 - Piping And Pipeline >](004-piping-and-pipeline.md)

@@ -14,23 +14,23 @@ estimated_minutes: 15
 
 `pipe()` and `pipeline()` connect streams together, creating data processing chains. Data flows from source through transforms to destination, with backpressure handled automatically.
 
-**`source.pipe(dest)`** — the original API:
+**`source.pipe(dest)`**: the original API:
 - Connects source's output to dest's input
 - Handles backpressure (pauses source when dest is overwhelmed)
 - Returns `dest` (enabling chaining: `a.pipe(b).pipe(c)`)
-- **Does NOT propagate errors** — this is its critical flaw
+- **Does NOT propagate errors**. This is its critical flaw
 
-**`stream.pipeline(source, ...transforms, dest, callback)`** — the modern API:
+**`stream.pipeline(source, ...transforms, dest, callback)`**: the modern API:
 - Connects all streams in sequence
-- **Propagates errors** — if any stream errors, all streams are destroyed
-- **Cleans up resources** — no leaked file descriptors or dangling streams
+- **Propagates errors**. If any stream errors, all streams are destroyed
+- **Cleans up resources**. No leaked file descriptors or dangling streams
 - Has a promise version via `stream/promises`
 
 Always use `pipeline()` in production code. `pipe()` leaks resources on error.
 
 ## Key Insight
 
-> `pipe()` is ergonomic but dangerous — it doesn't handle errors. If a transform throws or a file read fails, the other streams in the chain stay open, leaking file descriptors and memory. `pipeline()` was created specifically to fix this: it destroys all streams when any one fails.
+> `pipe()` is ergonomic but dangerous. It doesn't handle errors. If a transform throws or a file read fails, the other streams in the chain stay open, leaking file descriptors and memory. `pipeline()` was created specifically to fix this: it destroys all streams when any one fails.
 
 ## Experiment
 
@@ -45,7 +45,7 @@ import { createGzip, createGunzip } from "zlib";
 
 console.log("=== Basic Pipe ===\n");
 
-// source.pipe(dest) returns dest — enabling chains
+// source.pipe(dest) returns dest: enabling chains
 class Upper extends Transform {
   _transform(chunk, enc, cb) {
     this.push(chunk.toString().toUpperCase());
@@ -254,7 +254,7 @@ Cleaned up
 
 ## Deep Dive
 
-`pipeline()` with async generators (Node.js 16+) is powerful because you can write transform logic as plain async functions — no need to subclass Transform:
+`pipeline()` with async generators (Node.js 16+) is powerful because you can write transform logic as plain async functions. No need to subclass Transform:
 
 ```
 await pipeline(
@@ -268,18 +268,18 @@ await pipeline(
 );
 ```
 
-This is often cleaner than creating a Transform subclass, especially for simple transformations. The generator handles backpressure automatically — `yield` waits if the downstream is overwhelmed.
+This is often cleaner than creating a Transform subclass, especially for simple transformations. The generator handles backpressure automatically: `yield` waits if the downstream is overwhelmed.
 
 ## Common Mistakes
 
-- Using `pipe()` without error handling on every stream — resource leaks guaranteed
-- Forgetting that `pipe()` returns the destination, not the source — `source.pipe(a).pipe(b)` pipes `a` to `b`, not `source` to `b`
-- Not using the promise version of `pipeline` — the callback version is harder to use with async/await
-- Piping to a stream that's already ended — silently drops data or throws, depending on timing
+- Using `pipe()` without error handling on every stream: resource leaks guaranteed
+- Forgetting that `pipe()` returns the destination, not the source: `source.pipe(a).pipe(b)` pipes `a` to `b`, not `source` to `b`
+- Not using the promise version of `pipeline`: the callback version is harder to use with async/await
+- Piping to a stream that's already ended: silently drops data or throws, depending on timing
 
 
 ---
 
 ## Navigation
 
-[< 003 — Transform Streams](003-transform-streams.md) | [005 — Backpressure >](005-backpressure.md)
+[< 003 - Transform Streams](003-transform-streams.md) | [005 - Backpressure >](005-backpressure.md)
