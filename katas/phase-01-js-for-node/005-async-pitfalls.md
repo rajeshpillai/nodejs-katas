@@ -69,7 +69,7 @@ async function forEachTrap() {
     results.push(item);
   });
 
-  console.log(`forEach trap: results: [${results}] (empty! forEach didn't wait)`);
+  console.log(`forEach trap, results: [${results}] (empty! forEach didn't wait)`);
 }
 
 // FIX: Use for...of
@@ -82,7 +82,7 @@ async function forOfFix() {
     results.push(item);
   }
 
-  console.log(`for...of fix: results: [${results}]`);
+  console.log(`for...of fix, results: [${results}]`);
 }
 
 // Run all demos
@@ -122,8 +122,8 @@ await errorDemo();
 ```
 Sequential: ~150ms [A, B, C]
 Concurrent: ~50ms [A, B, C]
-forEach trap: results: [] (empty! forEach didn't wait)
-for...of fix: results: [1, 2, 3]
+forEach trap, results: [] (empty! forEach didn't wait)
+for...of fix, results: [1, 2, 3]
 Promise.all error: "one failed". All results lost!
 allSettled: [ 'ok', 'ERR: one failed', 'also ok' ]
 ```
