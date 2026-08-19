@@ -1,4 +1,4 @@
-# Phase 2 — Node.js Core Architecture
+# Phase 2: Node.js Core Architecture
 
 Dive deep into how Node.js works under the hood. Explore event loop phases, libuv and the thread pool, timer mechanics, I/O callback scheduling, and get an introduction to worker threads.
 
@@ -18,4 +18,4 @@ Dive deep into how Node.js works under the hood. Explore event loop phases, libu
 
 ## Navigation
 
-[< Phase 1 — JavaScript for the Node Runtime](../phase-01-js-for-node/README.md) | [Phase 3 — File System & OS Interaction >](../phase-03-fs-and-os/README.md)
+[< Phase 1: JavaScript for the Node Runtime](../phase-01-js-for-node/README.md) | [Phase 3: File System & OS Interaction >](../phase-03-fs-and-os/README.md)

@@ -24,11 +24,11 @@ If the poll queue is empty, Node.js either:
 - **Moves on** to the check phase if `setImmediate` callbacks are queued
 - **Wraps around** to the timer phase if timers have expired
 
-This is the beating heart of Node.js — the poll phase is where your server actually does work.
+This is the beating heart of Node.js: the poll phase is where your server actually does work.
 
 ## Key Insight
 
-> The poll phase is Node.js's default resting state. When there's nothing to do, Node.js parks here waiting for I/O events. It only leaves when timers expire or `setImmediate` callbacks are queued. This is what makes Node.js efficient — it sleeps instead of busy-waiting.
+> The poll phase is Node.js's default resting state. When there's nothing to do, Node.js parks here waiting for I/O events. It only leaves when timers expire or `setImmediate` callbacks are queued. This is what makes Node.js efficient. It sleeps instead of busy-waiting.
 
 ## Experiment
 
@@ -64,7 +64,7 @@ const data = await readFile(tmpFile, "utf-8");
 const t = Math.round(performance.now() - start);
 console.log(`  1. File read completed at ${t}ms (${data.length} bytes)`);
 
-// Multiple I/O operations — they interleave with the event loop
+// Multiple I/O operations. They interleave with the event loop
 console.log("\n=== Concurrent I/O ===\n");
 
 const files = [];
@@ -114,18 +114,18 @@ await Promise.all([unlink(tmpFile), ...files.map((f) => unlink(f))]);
 ## Challenge
 
 1. Read 20 files concurrently. At what point does the thread pool (4 threads) become a bottleneck?
-2. Compare `readFile` (callback-based) with `fs.promises.readFile` (Promise-based) — is there a performance difference?
+2. Compare `readFile` (callback-based) with `fs.promises.readFile` (Promise-based): is there a performance difference?
 3. Use `fs.createReadStream` instead of `readFile` for a large file. When does the stream approach win?
 
 ## Common Mistakes
 
-- Thinking all I/O callbacks fire at once — they're processed one at a time in the poll phase
+- Thinking all I/O callbacks fire at once. They're processed one at a time in the poll phase
 - Not realizing that file I/O uses the thread pool and is limited to `UV_THREADPOOL_SIZE` concurrent operations
-- Using synchronous `fs.readFileSync` in a server — it blocks the entire event loop while the file is being read
+- Using synchronous `fs.readFileSync` in a server. It blocks the entire event loop while the file is being read
 
 
 ---
 
 ## Navigation
 
-[< 003 — Timers](003-timers.md) | [005 — Worker Threads Intro >](005-worker-threads-intro.md)
+[< 003 - Timers](003-timers.md) | [005 - Worker Threads Intro >](005-worker-threads-intro.md)

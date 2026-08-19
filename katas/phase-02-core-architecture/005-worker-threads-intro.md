@@ -20,13 +20,13 @@ Key differences from the main thread:
 - Workers can't access the DOM (irrelevant in Node.js)
 - Workers can't share memory directly (unless using `SharedArrayBuffer`)
 - Workers communicate via structured cloning (data is copied, not shared)
-- Creating a worker has overhead (~30-50ms) — don't spawn one for trivial work
+- Creating a worker has overhead (~30-50ms): don't spawn one for trivial work
 
 Workers are for **CPU-bound** work. For I/O-bound work (network, files), the event loop and async I/O are more efficient.
 
 ## Key Insight
 
-> Worker threads give Node.js true parallelism for CPU-bound work. But they're not lightweight — each worker is a full V8 instance. Use them for heavy computation, not for I/O or simple tasks.
+> Worker threads give Node.js true parallelism for CPU-bound work. But they're not lightweight. Each worker is a full V8 instance. Use them for heavy computation, not for I/O or simple tasks.
 
 ## Experiment
 
@@ -43,13 +43,13 @@ if (isMainThread) {
     return fibonacci(n - 1) + fibonacci(n - 2);
   }
 
-  // Run on main thread — blocks
+  // Run on main thread: blocks
   const mainStart = performance.now();
   const mainResult = fibonacci(35);
   const mainTime = Math.round(performance.now() - mainStart);
   console.log(`Main thread: fib(35) = ${mainResult} in ${mainTime}ms (blocked!)\n`);
 
-  // Run on worker thread — doesn't block main
+  // Run on worker thread: doesn't block main
   const workerStart = performance.now();
 
   const worker = new Worker(new URL(import.meta.url), {
@@ -122,18 +122,18 @@ When to use worker threads vs other approaches:
 | **Child process** | External programs | Running ffmpeg, shell commands |
 | **C++ addon** | Max performance | Native crypto, ML inference |
 
-Workers share the same process but have separate V8 heaps. `SharedArrayBuffer` is the only way to share memory without copying — useful for large datasets but requires careful synchronization with `Atomics`.
+Workers share the same process but have separate V8 heaps. `SharedArrayBuffer` is the only way to share memory without copying: useful for large datasets but requires careful synchronization with `Atomics`.
 
 ## Common Mistakes
 
-- Spawning workers for I/O-bound work — async I/O is faster and lighter for network/file operations
-- Creating a new worker per request — worker creation has overhead. Use a worker pool instead
-- Assuming workers share variables with the main thread — they don't. Data is cloned when sent via `postMessage`
-- Not handling worker errors — unhandled errors in a worker silently fail unless you listen for the `'error'` event
+- Spawning workers for I/O-bound work: async I/O is faster and lighter for network/file operations
+- Creating a new worker per request: worker creation has overhead. Use a worker pool instead
+- Assuming workers share variables with the main thread. They don't. Data is cloned when sent via `postMessage`
+- Not handling worker errors: unhandled errors in a worker silently fail unless you listen for the `'error'` event
 
 
 ---
 
 ## Navigation
 
-[< 004 — Io Callbacks](004-io-callbacks.md) | [001 — Reading And Writing Files >](../phase-03-fs-and-os/001-reading-and-writing-files.md)
+[< 004 - Io Callbacks](004-io-callbacks.md) | [001 - Reading And Writing Files >](../phase-03-fs-and-os/001-reading-and-writing-files.md)

@@ -14,17 +14,17 @@ estimated_minutes: 12
 
 Node.js has three timer mechanisms, each with different behavior:
 
-- **`setTimeout(fn, delay)`** — runs `fn` once, after at least `delay` ms. Runs in the **timers phase**.
-- **`setInterval(fn, delay)`** — runs `fn` repeatedly, every `delay` ms. Also timers phase. Drift accumulates over time.
-- **`setImmediate(fn)`** — runs `fn` in the **check phase** of the current or next event loop iteration. No delay concept.
+- **`setTimeout(fn, delay)`**. Runs `fn` once, after at least `delay` ms. Runs in the **timers phase**.
+- **`setInterval(fn, delay)`**. Runs `fn` repeatedly, every `delay` ms. Also timers phase. Drift accumulates over time.
+- **`setImmediate(fn)`**. Runs `fn` in the **check phase** of the current or next event loop iteration. No delay concept.
 
-The key word is **"at least."** `setTimeout(fn, 100)` guarantees the callback won't run before 100ms, but it might run later if the event loop is busy. Timers are not precise clocks — they're minimum-delay schedulers.
+The key word is **"at least."** `setTimeout(fn, 100)` guarantees the callback won't run before 100ms, but it might run later if the event loop is busy. Timers are not precise clocks. They're minimum-delay schedulers.
 
 Node.js also provides `setTimeout` and `setInterval` from `timers/promises` for async/await usage.
 
 ## Key Insight
 
-> Timers guarantee a minimum delay, not an exact one. If the event loop is busy processing I/O or running callbacks, timer callbacks are delayed. Never use timers for precision timing — use them for scheduling.
+> Timers guarantee a minimum delay, not an exact one. If the event loop is busy processing I/O or running callbacks, timer callbacks are delayed. Never use timers for precision timing. Use them for scheduling.
 
 ## Experiment
 
@@ -101,7 +101,7 @@ const id = setInterval(() => {
 
 1. Block the event loop with a 200ms `while` loop after setting `setTimeout(fn, 50)`. When does the callback actually fire?
 2. Use `timer.refresh()` to reset a running timer without creating a new one. When is this useful?
-3. Replace `setInterval` with recursive `setTimeout` — why is this pattern often preferred in production?
+3. Replace `setInterval` with recursive `setTimeout`: why is this pattern often preferred in production?
 
 ## Deep Dive
 
@@ -125,14 +125,14 @@ This guarantees at least 100ms between the **end** of one execution and the **st
 
 ## Common Mistakes
 
-- Using `setInterval` for operations that may take longer than the interval — causes callback pileup
-- Assuming `setTimeout(fn, 0)` is the same as `setImmediate` — they run in different event loop phases
+- Using `setInterval` for operations that may take longer than the interval: causes callback pileup
+- Assuming `setTimeout(fn, 0)` is the same as `setImmediate`. They run in different event loop phases
 - Forgetting that `setTimeout` in Node.js returns a `Timeout` object (not a number like in browsers)
-- Not calling `clearInterval`/`clearTimeout` — leaked timers keep the process alive and waste memory
+- Not calling `clearInterval`/`clearTimeout`: leaked timers keep the process alive and waste memory
 
 
 ---
 
 ## Navigation
 
-[< 002 — Libuv](002-libuv.md) | [004 — Io Callbacks >](004-io-callbacks.md)
+[< 002 - Libuv](002-libuv.md) | [004 - Io Callbacks >](004-io-callbacks.md)
