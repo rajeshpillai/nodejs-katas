@@ -1,4 +1,4 @@
-# Phase 0 — What Is Node.js Really?
+# Phase 0 - What Is Node.js Really?
 
 Build the correct mental model of the Node.js runtime. Understand how Node.js differs from browser JavaScript, what V8 does, why Node is single-threaded, how the event loop drives everything, and why this architecture scales.
 
@@ -18,4 +18,4 @@ Build the correct mental model of the Node.js runtime. Understand how Node.js di
 
 ## Navigation
 
-[Phase 1 — JavaScript for the Node Runtime >](../phase-01-js-for-node/README.md)
+[Phase 1 - JavaScript for the Node Runtime >](../phase-01-js-for-node/README.md)

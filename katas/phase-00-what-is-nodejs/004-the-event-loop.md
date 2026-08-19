@@ -25,7 +25,24 @@ Between each phase, Node.js drains the microtask queue completely. This means a 
 
 ## Key Insight
 
-> Within a single turn the event loop has a strict ordering: `process.nextTick` runs before Promise microtasks, and microtasks run before any timer or `setImmediate`. But `setTimeout(fn, 0)` vs `setImmediate` is **not** ordered at the top level — it's a race decided by how long startup took. Understanding what *is* guaranteed (and what isn't) is the key to understanding Node.js behavior.
+> Within a single turn the event loop has a strict ordering: in a CommonJS script `process.nextTick` runs before Promise microtasks, and microtasks run before any timer or `setImmediate`. But `setTimeout(fn, 0)` vs `setImmediate` is **not** ordered at the top level. It's a race decided by how long startup took. Understanding what *is* guaranteed (and what isn't) is the key to understanding Node.js behavior.
+
+## A note on module systems
+
+The ordering above is what a **CommonJS** script prints. In an ES module (`.mjs`, or a package
+with `"type": "module"`) the module body is itself evaluated inside a microtask checkpoint, so a
+`process.nextTick` queued during evaluation runs *after* Promise microtasks that were already
+queued, not before them.
+
+Verified on Node.js v24.18.0:
+
+```
+as .cjs   1, 2, 3, 4, 5, ...      nextTick before microtasks
+as .mjs   1, 2, 4, 5, 3, ...      nextTick after microtasks
+```
+
+Run this kata as a `.cjs` file, or as a plain `.js` file in a package without
+`"type": "module"`, to see the ordering the Key Insight describes.
 
 ## Experiment
 
@@ -33,11 +50,11 @@ Between each phase, Node.js drains the microtask queue completely. This means a 
 console.log("1 - synchronous");
 
 setTimeout(() => {
-  console.log("6 - setTimeout (timer phase) — order vs setImmediate not guaranteed");
+  console.log("6a - setTimeout (timer phase) - races with 6b");
 }, 0);
 
 setImmediate(() => {
-  console.log("7 - setImmediate (check phase) — may print before #6");
+  console.log("6b - setImmediate (check phase) - races with 6a");
 });
 
 Promise.resolve().then(() => {
@@ -54,8 +71,9 @@ process.nextTick(() => {
 
 console.log("2 - synchronous end");
 
-// Guaranteed: sync → nextTick → microtasks → (timers / check)
-// NOT guaranteed: setTimeout(0) vs setImmediate — that pair races at the top level
+// Guaranteed: sync -> nextTick -> microtasks -> (timers / check)
+// NOT guaranteed: 6a vs 6b. That pair races at the top level, so they are
+// numbered as one step rather than two.
 ```
 
 ## Expected Output
@@ -66,15 +84,15 @@ console.log("2 - synchronous end");
 3 - process.nextTick (runs before microtasks)
 4 - Promise.then (microtask)
 5 - queueMicrotask (microtask)
-6 - setTimeout (timer phase) — order vs setImmediate not guaranteed
-7 - setImmediate (check phase) — may print before #6
+6a - setTimeout (timer phase) - races with 6b
+6b - setImmediate (check phase) - races with 6a
 ```
 
 The first five lines are deterministic. The last two (`setTimeout(0)` and
-`setImmediate`) can appear in **either** order — run this a few times and you may
+`setImmediate`) can appear in **either** order. Run this a few times and you may
 see them swap. At the top level the timer is "due" only if startup already took
 more than ~1 ms, so the winner depends on process startup timing. (Inside an I/O
-callback the order *is* fixed — `setImmediate` always wins; see the Event Loop
+callback the order *is* fixed: `setImmediate` always wins; see the Event Loop
 Phases kata.)
 
 ## Challenge
@@ -103,17 +121,17 @@ The event loop runs in these phases (in order):
 └───────────────────────────────┘
 ```
 
-Between **every** phase transition, Node.js drains the `nextTick` queue, then the microtask queue. This is why `process.nextTick` is so aggressive — it can starve I/O if used recursively.
+Between **every** phase transition, Node.js drains the `nextTick` queue, then the microtask queue. This is why `process.nextTick` is so aggressive. It can starve I/O if used recursively.
 
 ## Common Mistakes
 
-- Using `process.nextTick` recursively — it starves the event loop because nextTick callbacks run before any I/O
-- Thinking `setImmediate` is "more immediate" than `setTimeout(fn, 0)` — the name is misleading. At the top level their order is a race; inside an I/O callback `setImmediate` always runs first
-- Assuming Promises run "in parallel" — they don't, they're just deferred microtasks on the same thread
+- Using `process.nextTick` recursively. It starves the event loop because nextTick callbacks run before any I/O
+- Thinking `setImmediate` is "more immediate" than `setTimeout(fn, 0)`. The name is misleading. At the top level their order is a race; inside an I/O callback `setImmediate` always runs first
+- Assuming Promises run "in parallel". They don't, they're just deferred microtasks on the same thread
 
 
 ---
 
 ## Navigation
 
-[< 003 — Single Threaded Execution](003-single-threaded-execution.md) | [005 — Why Nodejs Scales >](005-why-nodejs-scales.md)
+[< 003 - Single Threaded Execution](003-single-threaded-execution.md) | [005 - Why Nodejs Scales >](005-why-nodejs-scales.md)

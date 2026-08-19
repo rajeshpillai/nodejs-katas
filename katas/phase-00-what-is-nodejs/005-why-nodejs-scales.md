@@ -12,11 +12,11 @@ estimated_minutes: 12
 
 ## Concept
 
-Traditional servers (like Apache with PHP) use **one thread per connection**. Each thread consumes 1–8 MB of stack memory. With 1,000 concurrent connections, that's 1–8 GB just for thread stacks — before any application logic.
+Traditional servers (like Apache with PHP) use **one thread per connection**. Each thread consumes 1–8 MB of stack memory. With 1,000 concurrent connections, that's 1–8 GB just for thread stacks: before any application logic.
 
 Node.js takes a fundamentally different approach: **one thread, async I/O**. Instead of blocking a thread while waiting for a database query or file read, Node.js registers a callback, moves on to serve other requests, and comes back when the I/O completes.
 
-This is why Node.js can handle tens of thousands of concurrent connections on modest hardware. It never blocks waiting — it always has something else to do.
+This is why Node.js can handle tens of thousands of concurrent connections on modest hardware. It never blocks waiting. It always has something else to do.
 
 ## Key Insight
 
@@ -26,11 +26,10 @@ This is why Node.js can handle tens of thousands of concurrent connections on mo
 
 ```js
 // Simulating 5 concurrent I/O operations (database queries, file reads, etc.)
-// In a blocking model: 5 × 100ms = 500ms sequential
-// In Node.js: all 5 run concurrently, completing in ~100ms total
+// In a blocking model: 95 + 102 + 87 + 110 + 75 = 469ms sequential
+// In Node.js: all 5 run concurrently, so the total is the slowest one
 
 const start = performance.now();
-let completed = 0;
 const total = 5;
 
 function simulateIO(name, delayMs) {
@@ -38,7 +37,6 @@ function simulateIO(name, delayMs) {
     setTimeout(() => {
       const elapsed = Math.round(performance.now() - start);
       console.log(`  ${name} completed at ${elapsed}ms`);
-      completed++;
       resolve();
     }, delayMs);
   });
@@ -79,7 +77,7 @@ Node.js completed in ~110ms (concurrent)
 
 ## Challenge
 
-1. Increase to 100 concurrent operations — does the total time change significantly?
+1. Increase to 100 concurrent operations. Does the total time change significantly?
 2. What happens if one operation takes 2000ms? Does it slow down the others?
 3. Replace `Promise.all` with a `for` loop using `await` on each call. How does the total time change? Why?
 
@@ -87,17 +85,17 @@ Node.js completed in ~110ms (concurrent)
 
 Node.js's concurrency model is sometimes called **cooperative multitasking**. Each piece of code voluntarily yields control when it starts an I/O operation (by returning a Promise or using a callback). The event loop then picks up the next piece of work.
 
-This is different from threads (preemptive multitasking), where the OS forcibly switches between tasks. Cooperative multitasking is lighter — no context switches, no locks — but requires that code never blocks. One blocking operation freezes everything.
+This is different from threads (preemptive multitasking), where the OS forcibly switches between tasks. Cooperative multitasking is lighter: no context switches, no locks: but requires that code never blocks. One blocking operation freezes everything.
 
 ## Common Mistakes
 
-- Thinking Node.js runs code in parallel — it runs code concurrently (interleaved on one thread), not in parallel (multiple threads)
-- Using `await` in a loop when operations are independent — this makes them sequential instead of concurrent
-- Assuming Node.js is always faster — it excels at I/O-bound work but is slower than multi-threaded languages for CPU-bound computation
+- Thinking Node.js runs code in parallel. It runs code concurrently (interleaved on one thread), not in parallel (multiple threads)
+- Using `await` in a loop when operations are independent. This makes them sequential instead of concurrent
+- Assuming Node.js is always faster. It excels at I/O-bound work but is slower than multi-threaded languages for CPU-bound computation
 
 
 ---
 
 ## Navigation
 
-[< 004 — The Event Loop](004-the-event-loop.md) | [001 — The Call Stack >](../phase-01-js-for-node/001-the-call-stack.md)
+[< 004 - The Event Loop](004-the-event-loop.md) | [001 - The Call Stack >](../phase-01-js-for-node/001-the-call-stack.md)

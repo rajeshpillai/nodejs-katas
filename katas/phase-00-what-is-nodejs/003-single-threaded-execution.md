@@ -14,13 +14,13 @@ estimated_minutes: 12
 
 JavaScript in Node.js runs on a **single thread**. There is exactly one call stack. Code runs **to completion** before anything else can execute.
 
-This is not a limitation — it is the design. A single thread means no locks, no race conditions, no deadlocks on shared state. The tradeoff is that if you block this thread, **nothing else runs**.
+This is not a limitation. It is the design. A single thread means no locks, no race conditions, no deadlocks on shared state. The tradeoff is that if you block this thread, **nothing else runs**.
 
 When you call `setTimeout(fn, 0)`, the callback does not run immediately. It is placed in a queue and will execute only after the current synchronous code finishes. The number `0` means "at least 0 milliseconds," not "right now."
 
 ## Key Insight
 
-> If you block the single thread, nothing else can run. Blocking the event loop is always a bug. Every long-running synchronous operation delays all other work — timers, I/O callbacks, incoming requests.
+> If you block the single thread, nothing else can run. Blocking the event loop is always a bug. Every long-running synchronous operation delays all other work: timers, I/O callbacks, incoming requests.
 
 ## Experiment
 
@@ -36,7 +36,7 @@ setTimeout(() => {
 const blockStart = performance.now();
 const blockUntil = blockStart + 200;
 while (performance.now() < blockUntil) {
-  // burning CPU — the event loop is frozen
+  // burning CPU: the event loop is frozen
 }
 const blocked = (performance.now() - blockStart).toFixed(0);
 
@@ -59,23 +59,23 @@ console.log("3 - synchronous end");
 
 ## Challenge
 
-1. Change the `setTimeout` delay to `100` — does the callback run after 100ms or after 200ms? Why?
+1. Change the `setTimeout` delay to `100`. Does the callback run after 100ms or after 200ms? Why?
 2. Add a second `setTimeout` with delay `50`. What order do callbacks fire in?
 3. What would happen to an HTTP server if a request handler had a 200ms blocking loop?
 
 ## Deep Dive
 
-Node.js is single-threaded for JavaScript execution, but libuv maintains a thread pool (default 4 threads) for operations that don't have async OS-level support — like file system operations on some platforms, DNS lookups, and compression. These threads do not run your JavaScript code; they handle I/O operations and notify the event loop when complete.
+Node.js is single-threaded for JavaScript execution, but libuv maintains a thread pool (default 4 threads) for operations that don't have async OS-level support: like file system operations on some platforms, DNS lookups, and compression. These threads do not run your JavaScript code; they handle I/O operations and notify the event loop when complete.
 
 ## Common Mistakes
 
-- Thinking `setTimeout(fn, 0)` runs immediately — it doesn't, it waits for the call stack to clear
-- Using synchronous file operations (`fs.readFileSync`) in server request handlers — this blocks all other requests
-- Believing `async/await` makes code run on another thread — it doesn't, it just suspends and resumes on the same thread
+- Thinking `setTimeout(fn, 0)` runs immediately. It doesn't, it waits for the call stack to clear
+- Using synchronous file operations (`fs.readFileSync`) in server request handlers. This blocks all other requests
+- Believing `async/await` makes code run on another thread. It doesn't, it just suspends and resumes on the same thread
 
 
 ---
 
 ## Navigation
 
-[< 002 — V8 And The Runtime](002-v8-and-the-runtime.md) | [004 — The Event Loop >](004-the-event-loop.md)
+[< 002 - V8 And The Runtime](002-v8-and-the-runtime.md) | [004 - The Event Loop >](004-the-event-loop.md)

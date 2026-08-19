@@ -14,9 +14,9 @@ estimated_minutes: 10
 
 JavaScript runs in two very different environments: the **browser** and **Node.js**. Both use the V8 engine to execute JavaScript, but the host APIs they expose are completely different.
 
-In a browser, you get `window`, `document`, `fetch`, `localStorage` — APIs for rendering web pages.
+In a browser, you get `window`, `document`, `fetch`, `localStorage`: APIs for rendering web pages.
 
-In Node.js, you get `process`, `fs`, `net`, `http`, `crypto` — APIs for building servers and interacting with the operating system.
+In Node.js, you get `process`, `fs`, `net`, `http`, `crypto`: APIs for building servers and interacting with the operating system.
 
 The globals tell you which environment you're in. If `process` exists, you're in Node.js. If `window` exists, you're in a browser.
 
@@ -33,7 +33,7 @@ console.log("Platform:", process.platform);
 console.log("Architecture:", process.arch);
 console.log("Process ID:", process.pid);
 
-// Memory usage — a system-level API that doesn't exist in browsers
+// Memory usage: a system-level API that doesn't exist in browsers
 const mem = process.memoryUsage();
 console.log("Heap used:", Math.round(mem.heapUsed / 1024), "KB");
 
@@ -70,8 +70,8 @@ Extend the experiment:
 
 ## Common Mistakes
 
-- Assuming `window` or `document` exist in Node.js — they don't
-- Thinking Node.js is a browser without a UI — it's a completely different runtime
+- Assuming `window` or `document` exist in Node.js. They don't
+- Thinking Node.js is a browser without a UI. It's a completely different runtime
 - Using browser-specific APIs (`localStorage`, `XMLHttpRequest`) in Node.js code
 
 
@@ -79,4 +79,4 @@ Extend the experiment:
 
 ## Navigation
 
-[002 — V8 And The Runtime >](002-v8-and-the-runtime.md)
+[002 - V8 And The Runtime >](002-v8-and-the-runtime.md)
