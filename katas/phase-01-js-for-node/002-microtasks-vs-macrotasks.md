@@ -22,7 +22,7 @@ Node.js has two categories of async callbacks:
 **Microtasks** (microtask queue):
 - `Promise.then()`, `Promise.catch()`, `Promise.finally()`
 - `queueMicrotask()`
-- `process.nextTick()` (special — runs before other microtasks)
+- `process.nextTick()` (special: runs before other microtasks)
 
 The critical rule: **after each macrotask completes, the entire microtask queue is drained before the next macrotask runs.** This means microtasks always have priority over macrotasks.
 
@@ -86,12 +86,12 @@ The priority order within Node.js:
 5. I/O callbacks        ← poll phase
 ```
 
-`process.nextTick` is unique to Node.js (not available in browsers). It was created before Promises existed and has the highest async priority. Overusing it can starve I/O — prefer `queueMicrotask` for most cases.
+`process.nextTick` is unique to Node.js (not available in browsers). It was created before Promises existed and has the highest async priority. Overusing it can starve I/O: prefer `queueMicrotask` for most cases.
 
 ## Common Mistakes
 
-- Assuming `setTimeout(fn, 0)` and `Promise.then()` have equal priority — Promises always win
-- Using `process.nextTick` recursively — it starves the event loop because the microtask queue never drains
+- Assuming `setTimeout(fn, 0)` and `Promise.then()` have equal priority: Promises always win
+- Using `process.nextTick` recursively. It starves the event loop because the microtask queue never drains
 - Not realizing that microtasks scheduled during microtask processing run immediately, before any macrotask
 
 
@@ -99,4 +99,4 @@ The priority order within Node.js:
 
 ## Navigation
 
-[< 001 — The Call Stack](001-the-call-stack.md) | [003 — Promises >](003-promises.md)
+[< 001 - The Call Stack](001-the-call-stack.md) | [003 - Promises >](003-promises.md)

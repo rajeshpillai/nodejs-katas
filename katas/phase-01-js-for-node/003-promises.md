@@ -14,13 +14,13 @@ estimated_minutes: 15
 
 A Promise represents a value that may not exist yet. It has three states:
 
-- **Pending** — the operation hasn't completed
-- **Fulfilled** — the operation succeeded, the value is available
-- **Rejected** — the operation failed, an error is available
+- **Pending**: the operation hasn't completed
+- **Fulfilled**: the operation succeeded, the value is available
+- **Rejected**: the operation failed, an error is available
 
 Promises are the foundation of async programming in Node.js. Every `fs.promises` call, every `fetch`, every database query returns a Promise. Understanding them is non-negotiable.
 
-A key property: once a Promise settles (fulfilled or rejected), it **never changes state again**. And `.then()` callbacks always run as microtasks — never synchronously, even if the Promise is already resolved.
+A key property: once a Promise settles (fulfilled or rejected), it **never changes state again**. And `.then()` callbacks always run as microtasks: never synchronously, even if the Promise is already resolved.
 
 ## Key Insight
 
@@ -43,7 +43,7 @@ function readConfig(path) {
   });
 }
 
-// Promise chain — each .then() returns a new Promise
+// Promise chain. Each .then() returns a new Promise
 console.log("1. Starting config read...");
 
 readConfig("/valid")
@@ -85,30 +85,30 @@ console.log("5. This prints before the resolved Promise handler");
 
 1. Chain three `.then()` calls where each transforms the value. What happens if one throws an error?
 2. Use `Promise.all()` to run 3 async operations concurrently. What happens if one rejects?
-3. Use `Promise.allSettled()` instead — how does the result differ when one rejects?
+3. Use `Promise.allSettled()` instead: how does the result differ when one rejects?
 4. What happens to an unhandled Promise rejection in Node.js? Try it.
 
 ## Deep Dive
 
 `Promise.all` vs `Promise.allSettled` vs `Promise.race` vs `Promise.any`:
 
-- **`Promise.all([...])`** — resolves when ALL resolve, rejects on FIRST rejection
-- **`Promise.allSettled([...])`** — always resolves, gives status of each Promise
-- **`Promise.race([...])`** — resolves/rejects with the FIRST settled Promise
-- **`Promise.any([...])`** — resolves with FIRST fulfillment, rejects only if ALL reject
+- **`Promise.all([...])`**: resolves when ALL resolve, rejects on FIRST rejection
+- **`Promise.allSettled([...])`**: always resolves, gives status of each Promise
+- **`Promise.race([...])`**: resolves/rejects with the FIRST settled Promise
+- **`Promise.any([...])`**: resolves with FIRST fulfillment, rejects only if ALL reject
 
 In production Node.js, unhandled Promise rejections terminate the process (Node 15+). Always handle errors.
 
 ## Common Mistakes
 
-- Forgetting to return a value inside `.then()` — the next handler gets `undefined`
-- Not adding `.catch()` at the end of a chain — unhandled rejection crashes the process
-- Creating a Promise inside `.then()` without returning it — breaks the chain, the outer chain can't wait for it
-- Thinking `Promise.resolve(value).then(fn)` runs `fn` synchronously — it never does
+- Forgetting to return a value inside `.then()`: the next handler gets `undefined`
+- Not adding `.catch()` at the end of a chain: unhandled rejection crashes the process
+- Creating a Promise inside `.then()` without returning it: breaks the chain, the outer chain can't wait for it
+- Thinking `Promise.resolve(value).then(fn)` runs `fn` synchronously. It never does
 
 
 ---
 
 ## Navigation
 
-[< 002 — Microtasks Vs Macrotasks](002-microtasks-vs-macrotasks.md) | [004 — Async Await >](004-async-await.md)
+[< 002 - Microtasks Vs Macrotasks](002-microtasks-vs-macrotasks.md) | [004 - Async Await >](004-async-await.md)

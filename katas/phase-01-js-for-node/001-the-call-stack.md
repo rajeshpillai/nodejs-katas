@@ -14,7 +14,7 @@ estimated_minutes: 10
 
 The call stack is a data structure that tracks where the program is in its execution. When a function is called, a **frame** is pushed onto the stack. When the function returns, the frame is popped off.
 
-JavaScript has a **single call stack**. This means it can only do one thing at a time. Every line of code you write runs to completion before the next line starts — there is no preemption, no interruption.
+JavaScript has a **single call stack**. This means it can only do one thing at a time. Every line of code you write runs to completion before the next line starts. There is no preemption, no interruption.
 
 When the call stack is empty, the event loop can process the next callback. If the call stack is never empty (infinite loop, heavy computation), nothing else runs.
 
@@ -70,7 +70,7 @@ Call stack at this point:
 
 ## Challenge
 
-1. Add a `fourth()` function called from `third()` — how deep does the stack trace get?
+1. Add a `fourth()` function called from `third()`: how deep does the stack trace get?
 2. Write a recursive function that calls itself 10,000 times. Does it succeed? What about 100,000?
 3. What error do you get when the call stack overflows? Try `function boom() { boom(); } boom();`
 
@@ -81,11 +81,11 @@ Each call stack frame stores:
 - The local variables for that function
 - The return address (where to continue after the function returns)
 
-Node.js has a default stack size limit (~15,000 frames on most systems). You can increase it with `--stack-size=<bytes>`, but if you need to, your algorithm is probably wrong — use iteration instead of deep recursion.
+Node.js has a default stack size limit (~15,000 frames on most systems). You can increase it with `--stack-size=<bytes>`, but if you need to, your algorithm is probably wrong: use iteration instead of deep recursion.
 
 ## Common Mistakes
 
-- Thinking async code runs "in parallel" on a separate stack — it doesn't, it runs on the same stack later
+- Thinking async code runs "in parallel" on a separate stack. It doesn't, it runs on the same stack later
 - Writing deeply recursive algorithms without considering stack overflow
 - Confusing the call stack (synchronous execution) with the callback queue (async scheduling)
 
@@ -94,4 +94,4 @@ Node.js has a default stack size limit (~15,000 frames on most systems). You can
 
 ## Navigation
 
-[< 005 — Why Nodejs Scales](../phase-00-what-is-nodejs/005-why-nodejs-scales.md) | [002 — Microtasks Vs Macrotasks >](002-microtasks-vs-macrotasks.md)
+[< 005 - Why Nodejs Scales](../phase-00-what-is-nodejs/005-why-nodejs-scales.md) | [002 - Microtasks Vs Macrotasks >](002-microtasks-vs-macrotasks.md)

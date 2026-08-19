@@ -1,4 +1,4 @@
-# Phase 1 — JavaScript for the Node Runtime
+# Phase 1: JavaScript for the Node Runtime
 
 Master the JavaScript execution model that underpins Node.js. Understand the call stack, microtask and macrotask scheduling, Promises, async/await, and the subtle pitfalls that trip up even experienced developers.
 
@@ -18,4 +18,4 @@ Master the JavaScript execution model that underpins Node.js. Understand the cal
 
 ## Navigation
 
-[< Phase 0 — What Is Node.js Really?](../phase-00-what-is-nodejs/README.md) | [Phase 2 — Node.js Core Architecture >](../phase-02-core-architecture/README.md)
+[< Phase 0: What Is Node.js Really?](../phase-00-what-is-nodejs/README.md) | [Phase 2: Node.js Core Architecture >](../phase-02-core-architecture/README.md)

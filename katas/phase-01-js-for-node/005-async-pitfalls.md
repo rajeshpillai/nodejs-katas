@@ -14,9 +14,9 @@ estimated_minutes: 15
 
 Async code in Node.js has several traps that catch developers at every level. The three most dangerous:
 
-1. **Unhandled rejections** — a rejected Promise with no `.catch()` or `try/catch` crashes the process
-2. **Sequential awaits** — awaiting independent operations one-by-one when they could run concurrently
-3. **Callback/Promise mixing** — using callbacks inside async functions or forgetting to promisify old APIs
+1. **Unhandled rejections**: a rejected Promise with no `.catch()` or `try/catch` crashes the process
+2. **Sequential awaits**: awaiting independent operations one-by-one when they could run concurrently
+3. **Callback/Promise mixing**: using callbacks inside async functions or forgetting to promisify old APIs
 
 These aren't edge cases. They're the most common bugs in Node.js production code. Understanding them now saves hours of debugging later.
 
@@ -63,13 +63,13 @@ async function forEachTrap() {
   const items = [1, 2, 3];
   const results = [];
 
-  // BUG: forEach ignores async — loop finishes before callbacks
+  // BUG: forEach ignores async. Loop finishes before callbacks
   items.forEach(async (item) => {
     await delay(10, item);
     results.push(item);
   });
 
-  console.log(`forEach trap — results: [${results}] (empty! forEach didn't wait)`);
+  console.log(`forEach trap: results: [${results}] (empty! forEach didn't wait)`);
 }
 
 // FIX: Use for...of
@@ -82,7 +82,7 @@ async function forOfFix() {
     results.push(item);
   }
 
-  console.log(`for...of fix — results: [${results}]`);
+  console.log(`for...of fix: results: [${results}]`);
 }
 
 // Run all demos
@@ -100,7 +100,7 @@ async function errorDemo() {
       delay(30, "also ok"),
     ]);
   } catch (err) {
-    console.log(`Promise.all error: "${err.message}" — all results lost!`);
+    console.log(`Promise.all error: "${err.message}". All results lost!`);
   }
 
   // Fix: Promise.allSettled preserves all results
@@ -122,9 +122,9 @@ await errorDemo();
 ```
 Sequential: ~150ms [A, B, C]
 Concurrent: ~50ms [A, B, C]
-forEach trap — results: [] (empty! forEach didn't wait)
-for...of fix — results: [1, 2, 3]
-Promise.all error: "one failed" — all results lost!
+forEach trap: results: [] (empty! forEach didn't wait)
+for...of fix: results: [1, 2, 3]
+Promise.all error: "one failed". All results lost!
 allSettled: [ 'ok', 'ERR: one failed', 'also ok' ]
 ```
 
@@ -136,14 +136,14 @@ allSettled: [ 'ok', 'ERR: one failed', 'also ok' ]
 
 ## Common Mistakes
 
-- Using `forEach` with `async` callbacks — it never waits for them. Use `for...of` for sequential, `Promise.all(arr.map(...))` for concurrent
-- Catching errors from `Promise.all` and losing the successful results — use `Promise.allSettled` when you need partial results
-- Not handling the case where `Promise.all` rejects on the first failure — the other Promises keep running but their results are discarded
-- Wrapping synchronous code in `new Promise()` unnecessarily — if it doesn't need to be async, don't make it async
+- Using `forEach` with `async` callbacks. It never waits for them. Use `for...of` for sequential, `Promise.all(arr.map(...))` for concurrent
+- Catching errors from `Promise.all` and losing the successful results: use `Promise.allSettled` when you need partial results
+- Not handling the case where `Promise.all` rejects on the first failure: the other Promises keep running but their results are discarded
+- Wrapping synchronous code in `new Promise()` unnecessarily: if it doesn't need to be async, don't make it async
 
 
 ---
 
 ## Navigation
 
-[< 004 — Async Await](004-async-await.md) | [001 — Event Loop Phases >](../phase-02-core-architecture/001-event-loop-phases.md)
+[< 004 - Async Await](004-async-await.md) | [001 - Event Loop Phases >](../phase-02-core-architecture/001-event-loop-phases.md)
