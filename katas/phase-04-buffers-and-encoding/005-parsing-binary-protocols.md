@@ -26,7 +26,7 @@ Real-world binary protocols you'll encounter: TCP/IP headers, DNS packets, WebSo
 
 ## Key Insight
 
-> Every binary protocol is just a contract: "byte 0 means X, bytes 1-2 mean Y (big-endian), bytes 3–N are the payload where N is read from bytes 1-2." Parsing is just walking through the buffer with an offset, reading the right type at each position. Get the offset wrong by even one byte, and everything after it is garbage.
+> Every binary protocol is just a contract: "byte 0 means X, bytes 1-2 mean Y (big-endian), bytes 3-N are the payload where N is read from bytes 1-2." Parsing is just walking through the buffer with an offset, reading the right type at each position. Get the offset wrong by even one byte, and everything after it is garbage.
 
 ## Experiment
 
