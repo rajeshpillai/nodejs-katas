@@ -12,22 +12,22 @@ estimated_minutes: 10
 
 ## Concept
 
-The `path` module provides utilities for working with file and directory paths. It handles platform differences automatically — `/` on Linux/macOS, `\` on Windows.
+The `path` module provides utilities for working with file and directory paths. It handles platform differences automatically: `/` on Linux/macOS, `\` on Windows.
 
 **Never build paths with string concatenation.** Use `path.join()` or `path.resolve()`:
 
-- `path.join(a, b, c)` — joins segments with the platform separator, normalizing `..` and `.`
-- `path.resolve(a, b)` — resolves to an absolute path from right to left
-- `path.basename(p)` — extracts the filename: `"/home/user/file.txt"` → `"file.txt"`
-- `path.dirname(p)` — extracts the directory: `"/home/user/file.txt"` → `"/home/user"`
-- `path.extname(p)` — extracts the extension: `"file.txt"` → `".txt"`
-- `path.parse(p)` — returns `{ root, dir, base, name, ext }`
+- `path.join(a, b, c)`: joins segments with the platform separator, normalizing `..` and `.`
+- `path.resolve(a, b)`: resolves to an absolute path from right to left
+- `path.basename(p)`: extracts the filename: `"/home/user/file.txt"` → `"file.txt"`
+- `path.dirname(p)`: extracts the directory: `"/home/user/file.txt"` → `"/home/user"`
+- `path.extname(p)`: extracts the extension: `"file.txt"` → `".txt"`
+- `path.parse(p)`: returns `{ root, dir, base, name, ext }`
 
 For ESM modules (`import`), `__dirname` and `__filename` don't exist. Use `import.meta.url` instead.
 
 ## Key Insight
 
-> Never concatenate paths with `+` or template literals. Use `path.join()` — it handles platform separators, normalizes `..` segments, and prevents double-slash bugs. Cross-platform correctness is free if you use the `path` module.
+> Never concatenate paths with `+` or template literals. Use `path.join()`. It handles platform separators, normalizes `..` segments, and prevents double-slash bugs. Cross-platform correctness is free if you use the `path` module.
 
 ## Experiment
 
@@ -135,14 +135,14 @@ Cleaned up
 
 ## Common Mistakes
 
-- Using string concatenation for paths — breaks on Windows and creates bugs with double separators
-- Using `__dirname` in ESM modules — it doesn't exist. Use `fileURLToPath(import.meta.url)` with `path.dirname()`
-- Forgetting `{ recursive: true }` in `mkdir` for nested directories — throws `ENOENT` if parent doesn't exist
-- Not using `{ withFileTypes: true }` in `readdir` — requires a separate `stat` call to check if entries are files or directories
+- Using string concatenation for paths: breaks on Windows and creates bugs with double separators
+- Using `__dirname` in ESM modules. It doesn't exist. Use `fileURLToPath(import.meta.url)` with `path.dirname()`
+- Forgetting `{ recursive: true }` in `mkdir` for nested directories: throws `ENOENT` if parent doesn't exist
+- Not using `{ withFileTypes: true }` in `readdir`: requires a separate `stat` call to check if entries are files or directories
 
 
 ---
 
 ## Navigation
 
-[< 001 — Reading And Writing Files](001-reading-and-writing-files.md) | [003 — Os And System Info >](003-os-and-system-info.md)
+[< 001 - Reading And Writing Files](001-reading-and-writing-files.md) | [003 - Os And System Info >](003-os-and-system-info.md)

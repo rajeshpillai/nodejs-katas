@@ -14,15 +14,15 @@ estimated_minutes: 12
 
 The `process` global is Node.js's interface to the current running process. It provides:
 
-- **`process.env`** — environment variables (configuration, secrets, feature flags)
-- **`process.argv`** — command-line arguments
-- **`process.cwd()`** — current working directory
-- **`process.pid`** / **`process.ppid`** — process and parent process IDs
-- **`process.stdin`** / **`process.stdout`** / **`process.stderr`** — standard I/O streams
-- **`process.exit(code)`** — terminate the process
-- **`process.memoryUsage()`** — heap and RSS memory stats
+- **`process.env`**: environment variables (configuration, secrets, feature flags)
+- **`process.argv`**: command-line arguments
+- **`process.cwd()`**: current working directory
+- **`process.pid`** / **`process.ppid`**: process and parent process IDs
+- **`process.stdin`** / **`process.stdout`** / **`process.stderr`**: standard I/O streams
+- **`process.exit(code)`**: terminate the process
+- **`process.memoryUsage()`**: heap and RSS memory stats
 
-Environment variables are the standard way to configure Node.js applications. They separate configuration from code — the same code runs in development, staging, and production with different env vars.
+Environment variables are the standard way to configure Node.js applications. They separate configuration from code: the same code runs in development, staging, and production with different env vars.
 
 ## Key Insight
 
@@ -131,24 +131,24 @@ console.log("  Exit handler registered (will fire at end)");
 ## Deep Dive
 
 Memory usage fields:
-- **`rss`** (Resident Set Size) — total memory allocated by the OS for this process
-- **`heapTotal`** — V8's total heap size
-- **`heapUsed`** — V8's used heap size (your objects live here)
-- **`external`** — memory used by C++ objects bound to JS (Buffers, etc.)
-- **`arrayBuffers`** — memory for `ArrayBuffer` and `SharedArrayBuffer`
+- **`rss`** (Resident Set Size): total memory allocated by the OS for this process
+- **`heapTotal`**: V8's total heap size
+- **`heapUsed`**: V8's used heap size (your objects live here)
+- **`external`**: memory used by C++ objects bound to JS (Buffers, etc.)
+- **`arrayBuffers`**: memory for `ArrayBuffer` and `SharedArrayBuffer`
 
 If `heapUsed` keeps growing over time without plateauing, you have a memory leak.
 
 ## Common Mistakes
 
-- Accessing `process.env.PORT` without parsing it to a number — env vars are always strings
-- Using `process.exit()` in library code — it prevents cleanup. Throw an error instead and let the caller decide
-- Not registering `process.on('uncaughtException')` — unhandled errors crash the process silently
-- Storing secrets in `process.argv` — they're visible to anyone running `ps` on the system. Use env vars instead
+- Accessing `process.env.PORT` without parsing it to a number: env vars are always strings
+- Using `process.exit()` in library code. It prevents cleanup. Throw an error instead and let the caller decide
+- Not registering `process.on('uncaughtException')`: unhandled errors crash the process silently
+- Storing secrets in `process.argv`. They're visible to anyone running `ps` on the system. Use env vars instead
 
 
 ---
 
 ## Navigation
 
-[< 003 — Os And System Info](003-os-and-system-info.md) | [005 — Process Lifecycle >](005-process-lifecycle.md)
+[< 003 - Os And System Info](003-os-and-system-info.md) | [005 - Process Lifecycle >](005-process-lifecycle.md)

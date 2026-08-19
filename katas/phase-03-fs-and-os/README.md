@@ -1,4 +1,4 @@
-# Phase 3 — File System & OS Interaction
+# Phase 3: File System & OS Interaction
 
 Interact with the file system and operating system through Node.js core modules. Learn to read and write files (sync vs async), work with paths and directories, query system information, and manage process lifecycle.
 
@@ -18,4 +18,4 @@ Interact with the file system and operating system through Node.js core modules.
 
 ## Navigation
 
-[< Phase 2 — Node.js Core Architecture](../phase-02-core-architecture/README.md) | [Phase 4 — Buffers, Binary Data & Encoding >](../phase-04-buffers-and-encoding/README.md)
+[< Phase 2: Node.js Core Architecture](../phase-02-core-architecture/README.md) | [Phase 4: Buffers, Binary Data & Encoding >](../phase-04-buffers-and-encoding/README.md)

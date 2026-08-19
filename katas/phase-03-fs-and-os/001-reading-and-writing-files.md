@@ -14,17 +14,17 @@ estimated_minutes: 12
 
 The `fs` module is Node.js's interface to the file system. It provides three APIs:
 
-1. **Callback API** — `fs.readFile(path, callback)` — the original Node.js pattern
-2. **Promise API** — `fs.promises.readFile(path)` or `import { readFile } from "fs/promises"` — modern, works with async/await
-3. **Synchronous API** — `fs.readFileSync(path)` — blocks the event loop, use only at startup
+1. **Callback API**: `fs.readFile(path, callback)`: the original Node.js pattern
+2. **Promise API**: `fs.promises.readFile(path)` or `import { readFile } from "fs/promises"`: modern, works with async/await
+3. **Synchronous API**: `fs.readFileSync(path)`: blocks the event loop, use only at startup
 
-The Promise API is what you should use in almost all cases. The sync API blocks the entire event loop — acceptable during process initialization, but never in a server request handler.
+The Promise API is what you should use in almost all cases. The sync API blocks the entire event loop: acceptable during process initialization, but never in a server request handler.
 
 File operations go through the libuv thread pool (default 4 threads). This means concurrent file operations beyond 4 will queue up.
 
 ## Key Insight
 
-> Always use `fs/promises` for file operations in running applications. The sync API (`readFileSync`) blocks the event loop — use it only at startup for loading config. The callback API works but async/await is cleaner.
+> Always use `fs/promises` for file operations in running applications. The sync API (`readFileSync`) blocks the event loop. Use it only at startup for loading config. The callback API works but async/await is cleaner.
 
 ## Experiment
 
@@ -92,19 +92,19 @@ console.log("6. File deleted");
 ## Challenge
 
 1. Write a JSON object to a file with `JSON.stringify(data, null, 2)`, read it back and parse it
-2. Try reading a file that doesn't exist — what error do you get? Handle it with `try/catch`
-3. Use `readFile` without the `"utf-8"` encoding — what type is the result? Why?
+2. Try reading a file that doesn't exist: what error do you get? Handle it with `try/catch`
+3. Use `readFile` without the `"utf-8"` encoding: what type is the result? Why?
 
 ## Common Mistakes
 
-- Using `readFileSync` in a server request handler — blocks all other requests while the file is read
-- Forgetting the `"utf-8"` encoding in `readFile` — returns a Buffer instead of a string
-- Not handling `ENOENT` (file not found) errors — always wrap file operations in `try/catch`
-- Writing sensitive data without proper file permissions — use the `mode` option: `writeFile(path, data, { mode: 0o600 })`
+- Using `readFileSync` in a server request handler: blocks all other requests while the file is read
+- Forgetting the `"utf-8"` encoding in `readFile`: returns a Buffer instead of a string
+- Not handling `ENOENT` (file not found) errors. Always wrap file operations in `try/catch`
+- Writing sensitive data without proper file permissions. Use the `mode` option: `writeFile(path, data, { mode: 0o600 })`
 
 
 ---
 
 ## Navigation
 
-[< 005 — Worker Threads Intro](../phase-02-core-architecture/005-worker-threads-intro.md) | [002 — Paths And Directories >](002-paths-and-directories.md)
+[< 005 - Worker Threads Intro](../phase-02-core-architecture/005-worker-threads-intro.md) | [002 - Paths And Directories >](002-paths-and-directories.md)

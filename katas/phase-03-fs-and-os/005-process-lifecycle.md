@@ -14,15 +14,15 @@ estimated_minutes: 15
 
 A Node.js process goes through a lifecycle:
 
-1. **Startup** — load modules, execute top-level code
-2. **Running** — event loop processes callbacks, I/O, timers
-3. **Shutdown** — event loop empties, or process receives a signal
+1. **Startup**: load modules, execute top-level code
+2. **Running**: event loop processes callbacks, I/O, timers
+3. **Shutdown**: event loop empties, or process receives a signal
 
 Understanding this lifecycle is critical for building reliable servers. A production process must:
 
-- **Handle errors** without crashing — `uncaughtException`, `unhandledRejection`
-- **Respond to signals** — `SIGINT` (Ctrl+C), `SIGTERM` (container stop)
-- **Shut down gracefully** — close database connections, finish in-flight requests, flush logs
+- **Handle errors** without crashing: `uncaughtException`, `unhandledRejection`
+- **Respond to signals**: `SIGINT` (Ctrl+C), `SIGTERM` (container stop)
+- **Shut down gracefully**: close database connections, finish in-flight requests, flush logs
 
 The process exits when the event loop has nothing left to do (no timers, no I/O, no listeners), or when `process.exit()` is called, or when an unhandled error occurs.
 
@@ -39,7 +39,7 @@ console.log("Title:", process.title);
 
 // Track lifecycle events
 process.on("exit", (code) => {
-  // Only synchronous code runs here — no async!
+  // Only synchronous code runs here. No async!
   console.log(`\n[exit] Process exiting with code ${code}`);
 });
 
@@ -65,7 +65,7 @@ process.on("unhandledRejection", (reason) => {
 const signals = ["SIGINT", "SIGTERM"];
 for (const sig of signals) {
   process.on(sig, () => {
-    console.log(`[${sig}] Received — would shut down gracefully`);
+    console.log(`[${sig}] Received: would shut down gracefully`);
     // In a real server:
     // 1. Stop accepting new connections
     // 2. Wait for in-flight requests to finish
@@ -133,7 +133,7 @@ Active handles keeping process alive:
 
 1. Write a graceful shutdown function that: sets a "shutting down" flag, calls `server.close()`, waits up to 10 seconds for in-flight requests, then exits
 2. What's the difference between `process.exit(0)` and `process.exitCode = 0`? Which allows cleanup handlers to run?
-3. Use `process.getActiveResourcesInfo()` to debug why a process isn't exiting — find the resource keeping it alive
+3. Use `process.getActiveResourcesInfo()` to debug why a process isn't exiting: find the resource keeping it alive
 
 ## Deep Dive
 
@@ -166,18 +166,18 @@ process.on('SIGTERM', async () => {
 });
 ```
 
-The `.unref()` on the timeout is important — without it, the timeout itself keeps the process alive for 30 seconds even if everything else closes cleanly.
+The `.unref()` on the timeout is important: without it, the timeout itself keeps the process alive for 30 seconds even if everything else closes cleanly.
 
 ## Common Mistakes
 
-- Using `process.on('uncaughtException')` to silently swallow errors — always exit after logging. The process state may be corrupted
-- Not handling `SIGTERM` — containers (Docker, Kubernetes) send `SIGTERM` before `SIGKILL`. You have ~30 seconds to clean up
-- Running async code in the `'exit'` handler — only synchronous code works there
-- Forgetting to `.unref()` shutdown timeouts — they keep the process alive unnecessarily
+- Using `process.on('uncaughtException')` to silently swallow errors. Always exit after logging. The process state may be corrupted
+- Not handling `SIGTERM`: containers (Docker, Kubernetes) send `SIGTERM` before `SIGKILL`. You have ~30 seconds to clean up
+- Running async code in the `'exit'` handler. Only synchronous code works there
+- Forgetting to `.unref()` shutdown timeouts. They keep the process alive unnecessarily
 
 
 ---
 
 ## Navigation
 
-[< 004 — Process And Environment](004-process-and-environment.md) | [001 — What Is A Buffer >](../phase-04-buffers-and-encoding/001-what-is-a-buffer.md)
+[< 004 - Process And Environment](004-process-and-environment.md) | [001 - What Is A Buffer >](../phase-04-buffers-and-encoding/001-what-is-a-buffer.md)

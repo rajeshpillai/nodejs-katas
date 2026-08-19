@@ -21,7 +21,7 @@ The `os` module provides operating system-related utility methods. In a server o
 - The current user's home directory (for config files)
 - Network interfaces (for binding servers)
 
-This information is essential for building systems that adapt to their environment — a production server should use all available cores, respect memory limits, and store temp files in the right place.
+This information is essential for building systems that adapt to their environment: a production server should use all available cores, respect memory limits, and store temp files in the right place.
 
 ## Key Insight
 
@@ -117,17 +117,17 @@ for (const [name, addrs] of Object.entries(nets)) {
 
 1. Write a function that returns the optimal worker count based on CPU cores (common pattern: `Math.max(1, cpus().length - 1)`)
 2. Build a simple memory monitor that logs memory usage every second using `setInterval` and `freemem()`
-3. Find the non-internal IPv4 address — this is the address clients would use to connect to your server
+3. Find the non-internal IPv4 address. This is the address clients would use to connect to your server
 
 ## Common Mistakes
 
 - Hardcoding CPU counts or memory sizes instead of reading them from `os`
-- Using `os.tmpdir()` without checking it exists — it always exists, but temp files may be cleaned by the OS
-- Assuming `os.hostname()` returns a fully qualified domain name — it usually returns the short hostname
+- Using `os.tmpdir()` without checking it exists. It always exists, but temp files may be cleaned by the OS
+- Assuming `os.hostname()` returns a fully qualified domain name. It usually returns the short hostname
 
 
 ---
 
 ## Navigation
 
-[< 002 — Paths And Directories](002-paths-and-directories.md) | [004 — Process And Environment >](004-process-and-environment.md)
+[< 002 - Paths And Directories](002-paths-and-directories.md) | [004 - Process And Environment >](004-process-and-environment.md)
