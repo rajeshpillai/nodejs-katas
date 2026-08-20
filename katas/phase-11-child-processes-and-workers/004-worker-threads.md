@@ -152,7 +152,7 @@ const parallelElapsed = performance.now() - parallelStart;
 
 console.log("  4 fibonacci computations in parallel:");
 for (const r of parallelResults) {
-  console.log(`    fib(${r.result > 14930351 ? 37 : r.result > 9227465 ? 36 : 35}) = ${r.result} (${r.elapsed.toFixed(0)}ms)`);
+  console.log(`    fib(${r.result > 14930352 ? 37 : r.result > 9227465 ? 36 : 35}) = ${r.result} (${r.elapsed.toFixed(0)}ms)`);
 }
 console.log(`  Total wall time: ${parallelElapsed.toFixed(0)}ms`);
 
