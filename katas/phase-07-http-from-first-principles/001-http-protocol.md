@@ -149,7 +149,7 @@ const methods = [
 
 console.log("HTTP Methods:");
 for (const { method, path, desc } of methods) {
-  console.log(`  ${method.padEnd(7)} ${path.padEnd(10)}: ${desc}`);
+  console.log(`  ${method.padEnd(7)} ${(path + ":").padEnd(11)} ${desc}`);
 }
 
 console.log("\n=== Status Codes ===\n");
@@ -172,7 +172,7 @@ const statusCodes = [
 
 console.log("Important status codes:");
 for (const [code, text, meaning] of statusCodes) {
-  console.log(`  ${code} ${text.padEnd(22)}: ${meaning}`);
+  console.log(`  ${code} ${(text + ":").padEnd(23)} ${meaning}`);
 }
 
 server.close();
