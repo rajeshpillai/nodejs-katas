@@ -78,14 +78,14 @@ class PaginatedDB {
     const results = [];
 
     for (const row of this.rows) {
-      this.scannedRows++;
-
-      // Skip rows before cursor
+      // Skip rows before the cursor. A real index seek jumps straight here,
+      // so skipped rows are not scanned and must not be counted as such.
       if (cursor) {
         if (row.created_at > cursor.created_at) continue;
         if (row.created_at === cursor.created_at && row.id >= cursor.id) continue;
       }
 
+      this.scannedRows++;
       results.push(row);
       if (results.length === limit) break;
     }
@@ -131,8 +131,8 @@ let currentPage = 0;
 
 // Navigate to each target page
 for (const targetPage of keysetPages) {
-  // Fast-forward to target page
-  while (currentPage < targetPage) {
+  // Fast-forward to the page BEFORE the target, then query the target itself
+  while (currentPage < targetPage - 1) {
     const result = db.queryKeyset(PAGE_SIZE, cursor);
     if (result.rows.length > 0) {
       const lastRow = result.rows[result.rows.length - 1];
