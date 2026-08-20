@@ -76,14 +76,14 @@ requestCount = 0;
 // Use a custom Agent with keep-alive
 const agent = new Agent({ keepAlive: true, maxSockets: 1 });
 
-function makeRequest(url) {
+function makeRequest(url, useAgent = agent) {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url);
     const req = httpRequest({
       hostname: urlObj.hostname,
       port: urlObj.port,
       path: urlObj.pathname,
-      agent: agent,
+      agent: useAgent,
     }, (res) => {
       const chunks = [];
       res.on("data", (c) => chunks.push(c));
@@ -135,9 +135,9 @@ connectionCount = 0;
 requestCount = 0;
 
 await Promise.all([
-  makeRequest(`http://127.0.0.1:${port}/a`),
-  makeRequest(`http://127.0.0.1:${port}/b`),
-  makeRequest(`http://127.0.0.1:${port}/c`),
+  makeRequest(`http://127.0.0.1:${port}/a`, poolAgent),
+  makeRequest(`http://127.0.0.1:${port}/b`, poolAgent),
+  makeRequest(`http://127.0.0.1:${port}/c`, poolAgent),
 ]);
 
 console.log(`\nParallel: ${requestCount} requests, ${connectionCount} connections`);
@@ -147,7 +147,7 @@ connectionCount = 0;
 requestCount = 0;
 
 for (let i = 0; i < 3; i++) {
-  await makeRequest(`http://127.0.0.1:${port}/seq`);
+  await makeRequest(`http://127.0.0.1:${port}/seq`, poolAgent);
 }
 
 console.log(`Sequential: ${requestCount} requests, ${connectionCount} connections`);
