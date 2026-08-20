@@ -206,15 +206,19 @@ for (let i = 0; i < 10; i++) {
 
 console.log(`  Enqueued 10 jobs\n`);
 
-// 3 workers claim jobs concurrently
-const claimed = {};
-for (const workerId of ["worker-A", "worker-B", "worker-C"]) {
-  claimed[workerId] = [];
+// 3 workers claim jobs concurrently.
+// Interleave the claims. Draining the whole queue with one worker before the
+// next one starts is sequential, and it would show worker-A taking everything.
+const workerIds = ["worker-A", "worker-B", "worker-C"];
+const claimed = Object.fromEntries(workerIds.map(w => [w, []]));
 
-  // Each worker claims multiple jobs
-  while (true) {
+let anyClaimed = true;
+while (anyClaimed) {
+  anyClaimed = false;
+  for (const workerId of workerIds) {
     const job = await concQueue.claim(workerId);
-    if (!job) break;
+    if (!job) continue;
+    anyClaimed = true;
     claimed[workerId].push(job.id);
     await concQueue.complete(job.id, "done");
   }
