@@ -12,24 +12,24 @@ estimated_minutes: 12
 
 ## Concept
 
-UDP (User Datagram Protocol) is TCP's lightweight sibling. Where TCP provides reliable, ordered delivery with connection management, UDP provides **none of that** — and that's its strength.
+UDP (User Datagram Protocol) is TCP's lightweight sibling. Where TCP provides reliable, ordered delivery with connection management, UDP provides **none of that**, and that's its strength.
 
 UDP properties:
-- **Connectionless** — no handshake, no connection state
-- **Unreliable** — packets can be lost, duplicated, or arrive out of order
-- **Message-oriented** — each `send()` produces exactly one datagram. Unlike TCP, message boundaries are preserved
-- **Low overhead** — no connection setup, no acknowledgments, no retransmission
+- **Connectionless**. No handshake, no connection state
+- **Unreliable**: packets can be lost, duplicated, or arrive out of order
+- **Message-oriented**. Each `send()` produces exactly one datagram. Unlike TCP, message boundaries are preserved
+- **Low overhead**. No connection setup, no acknowledgments, no retransmission
 
 Node.js exposes UDP through the `dgram` module. Use cases:
-- **DNS** — fast lookups where retrying is cheaper than connection overhead
-- **Video/audio streaming** — missing a frame is better than waiting for retransmission
-- **Game networking** — position updates must be fast, slightly stale data is acceptable
-- **Service discovery** — broadcast/multicast to find services on a network
-- **Metrics/logging** — fire-and-forget telemetry (StatsD protocol)
+- **DNS**: fast lookups where retrying is cheaper than connection overhead
+- **Video/audio streaming**: missing a frame is better than waiting for retransmission
+- **Game networking**: position updates must be fast, slightly stale data is acceptable
+- **Service discovery**: broadcast/multicast to find services on a network
+- **Metrics/logging**: fire-and-forget telemetry (StatsD protocol)
 
 ## Key Insight
 
-> UDP preserves message boundaries — if you send a 100-byte message, the receiver gets exactly one 100-byte message (or nothing at all). This is the opposite of TCP, where message boundaries are lost. Choose UDP when speed matters more than reliability, and when your application can handle lost or out-of-order messages.
+> UDP preserves message boundaries. If you send a 100-byte message, the receiver gets exactly one 100-byte message (or nothing at all). This is the opposite of TCP, where message boundaries are lost. Choose UDP when speed matters more than reliability, and when your application can handle lost or out-of-order messages.
 
 ## Experiment
 
@@ -217,14 +217,14 @@ When a datagram exceeds the network MTU, IP fragmentation occurs. If any fragmen
 
 ## Common Mistakes
 
-- Using UDP when you need reliability — you'll end up reimplementing TCP badly
-- Not handling the case where `send()` errors — even "fire and forget" can fail (no route to host, socket closed)
-- Assuming datagrams arrive in order — they might not, especially over the internet
-- Sending datagrams larger than the MTU — causes fragmentation and increases the chance of packet loss
+- Using UDP when you need reliability: you'll end up reimplementing TCP badly
+- Not handling the case where `send()` errors. Even "fire and forget" can fail (no route to host, socket closed)
+- Assuming datagrams arrive in order. They might not, especially over the internet
+- Sending datagrams larger than the MTU: causes fragmentation and increases the chance of packet loss
 
 
 ---
 
 ## Navigation
 
-[< 001 — Tcp Basics](001-tcp-basics.md) | [003 — Socket Lifecycle >](003-socket-lifecycle.md)
+[< 001 - Tcp Basics](001-tcp-basics.md) | [003 - Socket Lifecycle >](003-socket-lifecycle.md)

@@ -1,4 +1,4 @@
-# Phase 6 — Networking Fundamentals
+# Phase 6: Networking Fundamentals
 
 Build networked applications from the socket level up. Learn TCP basics with the net module, UDP overview, socket lifecycle management, timeout and retry strategies, and length-prefix framing for custom protocols.
 
@@ -18,4 +18,4 @@ Build networked applications from the socket level up. Learn TCP basics with the
 
 ## Navigation
 
-[< Phase 5 — Streams & Backpressure](../phase-05-streams-and-backpressure/README.md) | [Phase 7 — HTTP from First Principles >](../phase-07-http-from-first-principles/README.md)
+[< Phase 5. Streams & Backpressure](../phase-05-streams-and-backpressure/README.md) | [Phase 7. HTTP from First Principles >](../phase-07-http-from-first-principles/README.md)

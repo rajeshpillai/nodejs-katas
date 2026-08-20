@@ -12,16 +12,16 @@ estimated_minutes: 18
 
 ## Concept
 
-TCP is a byte stream — it has no concept of messages. When you call `socket.write("Hello")` followed by `socket.write("World")`, the receiver might get `"HelloWorld"` as one chunk, or `"Hel"` and `"loWorld"` as two, or any other split. This is called the **TCP framing problem**.
+TCP is a byte stream. It has no concept of messages. When you call `socket.write("Hello")` followed by `socket.write("World")`, the receiver might get `"HelloWorld"` as one chunk, or `"Hel"` and `"loWorld"` as two, or any other split. This is called the **TCP framing problem**.
 
-To send discrete messages over TCP, you need a **framing protocol** — a way to mark where each message begins and ends. The two main approaches:
+To send discrete messages over TCP, you need a **framing protocol**: a way to mark where each message begins and ends. The two main approaches:
 
-**1. Delimiter-based framing** — end each message with a special byte sequence (like `\r\n`):
+**1. Delimiter-based framing**: end each message with a special byte sequence (like `\r\n`):
 - Pro: Simple to implement
 - Con: The delimiter can't appear in the message (or must be escaped)
 - Used by: HTTP/1.1 headers, Redis RESP, line-based protocols
 
-**2. Length-prefix framing** — prepend each message with its byte length:
+**2. Length-prefix framing**: prepend each message with its byte length:
 - Pro: Works with any content, including binary
 - Con: Must buffer until the full message arrives
 - Used by: PostgreSQL wire protocol, HTTP/2, Protocol Buffers, WebSocket
@@ -71,7 +71,7 @@ const rawResult = await new Promise(resolve => {
 
 console.log("Sent 5 separate writes");
 console.log("Server received these chunks:", rawResult);
-console.log("(Messages may be merged — TCP doesn't preserve boundaries!)\n");
+console.log("(Messages may be merged. TCP doesn't preserve boundaries!)\n");
 
 rawServer.close();
 
@@ -95,7 +95,7 @@ class FrameDecoder {
     this.messages = [];
   }
 
-  // Feed incoming TCP data — returns complete messages
+  // Feed incoming TCP data: returns complete messages
   feed(chunk) {
     // Append new data to our buffer
     this.buffer = Buffer.concat([this.buffer, chunk]);
@@ -256,7 +256,7 @@ for (const obj of objects) {
 
 Sent 5 separate writes
 Server received these chunks: ["msg-1msg-2msg-3msg-4msg-5"]
-(Messages may be merged — TCP doesn't preserve boundaries!)
+(Messages may be merged. TCP doesn't preserve boundaries!)
 
 === Length-Prefix Framing Protocol ===
 
@@ -303,7 +303,7 @@ Decoded JSON messages:
 ## Challenge
 
 1. Add a message type byte after the length prefix (before the payload). Define types: 0 = text, 1 = JSON, 2 = binary, 3 = ping, 4 = pong. Implement automatic ping/pong keep-alive
-2. Implement a maximum message size check in the decoder — reject frames larger than 1 MB to prevent memory attacks
+2. Implement a maximum message size check in the decoder: reject frames larger than 1 MB to prevent memory attacks
 3. Build a delimiter-based framer using `\r\n` as the delimiter. Compare it with length-prefix: which handles binary data? Which is easier to debug with telnet?
 
 ## Deep Dive
@@ -312,23 +312,23 @@ Performance considerations for the frame decoder:
 
 The naive `Buffer.concat()` approach in our decoder allocates a new buffer on every `feed()` call. For high-throughput servers, consider:
 
-1. **Ring buffer** — pre-allocate a large buffer and track read/write positions
-2. **Linked list of buffers** — avoid copying by maintaining a list of chunks with a total byte count
-3. **Buffer pool** — reuse buffers from a pool instead of allocating new ones
+1. **Ring buffer**: pre-allocate a large buffer and track read/write positions
+2. **Linked list of buffers**: avoid copying by maintaining a list of chunks with a total byte count
+3. **Buffer pool**: reuse buffers from a pool instead of allocating new ones
 
-Node.js's internal HTTP parser uses option (2) — it keeps chunks in a linked list and only copies when extracting a complete message. For most applications, the naive approach is fine up to thousands of messages per second.
+Node.js's internal HTTP parser uses option (2). It keeps chunks in a linked list and only copies when extracting a complete message. For most applications, the naive approach is fine up to thousands of messages per second.
 
 ## Common Mistakes
 
-- Not handling partial frames — the most common framing bug. Always buffer incomplete data and wait for more
-- Using 2-byte length prefix when messages can exceed 65 KB — `UInt16` overflows at 65,535 bytes
-- Forgetting to handle zero-length messages — a frame with length 0 is valid (like a heartbeat)
-- Not limiting maximum frame size — an attacker can send a length of 2^32-1 and make you allocate 4 GB of memory
-- Using `Buffer.concat()` in a hot loop — allocates on every call. Pre-allocate or use a ring buffer for high throughput
+- Not handling partial frames: the most common framing bug. Always buffer incomplete data and wait for more
+- Using 2-byte length prefix when messages can exceed 65 KB: `UInt16` overflows at 65,535 bytes
+- Forgetting to handle zero-length messages: a frame with length 0 is valid (like a heartbeat)
+- Not limiting maximum frame size: an attacker can send a length of 2^32-1 and make you allocate 4 GB of memory
+- Using `Buffer.concat()` in a hot loop: allocates on every call. Pre-allocate or use a ring buffer for high throughput
 
 
 ---
 
 ## Navigation
 
-[< 004 — Timeouts And Retries](004-timeouts-and-retries.md) | [001 — Http Protocol >](../phase-07-http-from-first-principles/001-http-protocol.md)
+[< 004 - Timeouts And Retries](004-timeouts-and-retries.md) | [001 - Http Protocol >](../phase-07-http-from-first-principles/001-http-protocol.md)

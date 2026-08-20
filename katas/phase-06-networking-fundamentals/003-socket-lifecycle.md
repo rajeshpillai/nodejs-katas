@@ -12,30 +12,30 @@ estimated_minutes: 15
 
 ## Concept
 
-A TCP socket goes through a well-defined lifecycle. Understanding these states is essential for building reliable network applications — especially for handling graceful shutdowns, detecting dead connections, and debugging network issues.
+A TCP socket goes through a well-defined lifecycle. Understanding these states is essential for building reliable network applications, especially for handling graceful shutdowns, detecting dead connections, and debugging network issues.
 
 The socket lifecycle:
 
-1. **Created** — `new net.Socket()` or from `createConnection()`
-2. **Connecting** — TCP three-way handshake in progress
-3. **Connected** — data can flow in both directions
-4. **Half-closed** — one side called `end()`, can still receive from the other side
-5. **Closed** — both sides done, resources released
+1. **Created**: `new net.Socket()` or from `createConnection()`
+2. **Connecting**: TCP three-way handshake in progress
+3. **Connected**: data can flow in both directions
+4. **Half-closed**: one side called `end()`, can still receive from the other side
+5. **Closed**: both sides done, resources released
 
 Key events in order:
-- `'lookup'` — DNS resolved (if connecting by hostname)
-- `'connect'` — TCP handshake complete
-- `'ready'` — socket is fully ready
-- `'data'` — data received (zero or more)
-- `'end'` — remote side called `end()` (FIN received)
-- `'close'` — socket fully closed
-- `'error'` — error occurred (always before `'close'`)
+- `'lookup'`: DNS resolved (if connecting by hostname)
+- `'connect'`. TCP handshake complete
+- `'ready'`: socket is fully ready
+- `'data'`: data received (zero or more)
+- `'end'`: remote side called `end()` (FIN received)
+- `'close'`: socket fully closed
+- `'error'`: error occurred (always before `'close'`)
 
-The half-close mechanism is powerful: a client can say "I'm done sending" (`end()`) while still receiving the server's response. HTTP/1.1 uses this — the client sends the request and calls `end()`, then reads the response.
+The half-close mechanism is powerful: a client can say "I'm done sending" (`end()`) while still receiving the server's response. HTTP/1.1 uses this. The client sends the request and calls `end()`, then reads the response.
 
 ## Key Insight
 
-> A socket's `'end'` event means the other side is done *sending*, not that the connection is closed. You can still write to the socket after receiving `'end'`. This half-close design enables request-response protocols: send a request, signal "done sending," then read the response. Call `socket.end()` when *you're* done — only `'close'` means the connection is truly finished.
+> A socket's `'end'` event means the other side is done *sending*, not that the connection is closed. You can still write to the socket after receiving `'end'`. This half-close design enables request-response protocols: send a request, signal "done sending," then read the response. Call `socket.end()` when *you're* done. Only `'close'` means the connection is truly finished.
 
 ## Experiment
 
@@ -242,7 +242,7 @@ Done
 TCP's half-close (FIN) mechanism:
 - When you call `socket.end()`, Node.js sends a TCP FIN packet
 - The other side receives the `'end'` event
-- But the connection is still half-open — the other side can still send data
+- But the connection is still half-open: the other side can still send data
 - When the other side also calls `end()`, a second FIN is sent
 - After both FINs and their ACKs, the connection enters TIME_WAIT (typically 2 minutes on Linux)
 
@@ -250,14 +250,14 @@ TCP's half-close (FIN) mechanism:
 
 ## Common Mistakes
 
-- Not distinguishing `'end'` from `'close'` — `'end'` means the remote stopped sending, `'close'` means the socket is fully done
-- Forgetting to handle `'error'` before `'close'` — errors always precede close, and unhandled errors crash the process
-- Not setting timeouts — a socket with no timeout and no keep-alive can hang forever if the network goes down
-- Writing to a socket after it's ended — causes an `ERR_STREAM_WRITE_AFTER_END` error
+- Not distinguishing `'end'` from `'close'`: `'end'` means the remote stopped sending, `'close'` means the socket is fully done
+- Forgetting to handle `'error'` before `'close'`: errors always precede close, and unhandled errors crash the process
+- Not setting timeouts: a socket with no timeout and no keep-alive can hang forever if the network goes down
+- Writing to a socket after it's ended: causes an `ERR_STREAM_WRITE_AFTER_END` error
 
 
 ---
 
 ## Navigation
 
-[< 002 — Udp Overview](002-udp-overview.md) | [004 — Timeouts And Retries >](004-timeouts-and-retries.md)
+[< 002 - Udp Overview](002-udp-overview.md) | [004 - Timeouts And Retries >](004-timeouts-and-retries.md)

@@ -12,17 +12,17 @@ estimated_minutes: 15
 
 ## Concept
 
-TCP (Transmission Control Protocol) is the foundation of most internet communication. HTTP, WebSockets, databases, email — they all run over TCP. Node.js exposes TCP through the `net` module.
+TCP (Transmission Control Protocol) is the foundation of most internet communication. HTTP, WebSockets, databases, email. They all run over TCP. Node.js exposes TCP through the `net` module.
 
 A TCP connection is a **bidirectional byte stream** between two endpoints. Key properties:
 
-- **Reliable** — bytes arrive in order, none are lost (retransmission handles packet loss)
-- **Connection-oriented** — a three-way handshake (SYN, SYN-ACK, ACK) establishes the connection before data flows
-- **Stream-based** — there are no message boundaries. If you send "Hello" then "World", the receiver might get "HelloWorld" or "Hel" then "loWorld"
+- **Reliable**: bytes arrive in order, none are lost (retransmission handles packet loss)
+- **Connection-oriented**: a three-way handshake (SYN, SYN-ACK, ACK) establishes the connection before data flows
+- **Stream-based**. There are no message boundaries. If you send "Hello" then "World", the receiver might get "HelloWorld" or "Hel" then "loWorld"
 
 The `net` module gives you:
-- `net.createServer()` — create a TCP server that accepts connections
-- `net.createConnection()` — connect to a TCP server as a client
+- `net.createServer()`: create a TCP server that accepts connections
+- `net.createConnection()`: connect to a TCP server as a client
 - Each connection is a `Duplex` stream (both Readable and Writable)
 
 ## Key Insight
@@ -41,7 +41,7 @@ const server = createServer((socket) => {
   const addr = `${socket.remoteAddress}:${socket.remotePort}`;
   console.log(`[server] Client connected: ${addr}`);
 
-  // socket is a Duplex stream — both readable and writable
+  // socket is a Duplex stream. Both readable and writable
   socket.on("data", (data) => {
     console.log(`[server] Received from ${addr}: ${data.toString().trim()}`);
     // Echo back with transformation
@@ -176,31 +176,31 @@ await new Promise(r => setTimeout(r, 50));
 
 ## Challenge
 
-1. Build a TCP chat server — multiple clients connect, and any message from one client is broadcast to all others
+1. Build a TCP chat server: multiple clients connect, and any message from one client is broadcast to all others
 2. What happens if the server crashes while clients are connected? What events fire on the client socket?
-3. Connect a TCP client to a non-existent server — observe the error and implement retry logic with exponential backoff
+3. Connect a TCP client to a non-existent server: observe the error and implement retry logic with exponential backoff
 
 ## Deep Dive
 
 TCP socket lifecycle events in order:
-1. `'connect'` — connection established (client only)
-2. `'data'` — data received (zero or more times)
-3. `'end'` — other side called `socket.end()` (half-close)
-4. `'close'` — socket fully closed (after both sides close)
-5. `'error'` — an error occurred (always followed by `'close'`)
+1. `'connect'`: connection established (client only)
+2. `'data'`: data received (zero or more times)
+3. `'end'`: other side called `socket.end()` (half-close)
+4. `'close'`: socket fully closed (after both sides close)
+5. `'error'`: an error occurred (always followed by `'close'`)
 
-The `'end'` event represents a TCP half-close — one side is done sending but can still receive. This is used in HTTP to signal "I'm done sending the request, waiting for your response."
+The `'end'` event represents a TCP half-close. One side is done sending but can still receive. This is used in HTTP to signal "I'm done sending the request, waiting for your response."
 
 ## Common Mistakes
 
-- Assuming each `write()` produces one `'data'` event — TCP can coalesce or split writes. You need framing
-- Not handling `'error'` on sockets — unhandled errors crash the process
-- Using `socket.destroy()` instead of `socket.end()` — `destroy()` is abrupt (RST packet), `end()` is graceful (FIN packet)
-- Forgetting to handle the case where `server.listen()` fails — port already in use is a common production error
+- Assuming each `write()` produces one `'data'` event. TCP can coalesce or split writes. You need framing
+- Not handling `'error'` on sockets: unhandled errors crash the process
+- Using `socket.destroy()` instead of `socket.end()`: `destroy()` is abrupt (RST packet), `end()` is graceful (FIN packet)
+- Forgetting to handle the case where `server.listen()` fails: port already in use is a common production error
 
 
 ---
 
 ## Navigation
 
-[< 005 — Backpressure](../phase-05-streams-and-backpressure/005-backpressure.md) | [002 — Udp Overview >](002-udp-overview.md)
+[< 005 - Backpressure](../phase-05-streams-and-backpressure/005-backpressure.md) | [002 - Udp Overview >](002-udp-overview.md)

@@ -15,22 +15,22 @@ estimated_minutes: 15
 Networks are unreliable. Connections drop, servers crash, packets get lost, DNS fails. Robust network code needs two defenses:
 
 **Timeouts** prevent your application from waiting forever:
-- **Connection timeout** — how long to wait for the TCP handshake
-- **Socket timeout** — how long to wait for data after connecting
-- **Request timeout** — how long the entire operation can take
-- **DNS timeout** — how long to wait for name resolution
+- **Connection timeout**: how long to wait for the TCP handshake
+- **Socket timeout**: how long to wait for data after connecting
+- **Request timeout**: how long the entire operation can take
+- **DNS timeout**: how long to wait for name resolution
 
 **Retries** let you recover from transient failures:
-- **Immediate retry** — try again right away (good for network glitches)
-- **Fixed delay** — wait N seconds between attempts
-- **Exponential backoff** — double the wait each time (1s, 2s, 4s, 8s...)
-- **Exponential backoff with jitter** — add randomness to prevent thundering herd
+- **Immediate retry**: try again right away (good for network glitches)
+- **Fixed delay**: wait N seconds between attempts
+- **Exponential backoff**: double the wait each time (1s, 2s, 4s, 8s...)
+- **Exponential backoff with jitter**: add randomness to prevent thundering herd
 
 The combination of timeouts + exponential backoff with jitter is the gold standard for resilient network code. Without timeouts, your app hangs. Without backoff, retries can DDoS a struggling server. Without jitter, all clients retry at the same moment.
 
 ## Key Insight
 
-> Every network operation must have a timeout. Without one, a single unresponsive server can make your entire application hang forever. And every retry strategy must include exponential backoff with jitter — otherwise, when a server comes back up after a failure, all clients retry simultaneously and knock it down again (thundering herd).
+> Every network operation must have a timeout. Without one, a single unresponsive server can make your entire application hang forever. And every retry strategy must include exponential backoff with jitter: otherwise, when a server comes back up after a failure, all clients retry simultaneously and knock it down again (thundering herd).
 
 ## Experiment
 
@@ -59,7 +59,7 @@ client.setTimeout(1000);
 
 const result = await new Promise((resolve) => {
   client.on("timeout", () => {
-    console.log("[client] Timeout after 1000ms — server too slow");
+    console.log("[client] Timeout after 1000ms: server too slow");
     client.destroy();  // Must manually destroy on timeout!
     resolve("timeout");
   });
@@ -239,7 +239,7 @@ for (let i = 0; i < 8; i++) {
 ```
 === Socket Timeouts ===
 
-[client] Timeout after 1000ms — server too slow
+[client] Timeout after 1000ms: server too slow
 Result: timeout
 
 === Retry with Exponential Backoff ===
@@ -277,31 +277,31 @@ Exponential backoff delays (base=100ms, max=10s):
 ## Challenge
 
 1. Implement a circuit breaker: after N consecutive failures, stop retrying for a cooldown period, then try one "probe" request to see if the service is back
-2. Add per-attempt timeout to the retry function — each attempt gets its own timeout, and the timeout can increase with each retry
-3. What happens if you don't add jitter to exponential backoff? Simulate 100 clients all retrying the same server — observe the "thundering herd" pattern
+2. Add per-attempt timeout to the retry function. Each attempt gets its own timeout, and the timeout can increase with each retry
+3. What happens if you don't add jitter to exponential backoff? Simulate 100 clients all retrying the same server: observe the "thundering herd" pattern
 
 ## Deep Dive
 
 The three timeout layers in a typical Node.js HTTP client:
 
-1. **DNS timeout** — `dns.resolve()` with `AbortSignal.timeout()`
-2. **Connection timeout** — `socket.setTimeout()` or connection options
-3. **Response timeout** — total time waiting for the complete response
+1. **DNS timeout**: `dns.resolve()` with `AbortSignal.timeout()`
+2. **Connection timeout**: `socket.setTimeout()` or connection options
+3. **Response timeout**: total time waiting for the complete response
 
-Each layer needs its own timeout. A common mistake is setting only a response timeout — the connection could hang for minutes before timing out if DNS resolution stalls.
+Each layer needs its own timeout. A common mistake is setting only a response timeout: the connection could hang for minutes before timing out if DNS resolution stalls.
 
 `AbortController` is the modern Node.js pattern for cancellation. Many APIs accept an `AbortSignal`: `fetch()`, `fs.readFile()`, `setTimeout()` (Node.js 16+), and custom async operations.
 
 ## Common Mistakes
 
-- `socket.setTimeout()` doesn't close the socket — it only emits `'timeout'`. You must call `socket.destroy()` in the handler
-- Retrying non-idempotent operations (POST requests) — the first attempt may have succeeded, and retrying creates duplicates
-- No maximum retry limit — infinite retries with backoff can keep retrying for hours
-- Same retry strategy everywhere — a DNS failure needs different handling than a 503 response
+- `socket.setTimeout()` doesn't close the socket. It only emits `'timeout'`. You must call `socket.destroy()` in the handler
+- Retrying non-idempotent operations (POST requests): the first attempt may have succeeded, and retrying creates duplicates
+- No maximum retry limit: infinite retries with backoff can keep retrying for hours
+- Same retry strategy everywhere: a DNS failure needs different handling than a 503 response
 
 
 ---
 
 ## Navigation
 
-[< 003 — Socket Lifecycle](003-socket-lifecycle.md) | [005 — Length Prefix Framing >](005-length-prefix-framing.md)
+[< 003 - Socket Lifecycle](003-socket-lifecycle.md) | [005 - Length Prefix Framing >](005-length-prefix-framing.md)
