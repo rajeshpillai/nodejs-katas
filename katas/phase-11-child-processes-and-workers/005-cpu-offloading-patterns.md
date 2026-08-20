@@ -124,10 +124,12 @@ async function measureEventLoopLatency(label, workFn) {
   function measureTick() {
     const start = performance.now();
     setImmediate(() => {
-      if (measuring) {
-        latencies.push(performance.now() - start);
-        measureTick();
-      }
+      // Record EVERY tick that was scheduled, including the one held up by
+      // blocking work. Checking `measuring` before recording throws away
+      // exactly the sample this whole measurement exists to capture, because
+      // that sample only lands after the blocking work has finished.
+      latencies.push(performance.now() - start);
+      if (measuring) measureTick();
     });
   }
   measureTick();
