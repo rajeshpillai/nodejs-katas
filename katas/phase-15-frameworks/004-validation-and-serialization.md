@@ -118,10 +118,12 @@ class SchemaValidator {
   }
 
   _validate(data, schema, path, errors) {
-    // Type check
+    // Type check. JSON Schema's "integer" is a number whose value is whole, so
+    // compare typeof against "number" and let the integer check below decide.
     if (schema.type) {
       const actualType = Array.isArray(data) ? "array" : typeof data;
-      if (actualType !== schema.type) {
+      const expectedType = schema.type === "integer" ? "number" : schema.type;
+      if (actualType !== expectedType) {
         errors.push(`${path || "root"}: expected ${schema.type}, got ${actualType}`);
         return;
       }
