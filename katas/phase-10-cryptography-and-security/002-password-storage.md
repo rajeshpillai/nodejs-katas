@@ -16,9 +16,9 @@ Plain hashing (SHA-256) is dangerously wrong for passwords. A modern GPU can com
 
 **Password hashing** uses algorithms that are intentionally slow and memory-intensive:
 
-- **scrypt** — built into Node.js `crypto`, tunable CPU and memory cost
-- **argon2** — newer, winner of the Password Hashing Competition (requires a package)
-- **bcrypt** — widely used, but limited to 72-byte passwords
+- **scrypt**: built into Node.js `crypto`, tunable CPU and memory cost
+- **argon2**: newer, winner of the Password Hashing Competition (requires a package)
+- **bcrypt**: widely used, but limited to 72-byte passwords
 
 **How it works:**
 
@@ -26,7 +26,7 @@ Plain hashing (SHA-256) is dangerously wrong for passwords. A modern GPU can com
 password + random_salt → slow_hash_function → stored_hash
 ```
 
-Each password gets a unique random **salt** — so identical passwords produce different hashes. The salt is stored alongside the hash (not secret).
+Each password gets a unique random **salt**. So identical passwords produce different hashes. The salt is stored alongside the hash (not secret).
 
 **Node.js scrypt:**
 ```js
@@ -51,7 +51,7 @@ const match = timingSafeEqual(hashBuf, candidate);
 
 ## Key Insight
 
-> The point of password hashing is to be slow. SHA-256 takes ~10 nanoseconds. scrypt with recommended parameters takes ~100 milliseconds — that's 10 million times slower. An attacker who can try 1 billion SHA-256 hashes per second can only try ~10 scrypt hashes per second. The salt ensures that each password must be attacked individually — precomputed rainbow tables are useless.
+> The point of password hashing is to be slow. SHA-256 takes ~10 nanoseconds. scrypt with recommended parameters takes ~100 milliseconds: that's 10 million times slower. An attacker who can try 1 billion SHA-256 hashes per second can only try ~10 scrypt hashes per second. The salt ensures that each password must be attacked individually: precomputed rainbow tables are useless.
 
 ## Experiment
 
@@ -275,15 +275,15 @@ console.log(`  // Registration
 
 ## Common Mistakes
 
-- Using SHA-256/MD5 for passwords — too fast, GPU-crackable in seconds
-- Not using a salt — identical passwords get identical hashes, enabling rainbow table attacks
-- Comparing hashes with `===` instead of `timingSafeEqual` — a short-circuiting compare leaks *how many leading bytes matched* via timing, which in theory lets an attacker recover a target value byte-by-byte (the classic HMAC/token attack). For password *verification* the risk is smaller in practice: the scrypt/bcrypt KDF dominates the timing and you're comparing derived hashes, not the password itself. Still use `timingSafeEqual` — it's the correct default — but know that Node's docs explicitly warn it does **not** make the surrounding code timing-safe; it only makes the one comparison constant-time
-- Logging passwords or hashes — never log authentication data, even in error handlers
-- Using a fixed salt for all users — defeats the purpose; each user needs a unique random salt
+- Using SHA-256/MD5 for passwords: too fast, GPU-crackable in seconds
+- Not using a salt: identical passwords get identical hashes, enabling rainbow table attacks
+- Comparing hashes with `===` instead of `timingSafeEqual`: a short-circuiting compare leaks *how many leading bytes matched* via timing, which in theory lets an attacker recover a target value byte-by-byte (the classic HMAC/token attack). For password *verification* the risk is smaller in practice: the scrypt/bcrypt KDF dominates the timing and you're comparing derived hashes, not the password itself. Still use `timingSafeEqual`. It's the correct default, but know that Node's docs explicitly warn it does **not** make the surrounding code timing-safe; it only makes the one comparison constant-time
+- Logging passwords or hashes. Never log authentication data, even in error handlers
+- Using a fixed salt for all users: defeats the purpose; each user needs a unique random salt
 
 
 ---
 
 ## Navigation
 
-[< 001 — Hashing](001-hashing.md) | [003 — Encryption >](003-encryption.md)
+[< 001 - Hashing](001-hashing.md) | [003 - Encryption >](003-encryption.md)

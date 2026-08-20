@@ -1,4 +1,4 @@
-# Phase 7A — WebSockets & Real-Time Systems
+# Phase 7A: WebSockets & Real-Time Systems
 
 Build real-time systems with WebSockets. Understand the HTTP-to-WebSocket upgrade, frame protocol internals, building a WebSocket server, managing real-time state, and scaling strategies.
 
@@ -18,4 +18,4 @@ Build real-time systems with WebSockets. Understand the HTTP-to-WebSocket upgrad
 
 ## Navigation
 
-[< Phase 7 — HTTP from First Principles](../phase-07-http-from-first-principles/README.md) | [Phase 8 — Building Web Servers & APIs >](../phase-08-building-web-servers/README.md)
+[< Phase 7. HTTP from First Principles](../phase-07-http-from-first-principles/README.md) | [Phase 8: Building Web Servers & APIs >](../phase-08-building-web-servers/README.md)

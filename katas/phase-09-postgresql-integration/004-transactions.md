@@ -25,10 +25,10 @@ UPDATE accounts SET balance = balance + 100 WHERE user = 'Bob';
 Without a transaction, if the server crashes between these two statements, Alice loses $100 but Bob doesn't receive it. With a transaction, either both happen or neither does.
 
 **ACID properties:**
-- **Atomicity** — all or nothing
-- **Consistency** — constraints are enforced (balance ≥ 0, foreign keys, etc.)
-- **Isolation** — concurrent transactions don't see each other's intermediate states
-- **Durability** — committed data survives crashes (it's in the WAL)
+- **Atomicity**. All or nothing
+- **Consistency**: constraints are enforced (balance ≥ 0, foreign keys, etc.)
+- **Isolation**: concurrent transactions don't see each other's intermediate states
+- **Durability**: committed data survives crashes (it's in the WAL)
 
 **In Node.js with pg:**
 ```js
@@ -50,7 +50,7 @@ Critical: you must use the same `client` for all queries in a transaction. `pool
 
 ## Key Insight
 
-> Transactions require a dedicated connection. Using `pool.query()` for each statement in a transaction is a bug — each call may get a different connection from the pool, and `BEGIN` on connection A has no effect on connection B. Always use `pool.connect()` and the returned client for all statements in a transaction.
+> Transactions require a dedicated connection. Using `pool.query()` for each statement in a transaction is a bug. Each call may get a different connection from the pool, and `BEGIN` on connection A has no effect on connection B. Always use `pool.connect()` and the returned client for all statements in a transaction.
 
 ## Experiment
 
@@ -69,7 +69,7 @@ class SimulatedDB {
     this.nextId.set(name, rows.length + 1);
   }
 
-  // Begin a transaction — returns a snapshot for isolation
+  // Begin a transaction: returns a snapshot for isolation
   begin() {
     const snapshot = new Map();
     for (const [name, rows] of this.tables) {
@@ -123,7 +123,7 @@ class SimulatedDB {
   }
 
   rollback(txn) {
-    // Discard the snapshot — nothing changes
+    // Discard the snapshot: nothing changes
     txn.committed = false;
   }
 
@@ -335,20 +335,20 @@ Final balances:
 
 ## Challenge
 
-1. Implement the `withTransaction` helper function and use it for a multi-step operation: create a user, create their profile, and insert a welcome notification — all atomically
+1. Implement the `withTransaction` helper function and use it for a multi-step operation: create a user, create their profile, and insert a welcome notification. All atomically
 2. What is a savepoint? Implement `SAVEPOINT` and `ROLLBACK TO SAVEPOINT` to partially roll back a transaction
 3. What happens if you forget to call `ROLLBACK` after an error and the connection is returned to the pool? How does `pg` handle this?
 
 ## Common Mistakes
 
-- Using `pool.query()` inside a transaction — each call may use a different connection. The transaction only exists on one connection
-- Forgetting `finally { client.release() }` — the connection leaks from the pool, eventually exhausting it
-- Not rolling back on error — the connection stays "in transaction" and is returned to the pool in a broken state
-- Holding transactions open too long — long transactions hold locks and increase contention
+- Using `pool.query()` inside a transaction. Each call may use a different connection. The transaction only exists on one connection
+- Forgetting `finally { client.release() }`: the connection leaks from the pool, eventually exhausting it
+- Not rolling back on error: the connection stays "in transaction" and is returned to the pool in a broken state
+- Holding transactions open too long: long transactions hold locks and increase contention
 
 
 ---
 
 ## Navigation
 
-[< 003 — Parameterized Queries](003-parameterized-queries.md) | [005 — Error Handling Db >](005-error-handling-db.md)
+[< 003 - Parameterized Queries](003-parameterized-queries.md) | [005 - Error Handling Db >](005-error-handling-db.md)

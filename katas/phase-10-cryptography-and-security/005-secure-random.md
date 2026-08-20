@@ -12,7 +12,7 @@ estimated_minutes: 12
 
 ## Concept
 
-`Math.random()` is **not** cryptographically secure. It uses a predictable pseudo-random algorithm — if an attacker observes a few outputs, they can predict all future values.
+`Math.random()` is **not** cryptographically secure. It uses a predictable pseudo-random algorithm. If an attacker observes a few outputs, they can predict all future values.
 
 For security-sensitive values (tokens, keys, session IDs, nonces), use `crypto.randomBytes()` or `crypto.randomUUID()`:
 
@@ -33,7 +33,7 @@ The OS CSPRNG is seeded from hardware entropy sources (CPU timing jitter, interr
 
 ## Key Insight
 
-> `Math.random()` is fast but predictable — it's fine for shuffling a playlist but catastrophic for session tokens. `crypto.randomBytes()` is backed by the OS kernel's entropy pool and is unpredictable by design. The performance difference (~100ns vs ~1μs) is irrelevant for security operations. When in doubt, always use `crypto` for any value that an attacker should not be able to guess.
+> `Math.random()` is fast but predictable. It's fine for shuffling a playlist but catastrophic for session tokens. `crypto.randomBytes()` is backed by the OS kernel's entropy pool and is unpredictable by design. The performance difference (~100ns vs ~1μs) is irrelevant for security operations. When in doubt, always use `crypto` for any value that an attacker should not be able to guess.
 
 ## Experiment
 
@@ -57,8 +57,8 @@ for (let i = 0; i < 5; i++) {
 }
 
 console.log("\n  Key difference:");
-console.log("    Math.random() uses xorshift128+ — predictable with ~20 observed outputs");
-console.log("    crypto.randomBytes() uses OS CSPRNG — unpredictable by design\n");
+console.log("    Math.random() uses xorshift128+: predictable with ~20 observed outputs");
+console.log("    crypto.randomBytes() uses OS CSPRNG: unpredictable by design\n");
 
 // --- Demo 2: Common secure random formats ---
 
@@ -255,20 +255,20 @@ console.log(`\n  crypto is slower but the difference is negligible for security 
 ## Challenge
 
 1. Implement a "secure link" system: generate a random token, store its hash in the database, and verify by hashing the submitted token. Why store the hash instead of the raw token?
-2. Build a TOTP (Time-based One-Time Password) generator compatible with Google Authenticator — it uses HMAC-SHA1 with a shared secret and the current time
+2. Build a TOTP (Time-based One-Time Password) generator compatible with Google Authenticator. It uses HMAC-SHA1 with a shared secret and the current time
 3. Why does `randomInt(0, 10)` not suffer from modulo bias but `randomBytes(1)[0] % 10` does? Read the Node.js source to understand the rejection sampling implementation
 
 ## Common Mistakes
 
-- Using `Math.random()` for tokens, keys, or any security value — it's predictable
-- Using `randomBytes(1)[0] % N` without rejection sampling — introduces modulo bias
-- Generating tokens that are too short — a 4-character hex token has only 65,536 possible values
-- Not using constant-time comparison for token verification — timing attacks can guess tokens character by character
-- Storing raw tokens in the database — store a hash so that a database leak doesn't compromise active tokens
+- Using `Math.random()` for tokens, keys, or any security value. It's predictable
+- Using `randomBytes(1)[0] % N` without rejection sampling: introduces modulo bias
+- Generating tokens that are too short: a 4-character hex token has only 65,536 possible values
+- Not using constant-time comparison for token verification: timing attacks can guess tokens character by character
+- Storing raw tokens in the database: store a hash so that a database leak doesn't compromise active tokens
 
 
 ---
 
 ## Navigation
 
-[< 004 — Tokens And Signatures](004-tokens-and-signatures.md) | [001 — Child Process Basics >](../phase-11-child-processes-and-workers/001-child-process-basics.md)
+[< 004 - Tokens And Signatures](004-tokens-and-signatures.md) | [001 - Child Process Basics >](../phase-11-child-processes-and-workers/001-child-process-basics.md)

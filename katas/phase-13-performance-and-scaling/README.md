@@ -1,4 +1,4 @@
-# Phase 13 — Performance & Scaling
+# Phase 13: Performance & Scaling
 
 Optimize and scale Node.js applications. Profile applications, detect memory leaks, optimize event loop usage, run load tests, and implement horizontal scaling.
 
@@ -18,4 +18,4 @@ Optimize and scale Node.js applications. Profile applications, detect memory lea
 
 ## Navigation
 
-[< Phase 12 — Observability & Reliability](../phase-12-observability-and-reliability/README.md) | [Phase 14 — Background Jobs & Async Systems >](../phase-14-background-jobs/README.md)
+[< Phase 12: Observability & Reliability](../phase-12-observability-and-reliability/README.md) | [Phase 14: Background Jobs & Async Systems >](../phase-14-background-jobs/README.md)

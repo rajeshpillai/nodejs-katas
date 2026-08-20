@@ -16,13 +16,13 @@ An API gateway is a single entry point that sits between clients and backend ser
 
 **What an API gateway does:**
 
-1. **Request routing** — `/api/users` → user service, `/api/orders` → order service
-2. **Authentication** — verify JWT tokens once, pass user info to services
-3. **Rate limiting** — protect services from abuse
-4. **Request aggregation** — combine responses from multiple services into one
-5. **Protocol translation** — REST → gRPC, HTTP → WebSocket
-6. **Caching** — cache responses to reduce backend load
-7. **Load balancing** — distribute requests across service instances
+1. **Request routing**: `/api/users` → user service, `/api/orders` → order service
+2. **Authentication**: verify JWT tokens once, pass user info to services
+3. **Rate limiting**: protect services from abuse
+4. **Request aggregation**: combine responses from multiple services into one
+5. **Protocol translation**: REST → gRPC, HTTP → WebSocket
+6. **Caching**: cache responses to reduce backend load
+7. **Load balancing**: distribute requests across service instances
 
 **Gateway patterns:**
 
@@ -433,14 +433,14 @@ for (const [approach, pros, cons] of tradeoffs) {
 
 ## Common Mistakes
 
-- Gateway as a monolith — putting business logic in the gateway instead of routing to services. The gateway should only handle cross-cutting concerns
-- No circuit breaker — a slow/failing backend causes the gateway to exhaust connections and fail for all services
-- Single gateway instance — the gateway is a single point of failure. Always run multiple instances behind a load balancer
-- Over-aggregation — combining 10+ service calls into one gateway endpoint makes it slow and fragile. Keep aggregations small (2-4 services)
+- Gateway as a monolith: putting business logic in the gateway instead of routing to services. The gateway should only handle cross-cutting concerns
+- No circuit breaker: a slow/failing backend causes the gateway to exhaust connections and fail for all services
+- Single gateway instance: the gateway is a single point of failure. Always run multiple instances behind a load balancer
+- Over-aggregation: combining 10+ service calls into one gateway endpoint makes it slow and fragile. Keep aggregations small (2-4 services)
 
 
 ---
 
 ## Navigation
 
-[< 002 — Streaming Apis](002-streaming-apis.md) | [004 — Monolith Vs Microservices >](004-monolith-vs-microservices.md)
+[< 002 - Streaming Apis](002-streaming-apis.md) | [004 - Monolith Vs Microservices >](004-monolith-vs-microservices.md)

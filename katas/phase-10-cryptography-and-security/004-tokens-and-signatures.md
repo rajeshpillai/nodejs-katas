@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-A **signature** proves that data hasn't been tampered with and was created by someone with the secret key. Unlike encryption, the data stays readable — the signature only ensures integrity and authenticity.
+A **signature** proves that data hasn't been tampered with and was created by someone with the secret key. Unlike encryption, the data stays readable: the signature only ensures integrity and authenticity.
 
 **HMAC (Hash-based Message Authentication Code):**
 ```js
@@ -36,11 +36,11 @@ header.payload.signature
 - **Payload**: `{"sub":"user123","exp":1709123456}`
 - **Signature**: `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`
 
-The server creates JWTs and verifies them later without a database lookup — the signature proves the token hasn't been modified.
+The server creates JWTs and verifies them later without a database lookup: the signature proves the token hasn't been modified.
 
 ## Key Insight
 
-> HMAC is to hashing what a wax seal is to an envelope. A plain hash (SHA-256) proves the message hasn't changed, but anyone can compute a SHA-256 hash. An HMAC proves the message hasn't changed AND that it was created by someone who knows the secret key. This is why JWTs use HMAC (or RSA) — the signature proves the token was issued by your server, not forged by an attacker.
+> HMAC is to hashing what a wax seal is to an envelope. A plain hash (SHA-256) proves the message hasn't changed, but anyone can compute a SHA-256 hash. An HMAC proves the message hasn't changed AND that it was created by someone who knows the secret key. This is why JWTs use HMAC (or RSA): the signature proves the token was issued by your server, not forged by an attacker.
 
 ## Experiment
 
@@ -191,7 +191,7 @@ const tamperedResult = verifyJWT(tamperedToken, jwtSecret);
 console.log(`  Original role:  "admin"`);
 console.log(`  Tampered role:  "superadmin"`);
 console.log(`  Verification:   ${JSON.stringify(tamperedResult)}`);
-console.log("  Signature mismatch — tampering detected!\n");
+console.log("  Signature mismatch: tampering detected!\n");
 
 // Wrong secret
 const wrongResult = verifyJWT(token, "wrong-secret");
@@ -229,7 +229,7 @@ function verifyWebhook(payload, sigHeader, secret) {
   const age = Math.floor(Date.now() / 1000) - timestamp;
   if (age > 300) return { valid: false, error: "Webhook too old" };
 
-  // Guard against a missing/short sigPart — safeEqual returns false rather than
+  // Guard against a missing/short sigPart: safeEqual returns false rather than
   // letting timingSafeEqual throw on a length mismatch.
   const expected = signWebhook(payload, secret, timestamp);
   const valid = sigPart ? safeEqual(expected, sigPart) : false;
@@ -267,7 +267,7 @@ const hashedKey = hashApiKey(apiKey);
 
 console.log(`  API Key:     ${apiKey}`);
 console.log(`  Stored hash: ${hashedKey}`);
-console.log(`  Never store the raw API key — only the hash!\n`);
+console.log(`  Never store the raw API key. Only the hash!\n`);
 
 console.log("  Verification flow:");
 console.log("    1. User sends API key in Authorization header");
@@ -314,16 +314,16 @@ console.log("    4. If found, the key is valid");
 
 ## Common Mistakes
 
-- Storing JWT secrets in source code — use environment variables or a secrets manager
-- Not checking token expiration (`exp`) — expired tokens should be rejected
-- Using `===` instead of `timingSafeEqual` for signature comparison — timing attacks can reveal the expected signature
-- Calling `timingSafeEqual` on attacker-controlled input without a length check first — it throws `RangeError` when the buffers differ in length, turning a forged short signature into a crash instead of a clean rejection. Always compare lengths and return false before calling it (see `safeEqual`)
-- Storing sensitive data in JWT payload — JWTs are base64-encoded (readable), not encrypted. Anyone can decode the payload
-- Not validating the `alg` header — the "alg: none" attack tricks servers into accepting unsigned tokens
+- Storing JWT secrets in source code. Use environment variables or a secrets manager
+- Not checking token expiration (`exp`): expired tokens should be rejected
+- Using `===` instead of `timingSafeEqual` for signature comparison: timing attacks can reveal the expected signature
+- Calling `timingSafeEqual` on attacker-controlled input without a length check first. It throws `RangeError` when the buffers differ in length, turning a forged short signature into a crash instead of a clean rejection. Always compare lengths and return false before calling it (see `safeEqual`)
+- Storing sensitive data in JWT payload: JWTs are base64-encoded (readable), not encrypted. Anyone can decode the payload
+- Not validating the `alg` header: the "alg: none" attack tricks servers into accepting unsigned tokens
 
 
 ---
 
 ## Navigation
 
-[< 003 — Encryption](003-encryption.md) | [005 — Secure Random >](005-secure-random.md)
+[< 003 - Encryption](003-encryption.md) | [005 - Secure Random >](005-secure-random.md)

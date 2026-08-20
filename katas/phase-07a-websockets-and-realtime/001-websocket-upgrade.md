@@ -34,13 +34,13 @@ Connection: Upgrade
 Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 ```
 
-After this handshake, the TCP connection is no longer HTTP — it's a WebSocket connection. Both sides can now send binary or text frames at will.
+After this handshake, the TCP connection is no longer HTTP. It's a WebSocket connection. Both sides can now send binary or text frames at will.
 
 The `Sec-WebSocket-Accept` value is computed from the client's `Sec-WebSocket-Key` by appending a magic GUID and taking the SHA-1 hash, encoded as base64. This proves the server understands the WebSocket protocol.
 
 ## Key Insight
 
-> WebSocket reuses the HTTP port (80/443) and starts with an HTTP handshake, so it works through proxies and firewalls that allow HTTP. After the upgrade, the TCP connection becomes a bidirectional message channel — no more request-response, no more polling. The server can push data to the client the instant it's available.
+> WebSocket reuses the HTTP port (80/443) and starts with an HTTP handshake, so it works through proxies and firewalls that allow HTTP. After the upgrade, the TCP connection becomes a bidirectional message channel. No more request-response, no more polling. The server can push data to the client the instant it's available.
 
 ## Experiment
 
@@ -105,7 +105,7 @@ server.on("upgrade", (req, socket, head) => {
   ].join("\r\n");
 
   socket.write(response);
-  console.log("[server] Upgrade complete — connection is now WebSocket\n");
+  console.log("[server] Upgrade complete: connection is now WebSocket\n");
 
   // Now we have a raw TCP socket in WebSocket mode
   // We'd need to implement frame parsing (next kata)
@@ -209,7 +209,7 @@ SHA-1 of concatenation: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
     Sec-WebSocket-Key: <base64 key>
     Sec-WebSocket-Version: 13
   Computed Accept: <base64 hash>
-[server] Upgrade complete — connection is now WebSocket
+[server] Upgrade complete: connection is now WebSocket
 
 === Client Connection ===
 
@@ -244,21 +244,21 @@ Key verification:
 Why the `Sec-WebSocket-Key` / `Sec-WebSocket-Accept` handshake exists:
 
 It's NOT for security or authentication. It serves two purposes:
-1. **Proof of intent** — confirms the server actually understands WebSocket, not just forwarding random HTTP headers
-2. **Cache prevention** — ensures intermediary proxies don't cache the upgrade response and serve it to other clients
+1. **Proof of intent**: confirms the server actually understands WebSocket, not just forwarding random HTTP headers
+2. **Cache prevention**: ensures intermediary proxies don't cache the upgrade response and serve it to other clients
 
 The `Sec-` prefix on headers means "this header cannot be set by JavaScript in a browser." It prevents a webpage from crafting a fake WebSocket upgrade via `fetch()`.
 
 ## Common Mistakes
 
-- Trying to use WebSocket without the HTTP upgrade handshake — the protocol requires starting as HTTP
-- Forgetting the `Connection: Upgrade` header alongside `Upgrade: websocket` — both are required
-- Not validating `Sec-WebSocket-Version: 13` — current WebSocket protocol version, reject others
-- Confusing WebSocket with Server-Sent Events (SSE) — SSE is server-to-client only, over regular HTTP, simpler but less capable
+- Trying to use WebSocket without the HTTP upgrade handshake: the protocol requires starting as HTTP
+- Forgetting the `Connection: Upgrade` header alongside `Upgrade: websocket`. Both are required
+- Not validating `Sec-WebSocket-Version: 13`: current WebSocket protocol version, reject others
+- Confusing WebSocket with Server-Sent Events (SSE): SSE is server-to-client only, over regular HTTP, simpler but less capable
 
 
 ---
 
 ## Navigation
 
-[< 005 — Content Encoding And Range](../phase-07-http-from-first-principles/005-content-encoding-and-range.md) | [002 — Websocket Framing >](002-websocket-framing.md)
+[< 005 - Content Encoding And Range](../phase-07-http-from-first-principles/005-content-encoding-and-range.md) | [002 - Websocket Framing >](002-websocket-framing.md)

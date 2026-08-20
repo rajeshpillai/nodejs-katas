@@ -19,18 +19,18 @@ Most production applications aren't purely REST or purely real-time. They combin
 
 **Hybrid patterns:**
 
-1. **REST + WebSocket events** — REST endpoints mutate data, WebSocket broadcasts changes
+1. **REST + WebSocket events**: REST endpoints mutate data, WebSocket broadcasts changes
    ```
    POST /api/orders → creates order → WS broadcast: { type: "order:created", data: {...} }
    ```
 
-2. **REST + Server-Sent Events (SSE)** — REST for writes, SSE for read streams
+2. **REST + Server-Sent Events (SSE)**: REST for writes, SSE for read streams
    ```
    POST /api/messages → creates message
    GET /api/messages/stream → SSE stream of new messages
    ```
 
-3. **REST + polling** — simplest but least efficient
+3. **REST + polling**: simplest but least efficient
    ```
    POST /api/data → writes data
    GET /api/data?since=<timestamp> → poll for changes
@@ -46,7 +46,7 @@ Most production applications aren't purely REST or purely real-time. They combin
 
 ## Key Insight
 
-> The key to a clean hybrid architecture is separation of concerns: REST handles the command (write) path, real-time handles the query (read/subscribe) path. When a REST endpoint changes data, it publishes an event to an internal event bus. Real-time connections subscribe to that bus and push updates to clients. The REST handler doesn't know about WebSocket connections, and the WebSocket handler doesn't know about database queries. They communicate through events — which makes each side independently testable and scalable.
+> The key to a clean hybrid architecture is separation of concerns: REST handles the command (write) path, real-time handles the query (read/subscribe) path. When a REST endpoint changes data, it publishes an event to an internal event bus. Real-time connections subscribe to that bus and push updates to clients. The REST handler doesn't know about WebSocket connections, and the WebSocket handler doesn't know about database queries. They communicate through events. Which makes each side independently testable and scalable.
 
 ## Experiment
 
@@ -110,7 +110,7 @@ class OrderAPI {
     };
     this.orders.push(order);
 
-    // Publish event — real-time connections will pick this up
+    // Publish event: real-time connections will pick this up
     this.bus.emit("order:created", order);
     return { status: 201, body: order };
   }
@@ -357,20 +357,20 @@ console.log("    5. Each side is independently testable");
 
 ## Challenge
 
-1. Build a full hybrid server: REST endpoints for CRUD on a resource, WebSocket connections for live updates, an event bus connecting them. Test with multiple browser tabs — creating an item in one tab should instantly appear in the others
+1. Build a full hybrid server: REST endpoints for CRUD on a resource, WebSocket connections for live updates, an event bus connecting them. Test with multiple browser tabs: creating an item in one tab should instantly appear in the others
 2. Implement SSE with automatic reconnection: when the client disconnects, it sends `Last-Event-ID` header on reconnect. The server should replay missed events from an in-memory buffer
 3. Design a notification system that uses REST + SSE + WebSocket based on the client: mobile apps get push notifications (REST webhook), browsers get SSE, and the admin dashboard uses WebSocket. All triggered by the same event bus
 
 ## Common Mistakes
 
-- Tight coupling between REST and WebSocket — the REST handler directly calls WebSocket broadcast instead of going through an event bus. This makes each side untestable
-- Not handling WebSocket reconnection — clients disconnect constantly (network changes, sleep, tab hidden). Always implement reconnection with exponential backoff
-- Sending full objects over real-time connections — send minimal change events (`{ type: "updated", id: 42 }`) and let the client fetch the full object via REST if needed
-- No event ordering guarantees — WebSocket messages can arrive out of order. Include sequence numbers or timestamps
+- Tight coupling between REST and WebSocket: the REST handler directly calls WebSocket broadcast instead of going through an event bus. This makes each side untestable
+- Not handling WebSocket reconnection: clients disconnect constantly (network changes, sleep, tab hidden). Always implement reconnection with exponential backoff
+- Sending full objects over real-time connections: send minimal change events (`{ type: "updated", id: 42 }`) and let the client fetch the full object via REST if needed
+- No event ordering guarantees: WebSocket messages can arrive out of order. Include sequence numbers or timestamps
 
 
 ---
 
 ## Navigation
 
-[< 005 — Plugins And Encapsulation](../phase-15-frameworks/005-plugins-and-encapsulation.md) | [002 — Streaming Apis >](002-streaming-apis.md)
+[< 005 - Plugins And Encapsulation](../phase-15-frameworks/005-plugins-and-encapsulation.md) | [002 - Streaming Apis >](002-streaming-apis.md)

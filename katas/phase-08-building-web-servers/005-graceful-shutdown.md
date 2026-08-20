@@ -14,14 +14,14 @@ estimated_minutes: 15
 
 When a production server needs to stop (deployment, scaling, maintenance), it must shut down gracefully:
 
-1. **Stop accepting new connections** — `server.close()`
-2. **Finish in-flight requests** — let active requests complete
-3. **Close external resources** — database connections, message queues, file handles
-4. **Exit the process** — `process.exit(0)` or let the event loop drain
+1. **Stop accepting new connections**: `server.close()`
+2. **Finish in-flight requests**: let active requests complete
+3. **Close external resources**: database connections, message queues, file handles
+4. **Exit the process**: `process.exit(0)` or let the event loop drain
 
 The trigger is usually a signal:
-- **`SIGTERM`** — "please terminate" (sent by container orchestrators, `kill` command)
-- **`SIGINT`** — "interrupt" (Ctrl+C in terminal)
+- **`SIGTERM`**: "please terminate" (sent by container orchestrators, `kill` command)
+- **`SIGINT`**: "interrupt" (Ctrl+C in terminal)
 
 Without graceful shutdown, in-flight requests get abruptly killed, database transactions may be left in an inconsistent state, and connections leak.
 
@@ -29,7 +29,7 @@ In containerized environments (Docker, Kubernetes), `SIGTERM` is sent first, the
 
 ## Key Insight
 
-> A server that doesn't handle `SIGTERM` is a server that corrupts data on every deployment. In-flight database transactions are interrupted, WebSocket clients get disconnected without close frames, and cached writes are lost. Graceful shutdown is not a nice-to-have — it's a correctness requirement.
+> A server that doesn't handle `SIGTERM` is a server that corrupts data on every deployment. In-flight database transactions are interrupted, WebSocket clients get disconnected without close frames, and cached writes are lost. Graceful shutdown is not a nice-to-have. It's a correctness requirement.
 
 ## Experiment
 
@@ -93,7 +93,7 @@ class GracefulShutdown {
       });
     }
 
-    // Handle uncaught errors — log and exit
+    // Handle uncaught errors: log and exit
     process.on("uncaughtException", (err) => {
       console.error("[fatal] Uncaught exception:", err.message);
       this.shutdown(1);
@@ -300,11 +300,11 @@ Two details in that output are worth understanding:
 
 - **`activeRequests: 1`, not 0.** The handler increments `activeRequests` *before*
   the `/health` branch reads it, so a lone health check counts itself. In-flight
-  counters always include the request doing the counting — exclude it (`activeRequests - 1`)
+  counters always include the request doing the counting: exclude it (`activeRequests - 1`)
   if you want "other work in progress."
 - **The during-shutdown request shows `fetch failed`, not `503`.** This single-process
   demo calls `server.close()` immediately, which stops the server from accepting
-  **new TCP connections** — so a brand-new `fetch()` can't even connect, and the 503
+  **new TCP connections**. So a brand-new `fetch()` can't even connect, and the 503
   branch is never reached. The 503 guard still matters in production: behind a load
   balancer, clients reuse **already-open keep-alive connections**, and requests can
   arrive on those after shutdown begins. *Those* hit the handler and get a clean 503.
@@ -313,7 +313,7 @@ Two details in that output are worth understanding:
 
 ## Challenge
 
-1. Implement a shutdown health check endpoint that returns 503 once shutdown starts — this tells the load balancer to stop routing new traffic to this instance
+1. Implement a shutdown health check endpoint that returns 503 once shutdown starts. This tells the load balancer to stop routing new traffic to this instance
 2. Add connection draining: set `Connection: close` on all responses during shutdown so clients don't try to reuse the connection
 3. What happens if a database query hangs during shutdown? Implement a per-resource timeout: if a resource doesn't close within 5 seconds, skip it and continue
 
@@ -326,19 +326,19 @@ Kubernetes shutdown sequence:
 4. Container has `terminationGracePeriodSeconds` (default 30s) to shut down
 5. If still running, `SIGKILL` is sent (cannot be caught)
 
-The race condition: step 2 (removing from endpoints) and step 1 (SIGTERM) happen concurrently. New requests may arrive after SIGTERM but before the pod is removed from the load balancer. This is why returning 503 during shutdown is important — it tells the load balancer this instance is going away.
+The race condition: step 2 (removing from endpoints) and step 1 (SIGTERM) happen concurrently. New requests may arrive after SIGTERM but before the pod is removed from the load balancer. This is why returning 503 during shutdown is important. It tells the load balancer this instance is going away.
 
 ## Common Mistakes
 
-- Not calling `server.close()` — new connections keep arriving, and the server never actually stops
-- Calling `process.exit(0)` immediately — kills in-flight requests without letting them complete
-- Not `.unref()`-ing the shutdown timeout — the timeout itself keeps the process alive
-- Not handling double-signals — pressing Ctrl+C twice should still shut down cleanly, not crash
-- Closing resources before in-flight requests finish — a request tries to query a closed database and crashes
+- Not calling `server.close()`: new connections keep arriving, and the server never actually stops
+- Calling `process.exit(0)` immediately: kills in-flight requests without letting them complete
+- Not `.unref()`-ing the shutdown timeout: the timeout itself keeps the process alive
+- Not handling double-signals: pressing Ctrl+C twice should still shut down cleanly, not crash
+- Closing resources before in-flight requests finish: a request tries to query a closed database and crashes
 
 
 ---
 
 ## Navigation
 
-[< 004 — Error Handling](004-error-handling.md) | [001 — Multipart Form Data >](../phase-08a-file-uploads/001-multipart-form-data.md)
+[< 004 - Error Handling](004-error-handling.md) | [001 - Multipart Form Data >](../phase-08a-file-uploads/001-multipart-form-data.md)

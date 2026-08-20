@@ -1,4 +1,4 @@
-# Phase 9 — PostgreSQL Integration
+# Phase 9: PostgreSQL Integration
 
 Integrate PostgreSQL as a core data system, not just a plugin. Learn PostgreSQL architecture, connection pooling, parameterized queries, SQL injection prevention, transactions, and database error handling.
 
@@ -18,4 +18,4 @@ Integrate PostgreSQL as a core data system, not just a plugin. Learn PostgreSQL 
 
 ## Navigation
 
-[< Phase 8A — File Uploads & Multipart Streaming](../phase-08a-file-uploads/README.md) | [Phase 9A — Advanced PostgreSQL in Node.js >](../phase-09a-advanced-postgresql/README.md)
+[< Phase 8A: File Uploads & Multipart Streaming](../phase-08a-file-uploads/README.md) | [Phase 9A: Advanced PostgreSQL in Node.js >](../phase-09a-advanced-postgresql/README.md)

@@ -32,11 +32,11 @@ After the HTTP upgrade handshake, WebSocket communication uses a binary frame fo
 ```
 
 Key fields:
-- **FIN** (1 bit) — is this the final fragment? (1 = yes)
-- **Opcode** (4 bits) — frame type: 0x1 = text, 0x2 = binary, 0x8 = close, 0x9 = ping, 0xA = pong
-- **MASK** (1 bit) — is the payload masked? (client→server: always yes)
-- **Payload length** — 7 bits, or 7+16, or 7+64 for large payloads
-- **Masking key** (4 bytes) — XOR key for unmasking client data
+- **FIN** (1 bit): is this the final fragment? (1 = yes)
+- **Opcode** (4 bits): frame type: 0x1 = text, 0x2 = binary, 0x8 = close, 0x9 = ping, 0xA = pong
+- **MASK** (1 bit): is the payload masked? (client→server: always yes)
+- **Payload length**: 7 bits, or 7+16, or 7+64 for large payloads
+- **Masking key** (4 bytes): XOR key for unmasking client data
 
 Clients MUST mask data sent to servers. Servers MUST NOT mask data sent to clients. This asymmetry prevents cache poisoning attacks.
 
@@ -223,7 +223,7 @@ const pingFrame = encodeFrame("heartbeat", 0x09);
 const pingDecoded = decodeFrame(pingFrame);
 console.log("Ping:", pingDecoded.opcodeName, `"${pingDecoded.payload.toString()}"`);
 
-// Pong frame (response to ping — must echo the ping payload)
+// Pong frame (response to ping: must echo the ping payload)
 const pongFrame = encodeFrame("heartbeat", 0x0A);
 const pongDecoded = decodeFrame(pongFrame);
 console.log("Pong:", pongDecoded.opcodeName, `"${pongDecoded.payload.toString()}"`);
@@ -251,7 +251,7 @@ const closeCodes = [
 ];
 
 for (const [code, name, desc] of closeCodes) {
-  console.log(`  ${code} ${name.padEnd(20)} — ${desc}`);
+  console.log(`  ${code} ${name.padEnd(20)}: ${desc}`);
 }
 
 console.log("\n=== Opcodes Summary ===\n");
@@ -266,7 +266,7 @@ const opcodes = [
 ];
 
 for (const [code, name, desc] of opcodes) {
-  console.log(`  0x${code.toString(16)} ${name.padEnd(14)} — ${desc}`);
+  console.log(`  0x${code.toString(16)} ${name.padEnd(14)}: ${desc}`);
 }
 ```
 
@@ -309,26 +309,26 @@ Close: close code=1001 reason="Going away"
 
 1. Implement fragmented messages: send "Hello, World!" across three frames using opcode 0x1 (first), 0x0 (continuation), 0x0 (final with FIN). Reassemble on the receiving end
 2. Why must clients mask their frames but servers don't? Research the cache poisoning attack that motivated this requirement
-3. Implement a frame parser that handles streaming — TCP may deliver half a frame, so buffer incomplete frames and emit complete ones
+3. Implement a frame parser that handles streaming. TCP may deliver half a frame, so buffer incomplete frames and emit complete ones
 
 ## Deep Dive
 
 Why client-to-server masking exists:
 
-It prevents a class of attacks against transparent HTTP proxies. A malicious webpage could open a WebSocket to a victim proxy, send carefully crafted data that looks like an HTTP request, and trick the proxy into caching a poisoned response. The XOR masking ensures WebSocket data never accidentally resembles HTTP — because the mask key is random, the wire bytes are unpredictable.
+It prevents a class of attacks against transparent HTTP proxies. A malicious webpage could open a WebSocket to a victim proxy, send carefully crafted data that looks like an HTTP request, and trick the proxy into caching a poisoned response. The XOR masking ensures WebSocket data never accidentally resembles HTTP: because the mask key is random, the wire bytes are unpredictable.
 
 Server-to-client masking isn't needed because the browser is the endpoint, not an intermediary.
 
 ## Common Mistakes
 
-- Forgetting to mask client frames — servers MUST reject unmasked client frames and close with 1002
-- Treating WebSocket as a pure byte stream — it's message-oriented. Each frame (or series of fragments) is one complete message
-- Ignoring ping frames — RFC requires responding with pong. Servers use pings to detect dead connections
-- Not handling the close handshake — when one side sends a close frame, the other must respond with a close frame before the connection terminates
+- Forgetting to mask client frames: servers MUST reject unmasked client frames and close with 1002
+- Treating WebSocket as a pure byte stream. It's message-oriented. Each frame (or series of fragments) is one complete message
+- Ignoring ping frames: RFC requires responding with pong. Servers use pings to detect dead connections
+- Not handling the close handshake. When one side sends a close frame, the other must respond with a close frame before the connection terminates
 
 
 ---
 
 ## Navigation
 
-[< 001 — Websocket Upgrade](001-websocket-upgrade.md) | [003 — Websocket Server >](003-websocket-server.md)
+[< 001 - Websocket Upgrade](001-websocket-upgrade.md) | [003 - Websocket Server >](003-websocket-server.md)

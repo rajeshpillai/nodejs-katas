@@ -17,7 +17,7 @@ As applications grow, you need to organize code into modules. Frameworks solve t
 **Express: middleware and routers**
 - `express.Router()` groups routes
 - Middleware is global or router-scoped
-- No encapsulation — all middleware shares the same `req`/`res`
+- No encapsulation. All middleware shares the same `req`/`res`
 - Dependencies passed via `req.app.locals` or closures
 
 **Fastify: plugin tree**
@@ -52,7 +52,7 @@ Root (app)
 ```js
 console.log("=== Plugins and Encapsulation ===\n");
 
-// --- Demo 1: Express approach — shared everything ---
+// --- Demo 1: Express approach: shared everything ---
 
 console.log("--- Express: shared middleware (no encapsulation) ---\n");
 
@@ -105,7 +105,7 @@ console.log("  Middleware is global:");
 console.log("    MW added by plugin A runs for plugin B's routes too");
 console.log("    → No isolation between features\n");
 
-// --- Demo 2: Fastify approach — encapsulated plugins ---
+// --- Demo 2: Fastify approach: encapsulated plugins ---
 
 console.log("--- Fastify: encapsulated plugins ---\n");
 
@@ -198,7 +198,7 @@ class PluginScope {
 const app = new PluginScope();
 app.name = "root";
 
-// Root-level decorator — available everywhere
+// Root-level decorator: available everywhere
 app.decorate("config", { env: "production" });
 
 // Database plugin
@@ -341,7 +341,7 @@ container.register("userService", (c) => {
   };
 });
 
-// Lazy instantiation — services created on first access
+// Lazy instantiation: services created on first access
 console.log("  Service container (lazy instantiation):\n");
 
 const userService = container.get("userService");
@@ -450,14 +450,14 @@ for (const [feature, express, fastify] of comparison) {
 
 ## Common Mistakes
 
-- Global mutable state in Express — `app.set('key', value)` is visible everywhere and can be overwritten by any middleware. In large apps, this leads to subtle bugs
-- Not encapsulating database connections — every route file imports the pool directly. Fastify's `decorate('db', pool)` keeps it scoped and testable
-- Plugin order dependencies — registering auth before db when auth needs db. Use Fastify's async plugins to ensure dependencies are ready
-- Testing entire apps instead of plugins — Fastify plugins can be tested in isolation by creating a minimal app, registering just that plugin with mock dependencies, and injecting requests
+- Global mutable state in Express: `app.set('key', value)` is visible everywhere and can be overwritten by any middleware. In large apps, this leads to subtle bugs
+- Not encapsulating database connections. Every route file imports the pool directly. Fastify's `decorate('db', pool)` keeps it scoped and testable
+- Plugin order dependencies: registering auth before db when auth needs db. Use Fastify's async plugins to ensure dependencies are ready
+- Testing entire apps instead of plugins: Fastify plugins can be tested in isolation by creating a minimal app, registering just that plugin with mock dependencies, and injecting requests
 
 
 ---
 
 ## Navigation
 
-[< 004 — Validation And Serialization](004-validation-and-serialization.md) | [001 — Rest And Realtime Hybrid >](../phase-16-advanced-architectures/001-rest-and-realtime-hybrid.md)
+[< 004 - Validation And Serialization](004-validation-and-serialization.md) | [001 - Rest And Realtime Hybrid >](../phase-16-advanced-architectures/001-rest-and-realtime-hybrid.md)

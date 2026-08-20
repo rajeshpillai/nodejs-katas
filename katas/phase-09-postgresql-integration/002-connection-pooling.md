@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-A connection pool maintains a set of open database connections and lends them to requests on demand. When a request is done, the connection goes back to the pool — not closed.
+A connection pool maintains a set of open database connections and lends them to requests on demand. When a request is done, the connection goes back to the pool. Not closed.
 
 The `pg` library (node-postgres) provides `Pool`, which:
 - Opens connections lazily (on first query, not at startup)
@@ -37,9 +37,9 @@ const pool = new Pool({
 ```
 
 The pool size is a balance:
-- **Too small** (2-5) — requests queue waiting for connections, high latency under load
-- **Too large** (100+) — each connection uses memory in both Node.js and PostgreSQL, diminishing returns
-- **Sweet spot** — typically `max(2, cpu_cores * 2)` for CPU-bound, or 10-30 for I/O-bound apps
+- **Too small** (2-5): requests queue waiting for connections, high latency under load
+- **Too large** (100+). Each connection uses memory in both Node.js and PostgreSQL, diminishing returns
+- **Sweet spot**. Typically `max(2, cpu_cores * 2)` for CPU-bound, or 10-30 for I/O-bound apps
 
 ## Key Insight
 
@@ -296,14 +296,14 @@ Status: { total: 5, peakActive: 5, totalQueries: 100, ... }
 
 ## Common Mistakes
 
-- Forgetting `client.release()` — the connection is never returned to the pool, eventually exhausting all connections (connection leak)
-- Using `pool.connect()` when `pool.query()` suffices — manual connect/release is only needed for transactions
-- Setting pool max too high — PostgreSQL's `max_connections` is shared by all clients. If you have 5 Node.js processes each with max=50, that's 250 possible connections
-- Not handling pool exhaustion errors — when all connections are busy and the queue times out, handle the error gracefully instead of crashing
+- Forgetting `client.release()`: the connection is never returned to the pool, eventually exhausting all connections (connection leak)
+- Using `pool.connect()` when `pool.query()` suffices: manual connect/release is only needed for transactions
+- Setting pool max too high: PostgreSQL's `max_connections` is shared by all clients. If you have 5 Node.js processes each with max=50, that's 250 possible connections
+- Not handling pool exhaustion errors. When all connections are busy and the queue times out, handle the error gracefully instead of crashing
 
 
 ---
 
 ## Navigation
 
-[< 001 — Postgresql Architecture](001-postgresql-architecture.md) | [003 — Parameterized Queries >](003-parameterized-queries.md)
+[< 001 - Postgresql Architecture](001-postgresql-architecture.md) | [003 - Parameterized Queries >](003-parameterized-queries.md)

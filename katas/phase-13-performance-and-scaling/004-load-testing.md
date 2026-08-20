@@ -15,22 +15,22 @@ estimated_minutes: 15
 Load testing answers: "How many requests can this server handle before performance degrades?"
 
 **Key metrics:**
-- **Throughput** — requests per second (RPS)
-- **Latency** — time from request sent to response received (p50, p95, p99)
-- **Error rate** — percentage of non-2xx responses
-- **Saturation** — resource utilization (CPU, memory, connections)
+- **Throughput**: requests per second (RPS)
+- **Latency**: time from request sent to response received (p50, p95, p99)
+- **Error rate**: percentage of non-2xx responses
+- **Saturation**: resource utilization (CPU, memory, connections)
 
 **Load testing tools for Node.js:**
-- `autocannon` — written in Node.js, great for HTTP APIs
-- `wrk` — C-based, very fast, Lua scripting
-- `k6` — Go-based, JavaScript test scripts
-- `ab` (Apache Bench) — simple, comes with Apache
+- `autocannon`: written in Node.js, great for HTTP APIs
+- `wrk`: C-based, very fast, Lua scripting
+- `k6`: Go-based, JavaScript test scripts
+- `ab` (Apache Bench): simple, comes with Apache
 
 **Load patterns:**
-1. **Constant load** — fixed RPS for a duration
-2. **Ramp up** — gradually increase RPS to find the breaking point
-3. **Spike** — sudden burst of traffic
-4. **Soak** — sustained load for hours (finds memory leaks)
+1. **Constant load**: fixed RPS for a duration
+2. **Ramp up**: gradually increase RPS to find the breaking point
+3. **Spike**: sudden burst of traffic
+4. **Soak**: sustained load for hours (finds memory leaks)
 
 **What to look for:**
 - At what RPS does p99 latency spike?
@@ -40,7 +40,7 @@ Load testing answers: "How many requests can this server handle before performan
 
 ## Key Insight
 
-> The most important metric from a load test isn't peak throughput — it's the latency at your expected traffic level. A server that handles 50K RPS with 10ms p99 latency is great, but if p99 jumps to 2000ms at 5K RPS (your actual traffic), you have a problem. Always test at realistic load levels AND beyond them to find the breaking point.
+> The most important metric from a load test isn't peak throughput. It's the latency at your expected traffic level. A server that handles 50K RPS with 10ms p99 latency is great, but if p99 jumps to 2000ms at 5K RPS (your actual traffic), you have a problem. Always test at realistic load levels AND beyond them to find the breaking point.
 
 ## Experiment
 
@@ -331,14 +331,14 @@ for (const [metric, good, warn, crit] of targets) {
 
 ## Common Mistakes
 
-- Testing from the same machine as the server — the load tester and server compete for CPU, skewing results
-- Not warming up the server — the first few hundred requests are slower (JIT compilation, connection pooling warmup)
-- Only testing happy paths — test error paths, large payloads, and slow endpoints too
-- Comparing tests with different parameters — always use the same duration, connections, and payload when comparing optimizations
+- Testing from the same machine as the server: the load tester and server compete for CPU, skewing results
+- Not warming up the server: the first few hundred requests are slower (JIT compilation, connection pooling warmup)
+- Only testing happy paths: test error paths, large payloads, and slow endpoints too
+- Comparing tests with different parameters. Always use the same duration, connections, and payload when comparing optimizations
 
 
 ---
 
 ## Navigation
 
-[< 003 — Event Loop Optimization](003-event-loop-optimization.md) | [005 — Horizontal Scaling >](005-horizontal-scaling.md)
+[< 003 - Event Loop Optimization](003-event-loop-optimization.md) | [005 - Horizontal Scaling >](005-horizontal-scaling.md)

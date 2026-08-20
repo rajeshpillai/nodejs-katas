@@ -40,20 +40,20 @@ if (isMainThread) {
 | Use case | CPU-bound work, shared state | Isolation, untrusted code |
 
 **Data transfer mechanisms:**
-1. **Structured clone** — default, copies data (like JSON but supports more types)
-2. **Transfer** — moves ownership of ArrayBuffers (zero-copy, original becomes empty)
-3. **SharedArrayBuffer** — true shared memory (requires atomics for synchronization)
+1. **Structured clone**: default, copies data (like JSON but supports more types)
+2. **Transfer**: moves ownership of ArrayBuffers (zero-copy, original becomes empty)
+3. **SharedArrayBuffer**: true shared memory (requires atomics for synchronization)
 
 ## Key Insight
 
-> Worker threads share the same process and can share memory via SharedArrayBuffer — but this is both their strength and their danger. Shared memory requires careful synchronization with Atomics to avoid data races. For most tasks, structured cloning (postMessage) is simpler and fast enough. Reserve SharedArrayBuffer for performance-critical scenarios where you've measured that message passing is the bottleneck.
+> Worker threads share the same process and can share memory via SharedArrayBuffer, but this is both their strength and their danger. Shared memory requires careful synchronization with Atomics to avoid data races. For most tasks, structured cloning (postMessage) is simpler and fast enough. Reserve SharedArrayBuffer for performance-critical scenarios where you've measured that message passing is the bottleneck.
 
 ## Experiment
 
 ```js
 import { Worker } from "node:worker_threads";
 
-// Worker body — runs inside the worker thread.
+// Worker body. Runs inside the worker thread.
 // We use eval mode (Worker(code, { eval: true })) so this kata works whether
 // the file is loaded from disk or piped via stdin.
 const workerCode = `
@@ -188,7 +188,7 @@ const buffer = new ArrayBuffer(1024 * 1024); // 1MB
 const view = new Uint8Array(buffer);
 view[0] = 42;
 console.log(`    Before transfer: buffer.byteLength = ${buffer.byteLength}`);
-console.log(`    (After transfer, original buffer becomes detached — byteLength = 0)\n`);
+console.log(`    (After transfer, original buffer becomes detached: byteLength = 0)\n`);
 
 // SharedArrayBuffer concept
 console.log("  SharedArrayBuffer (true shared memory):");
@@ -307,14 +307,14 @@ for (const [task, solution, why] of guide) {
 
 ## Common Mistakes
 
-- Creating a new worker per task — worker startup has overhead. Use a worker pool for repeated tasks
-- Using workers for I/O-bound tasks — async/await is better; workers add complexity without benefit for I/O
-- Forgetting that worker thread crash kills the whole process — unlike child processes, threads aren't isolated
-- Sharing mutable state without Atomics — concurrent writes to SharedArrayBuffer cause data races
+- Creating a new worker per task: worker startup has overhead. Use a worker pool for repeated tasks
+- Using workers for I/O-bound tasks: async/await is better; workers add complexity without benefit for I/O
+- Forgetting that worker thread crash kills the whole process: unlike child processes, threads aren't isolated
+- Sharing mutable state without Atomics: concurrent writes to SharedArrayBuffer cause data races
 
 
 ---
 
 ## Navigation
 
-[< 003 — Fork And Ipc](003-fork-and-ipc.md) | [005 — Cpu Offloading Patterns >](005-cpu-offloading-patterns.md)
+[< 003 - Fork And Ipc](003-fork-and-ipc.md) | [005 - Cpu Offloading Patterns >](005-cpu-offloading-patterns.md)

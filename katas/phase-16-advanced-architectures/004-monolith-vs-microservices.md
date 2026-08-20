@@ -12,21 +12,21 @@ estimated_minutes: 15
 
 ## Concept
 
-The choice between monolith and microservices is one of the most consequential architectural decisions. Most teams choose wrong — usually by going to microservices too early.
+The choice between monolith and microservices is one of the most consequential architectural decisions. Most teams choose wrong. Usually by going to microservices too early.
 
-**Monolith** — one deployable unit containing all functionality:
+**Monolith**. One deployable unit containing all functionality:
 - Single process, single database
 - Function calls between modules
 - Shared memory, shared types
 - Simple deployment, simple debugging
 
-**Microservices** — multiple independently deployable services:
+**Microservices**: multiple independently deployable services:
 - Each service has its own process and database
 - Network calls between services (HTTP, gRPC, messages)
 - Independent deployment and scaling
 - Complex operations, complex debugging
 
-**The modular monolith** — the best of both worlds:
+**The modular monolith**: the best of both worlds:
 - Single deployable unit (like a monolith)
 - Strong module boundaries (like microservices)
 - Modules communicate through defined interfaces
@@ -51,7 +51,7 @@ The choice between monolith and microservices is one of the most consequential a
 ```js
 console.log("=== Monolith vs Microservices ===\n");
 
-// --- Demo 1: Monolith — function calls ---
+// --- Demo 1: Monolith: function calls ---
 
 console.log("--- Monolith: function calls between modules ---\n");
 
@@ -74,9 +74,9 @@ class MonolithApp {
     return this.db.get(`user:${id}`);
   }
 
-  // Order module — directly calls user module
+  // Order module: directly calls user module
   createOrder(userId, items) {
-    const user = this.getUser(userId); // Function call — instant, type-safe
+    const user = this.getUser(userId); // Function call: instant, type-safe
     if (!user) throw new Error("User not found");
 
     const orderId = this.db.size + 1;
@@ -93,7 +93,7 @@ class MonolithApp {
     return order;
   }
 
-  // Report module — reads from both
+  // Report module: reads from both
   getRevenueSummary() {
     const orders = [];
     for (const [key, value] of this.db) {
@@ -103,7 +103,7 @@ class MonolithApp {
     return {
       totalOrders: orders.length,
       totalRevenue: orders.reduce((sum, o) => sum + o.total, 0),
-      // Can join data from any table — it's the same database!
+      // Can join data from any table. It's the same database!
     };
   }
 }
@@ -122,9 +122,9 @@ const monolithTime = performance.now() - start;
 console.log(`  Created user: ${user.name} (id: ${user.id})`);
 console.log(`  Created order: #${order.id} for ${order.userName}, total: $${order.total}`);
 console.log(`  Revenue summary: ${summary.totalOrders} orders, $${summary.totalRevenue}`);
-console.log(`  Time: ${monolithTime.toFixed(2)}ms (all function calls — no network)\n`);
+console.log(`  Time: ${monolithTime.toFixed(2)}ms (all function calls. No network)\n`);
 
-// --- Demo 2: Microservices — network calls ---
+// --- Demo 2: Microservices: network calls ---
 
 console.log("--- Microservices: network calls between services ---\n");
 
@@ -197,7 +197,7 @@ class ReportMicroservice extends MicroService {
   }
 
   async getRevenueSummary() {
-    // Must call BOTH services — can't just query the database
+    // Must call BOTH services: can't just query the database
     // This is the "distributed join" problem
     return {
       note: "Must call order-service API, can't query its DB directly",
@@ -271,7 +271,7 @@ class Module {
 class UserModule extends Module {
   constructor() { super("users"); }
 
-  // Public interface — this is what other modules can call
+  // Public interface. This is what other modules can call
   createUser(name, email) {
     const id = this._internal.size + 1;
     const user = { id, name, email };
@@ -293,7 +293,7 @@ class OrderModule extends Module {
   }
 
   createOrder(userId, items) {
-    // Call through the public interface — not direct DB access
+    // Call through the public interface. Not direct DB access
     const user = this.users.getPublicProfile(userId);
     if (!user) throw new Error("User not found");
 
@@ -346,7 +346,7 @@ console.log("\n--- The microservice tax ---\n");
 const tax = [
   ["Service discovery", "How do services find each other?"],
   ["Network failures", "Every call can timeout, 503, drop"],
-  ["Distributed tracing", "One request spans 10 services — how do you debug?"],
+  ["Distributed tracing", "One request spans 10 services: how do you debug?"],
   ["Data consistency", "No cross-service transactions"],
   ["Configuration", "Environment variables × N services"],
   ["Deployment", "CI/CD pipelines × N services"],
@@ -374,7 +374,7 @@ console.log(`\n  Ask yourself: is the team/scaling benefit worth this overhead?`
   Created user: Alice (id: 1)
   Created order: #2 for Alice, total: $55
   Revenue summary: 1 orders, $55
-  Time: 0.05ms (all function calls — no network)
+  Time: 0.05ms (all function calls. No network)
 
 --- Microservices: network calls between services ---
 
@@ -397,14 +397,14 @@ console.log(`\n  Ask yourself: is the team/scaling benefit worth this overhead?`
 
 ## Common Mistakes
 
-- Starting with microservices — the #1 mistake. You don't know your domain boundaries yet, and wrong boundaries are 10x harder to fix in a distributed system
-- Distributed monolith — microservices that share a database or must be deployed together. All the complexity of microservices with none of the benefits
-- Ignoring the network — function calls are nanoseconds; network calls are milliseconds. A monolith operation that calls 5 modules takes microseconds; a microservice operation that calls 5 services takes 50ms+
-- Not considering the team — microservices solve team scaling problems (independent deployment, ownership boundaries). If you have one team, microservices add complexity without solving a real problem
+- Starting with microservices: the #1 mistake. You don't know your domain boundaries yet, and wrong boundaries are 10x harder to fix in a distributed system
+- Distributed monolith: microservices that share a database or must be deployed together. All the complexity of microservices with none of the benefits
+- Ignoring the network: function calls are nanoseconds; network calls are milliseconds. A monolith operation that calls 5 modules takes microseconds; a microservice operation that calls 5 services takes 50ms+
+- Not considering the team: microservices solve team scaling problems (independent deployment, ownership boundaries). If you have one team, microservices add complexity without solving a real problem
 
 
 ---
 
 ## Navigation
 
-[< 003 — Api Gateway Patterns](003-api-gateway-patterns.md) | [005 — Configuration And Secrets >](005-configuration-and-secrets.md)
+[< 003 - Api Gateway Patterns](003-api-gateway-patterns.md) | [005 - Configuration And Secrets >](005-configuration-and-secrets.md)

@@ -29,7 +29,7 @@ SET idle_in_transaction_session_timeout = '30000';  -- Kill idle transactions af
 const client = await pool.connect();
 
 // Capture this client's backend PID up front. We CANNOT send the cancel
-// over `client` itself — it is busy awaiting the long query, so any query
+// over `client` itself. It is busy awaiting the long query, so any query
 // we queue on it just waits behind the one we want to cancel. The cancel
 // must travel over a SEPARATE connection.
 const { rows } = await client.query('SELECT pg_backend_pid() AS pid');
@@ -58,7 +58,7 @@ try {
 }
 ```
 
-> The `pg` driver also exposes a lower-level out-of-band cancel: `pool.connect()` gives you a client whose underlying connection can issue a PostgreSQL **CancelRequest** on a separate socket. Either way, the rule is the same — **a cancel never travels over the connection running the query it cancels.**
+> The `pg` driver also exposes a lower-level out-of-band cancel: `pool.connect()` gives you a client whose underlying connection can issue a PostgreSQL **CancelRequest** on a separate socket. Either way, the rule is the same: **a cancel never travels over the connection running the query it cancels.**
 
 **4. AbortController (modern approach):**
 ```js
@@ -74,7 +74,7 @@ try {
 
 ## Key Insight
 
-> A query timeout kills the query, not the connection. The connection returns to the pool ready for the next query. But an `idle_in_transaction` timeout kills the session entirely — the connection is destroyed. Always set `statement_timeout` as a safety net: without it, a missing WHERE clause on a 100M row table will lock a pool connection for minutes.
+> A query timeout kills the query, not the connection. The connection returns to the pool ready for the next query. But an `idle_in_transaction` timeout kills the session entirely: the connection is destroyed. Always set `statement_timeout` as a safety net: without it, a missing WHERE clause on a 100M row table will lock a pool connection for minutes.
 
 ## Experiment
 
@@ -198,7 +198,7 @@ const executor = new QueryExecutor();
 
 console.log("--- statement_timeout behavior ---\n");
 
-// Fast query — completes within timeout
+// Fast query: completes within timeout
 console.log("  Query 1: Fast query (50ms) with 200ms timeout");
 try {
   const r = await executor.execute("SELECT * FROM small_table", {
@@ -211,7 +211,7 @@ try {
   console.log(`    ✗ ${err.message}\n`);
 }
 
-// Slow query — exceeds timeout
+// Slow query: exceeds timeout
 console.log("  Query 2: Slow query (500ms) with 100ms timeout");
 try {
   const r = await executor.execute("SELECT * FROM huge_table WHERE no_index", {
@@ -254,9 +254,9 @@ for (let i = 0; i < queries.length; i++) {
   const r = results[i];
   const timeoutStr = q.timeout ? `${q.timeout}ms` : "none";
   if (r.status === "fulfilled") {
-    console.log(`  ✓ "${q.sql}" (${q.duration}ms, timeout=${timeoutStr}) — completed`);
+    console.log(`  ✓ "${q.sql}" (${q.duration}ms, timeout=${timeoutStr}): completed`);
   } else {
-    console.log(`  ✗ "${q.sql}" (${q.duration}ms, timeout=${timeoutStr}) — ${r.reason.message}`);
+    console.log(`  ✗ "${q.sql}" (${q.duration}ms, timeout=${timeoutStr}): ${r.reason.message}`);
   }
 }
 
@@ -370,17 +370,17 @@ console.log(`  // Pool configuration with timeouts
 
 --- Concurrent queries with different timeouts ---
 
-  ✓ "Quick lookup" (30ms, timeout=1000ms) — completed
-  ✓ "Medium join" (150ms, timeout=200ms) — completed
-  ✗ "Slow report" (800ms, timeout=100ms) — cancelled
-  ✓ "Aggregation" (200ms, timeout=500ms) — completed
-  ✓ "Full scan (no timeout!)" (400ms, timeout=none) — completed
+  ✓ "Quick lookup" (30ms, timeout=1000ms): completed
+  ✓ "Medium join" (150ms, timeout=200ms): completed
+  ✗ "Slow report" (800ms, timeout=100ms): cancelled
+  ✓ "Aggregation" (200ms, timeout=500ms): completed
+  ✓ "Full scan (no timeout!)" (400ms, timeout=none): completed
   ...
 ```
 
 ## Challenge
 
-1. Build a query wrapper that sets `statement_timeout` per query and restores the original value after — useful for giving reports longer timeouts than API queries
+1. Build a query wrapper that sets `statement_timeout` per query and restores the original value after: useful for giving reports longer timeouts than API queries
 2. Implement a "query watchdog" that monitors `pg_stat_activity` and cancels any query running longer than a threshold
 3. What happens to a transaction when a query inside it is cancelled by `statement_timeout`? Is the transaction rolled back, or is it still open?
 
@@ -400,14 +400,14 @@ Important: Node.js `query_timeout` stops waiting but **does not cancel the Postg
 
 ## Common Mistakes
 
-- Not setting `statement_timeout` at all — a runaway query can hold a connection for hours
-- Relying only on Node.js client timeout — the query keeps running on PostgreSQL even after the client stops waiting
-- Setting timeouts too aggressively — legitimate complex queries fail. Use per-query timeouts for reports
-- Forgetting `idle_in_transaction_session_timeout` — a crashed Node.js process leaves connections "idle in transaction," holding locks
+- Not setting `statement_timeout` at all: a runaway query can hold a connection for hours
+- Relying only on Node.js client timeout: the query keeps running on PostgreSQL even after the client stops waiting
+- Setting timeouts too aggressively: legitimate complex queries fail. Use per-query timeouts for reports
+- Forgetting `idle_in_transaction_session_timeout`: a crashed Node.js process leaves connections "idle in transaction," holding locks
 
 
 ---
 
 ## Navigation
 
-[< 004 — Jsonb Usage](004-jsonb-usage.md) | [001 — Hashing >](../phase-10-cryptography-and-security/001-hashing.md)
+[< 004 - Jsonb Usage](004-jsonb-usage.md) | [001 - Hashing >](../phase-10-cryptography-and-security/001-hashing.md)

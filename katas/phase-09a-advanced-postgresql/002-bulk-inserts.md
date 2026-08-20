@@ -14,7 +14,7 @@ estimated_minutes: 15
 
 Inserting rows one at a time is slow. Each `INSERT` is a separate round-trip to the database, and each round-trip includes network latency, query parsing, and WAL logging overhead.
 
-**Slow — one row at a time:**
+**Slow. One row at a time:**
 ```js
 for (const user of users) {
   await pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [user.name, user.email]);
@@ -22,7 +22,7 @@ for (const user of users) {
 // 10,000 users = 10,000 round-trips = slow
 ```
 
-**Fast — multi-row INSERT:**
+**Fast: multi-row INSERT:**
 ```js
 // INSERT INTO users (name, email) VALUES ($1, $2), ($3, $4), ($5, $6), ...
 const values = [];
@@ -35,7 +35,7 @@ await pool.query(`INSERT INTO users (name, email) VALUES ${values.join(', ')}`, 
 // 1 round-trip regardless of row count
 ```
 
-**Fastest — COPY protocol:**
+**Fastest: COPY protocol:**
 ```js
 import { from as copyFrom } from 'pg-copy-streams';
 
@@ -51,7 +51,7 @@ stream.end();
 
 ## Key Insight
 
-> Single-row INSERTs pay the full query processing cost per row. Multi-row INSERTs amortize parsing/planning over many rows in one statement. COPY bypasses SQL entirely — it streams raw CSV/binary directly into the table's storage. For 100K+ rows, COPY is the only reasonable choice. The tradeoff: COPY is all-or-nothing (no partial success) and doesn't return generated IDs.
+> Single-row INSERTs pay the full query processing cost per row. Multi-row INSERTs amortize parsing/planning over many rows in one statement. COPY bypasses SQL entirely. It streams raw CSV/binary directly into the table's storage. For 100K+ rows, COPY is the only reasonable choice. The tradeoff: COPY is all-or-nothing (no partial success) and doesn't return generated IDs.
 
 ## Experiment
 
@@ -231,7 +231,7 @@ const maxRowsPerInsert = Math.floor(maxParams / columnsPerRow);
 console.log(`  Max parameter index: $${maxParams}`);
 console.log(`  With ${columnsPerRow} columns per row: max ${maxRowsPerInsert} rows per INSERT`);
 console.log(`  For 100K rows: need ${Math.ceil(100000 / maxRowsPerInsert)} batches`);
-console.log(`  COPY has no such limit — it streams indefinitely`);
+console.log(`  COPY has no such limit. It streams indefinitely`);
 
 console.log("\n=== Bulk Insert Patterns (pg Library) ===\n");
 
@@ -345,20 +345,20 @@ console.log(`
 
 ## Challenge
 
-1. Build a CSV file importer that streams a CSV file line-by-line into PostgreSQL using COPY — handle proper CSV escaping (quotes, commas, newlines in values)
-2. Implement a `bulkUpsert` function that uses `INSERT ... ON CONFLICT DO UPDATE` with multi-row values — this is the bulk equivalent of "create or update"
+1. Build a CSV file importer that streams a CSV file line-by-line into PostgreSQL using COPY: handle proper CSV escaping (quotes, commas, newlines in values)
+2. Implement a `bulkUpsert` function that uses `INSERT ... ON CONFLICT DO UPDATE` with multi-row values. This is the bulk equivalent of "create or update"
 3. What's the maximum number of parameters you can use in a single PostgreSQL query? What error do you get when you exceed it?
 
 ## Common Mistakes
 
-- Inserting rows in a loop without batching — 100K individual INSERTs can take minutes instead of seconds
-- Exceeding the parameter limit ($65535) — split large batches to stay under the limit
-- Not using a transaction for bulk inserts — without a transaction, each INSERT is separately committed (WAL flush), which is much slower
-- Forgetting that COPY doesn't return generated IDs — if you need the IDs, use multi-row INSERT with RETURNING
+- Inserting rows in a loop without batching: 100K individual INSERTs can take minutes instead of seconds
+- Exceeding the parameter limit ($65535): split large batches to stay under the limit
+- Not using a transaction for bulk inserts: without a transaction, each INSERT is separately committed (WAL flush), which is much slower
+- Forgetting that COPY doesn't return generated IDs. If you need the IDs, use multi-row INSERT with RETURNING
 
 
 ---
 
 ## Navigation
 
-[< 001 — Streaming Query Results](001-streaming-query-results.md) | [003 — Pagination Strategies >](003-pagination-strategies.md)
+[< 001 - Streaming Query Results](001-streaming-query-results.md) | [003 - Pagination Strategies >](003-pagination-strategies.md)

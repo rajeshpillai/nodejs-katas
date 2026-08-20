@@ -14,30 +14,30 @@ estimated_minutes: 15
 
 Metrics are numbers that describe the behavior of your system over time. The three fundamental metric types:
 
-**Counter** — a value that only increases (resets on restart):
+**Counter**: a value that only increases (resets on restart):
 - Total HTTP requests
 - Total errors
 - Total bytes processed
 
-**Gauge** — a value that goes up and down:
+**Gauge**: a value that goes up and down:
 - Active connections
 - Memory usage
 - Queue depth
 
-**Histogram** — measures the distribution of values:
+**Histogram**: measures the distribution of values:
 - Request latency (p50, p95, p99)
 - Response size
 - Query duration
 
 **RED method** (for request-driven services):
-- **R**ate — requests per second
-- **E**rrors — errors per second
-- **D**uration — latency distribution
+- **R**ate: requests per second
+- **E**rrors: errors per second
+- **D**uration: latency distribution
 
 **USE method** (for resources):
-- **U**tilization — how busy is it? (CPU %, pool connections in use)
-- **S**aturation — how much work is waiting? (queue depth)
-- **E**rrors — error count
+- **U**tilization: how busy is it? (CPU %, pool connections in use)
+- **S**aturation: how much work is waiting? (queue depth)
+- **E**rrors: error count
 
 ## Key Insight
 
@@ -305,14 +305,14 @@ console.log("  ...");
 
 ## Common Mistakes
 
-- Only tracking averages — averages hide tail latency. Always track percentiles (p50, p95, p99)
-- High-cardinality labels — adding `userId` as a label creates millions of time series, overwhelming your metrics backend
-- Not tracking error rates — a service returning errors might look "fast" because errors are quick to generate
-- Exposing metrics on the public port — metrics can reveal internal details. Use a separate internal port
+- Only tracking averages: averages hide tail latency. Always track percentiles (p50, p95, p99)
+- High-cardinality labels: adding `userId` as a label creates millions of time series, overwhelming your metrics backend
+- Not tracking error rates: a service returning errors might look "fast" because errors are quick to generate
+- Exposing metrics on the public port: metrics can reveal internal details. Use a separate internal port
 
 
 ---
 
 ## Navigation
 
-[< 002 — Health Checks](002-health-checks.md) | [004 — Crash Handling >](004-crash-handling.md)
+[< 002 - Health Checks](002-health-checks.md) | [004 - Crash Handling >](004-crash-handling.md)

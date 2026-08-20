@@ -1,4 +1,4 @@
-# Phase 12 — Observability & Reliability
+# Phase 12: Observability & Reliability
 
 Make Node.js applications observable and resilient. Implement structured logging, health checks, application metrics, crash handling and recovery, and graceful restart with zero-downtime deploys.
 
@@ -18,4 +18,4 @@ Make Node.js applications observable and resilient. Implement structured logging
 
 ## Navigation
 
-[< Phase 11 — Child Processes & Worker Threads](../phase-11-child-processes-and-workers/README.md) | [Phase 13 — Performance & Scaling >](../phase-13-performance-and-scaling/README.md)
+[< Phase 11: Child Processes & Worker Threads](../phase-11-child-processes-and-workers/README.md) | [Phase 13: Performance & Scaling >](../phase-13-performance-and-scaling/README.md)

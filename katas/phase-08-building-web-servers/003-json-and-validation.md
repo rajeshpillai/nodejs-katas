@@ -12,14 +12,14 @@ estimated_minutes: 15
 
 ## Concept
 
-A JSON API receives structured data from clients and returns structured responses. The critical step between receiving and processing is **validation** — never trust client input.
+A JSON API receives structured data from clients and returns structured responses. The critical step between receiving and processing is **validation**. Never trust client input.
 
 Validation should check:
-- **Presence** — required fields exist
-- **Type** — field is a string, number, array, etc.
-- **Format** — email matches a pattern, date is valid ISO 8601
-- **Range** — number is between 1 and 100, string is under 255 chars
-- **Business rules** — age ≥ 18, username is unique
+- **Presence**: required fields exist
+- **Type**: field is a string, number, array, etc.
+- **Format**: email matches a pattern, date is valid ISO 8601
+- **Range**: number is between 1 and 100, string is under 255 chars
+- **Business rules**: age ≥ 18, username is unique
 
 Validation should happen early (before any database queries) and fail fast (report all errors at once, not one at a time).
 
@@ -36,7 +36,7 @@ A good API returns consistent error responses:
 
 ## Key Insight
 
-> Validate at the boundary, trust internally. Every byte from a client is suspect — wrong type, missing fields, SQL injection, oversized payloads. Validate once at the API boundary, then your internal functions can trust their inputs. This is cheaper and cleaner than defensive checks scattered throughout the codebase.
+> Validate at the boundary, trust internally. Every byte from a client is suspect: wrong type, missing fields, SQL injection, oversized payloads. Validate once at the API boundary, then your internal functions can trust their inputs. This is cheaper and cleaner than defensive checks scattered throughout the codebase.
 
 ## Experiment
 
@@ -342,18 +342,18 @@ Users: 2
 
 1. Add update validation: `PUT /users/:id` should validate the same fields but allow partial updates (only validate present fields)
 2. Implement a `sanitize` step before validation: trim strings, coerce `"42"` to `42` for number fields
-3. Add a maximum request body size check (1 MB) — reject with 413 before parsing
+3. Add a maximum request body size check (1 MB): reject with 413 before parsing
 
 ## Common Mistakes
 
-- Validating one field at a time (returning on first error) — return ALL validation errors so the client can fix them in one pass
-- Using HTTP 400 for validation errors — 422 Unprocessable Entity is more semantically correct
-- Not validating the `Content-Type` header — a POST with `text/plain` shouldn't be parsed as JSON
-- Trusting `Content-Length` for body size limits — it can be spoofed. Count bytes as you read the stream
+- Validating one field at a time (returning on first error): return ALL validation errors so the client can fix them in one pass
+- Using HTTP 400 for validation errors: 422 Unprocessable Entity is more semantically correct
+- Not validating the `Content-Type` header: a POST with `text/plain` shouldn't be parsed as JSON
+- Trusting `Content-Length` for body size limits. It can be spoofed. Count bytes as you read the stream
 
 
 ---
 
 ## Navigation
 
-[< 002 — Middleware Patterns](002-middleware-patterns.md) | [004 — Error Handling >](004-error-handling.md)
+[< 002 - Middleware Patterns](002-middleware-patterns.md) | [004 - Error Handling >](004-error-handling.md)

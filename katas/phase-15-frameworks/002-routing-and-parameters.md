@@ -15,15 +15,15 @@ estimated_minutes: 12
 Routing maps an incoming HTTP request (method + URL) to a handler function. Framework routers go far beyond the regex matching you built in Phase 8.
 
 **Route parameter types:**
-- **Path parameters** — `/users/:id` → `req.params.id`
-- **Query parameters** — `/users?page=2&limit=10` → `req.query.page`
-- **Wildcard** — `/files/*` → matches `/files/a/b/c.txt`
+- **Path parameters**: `/users/:id` → `req.params.id`
+- **Query parameters**: `/users?page=2&limit=10` → `req.query.page`
+- **Wildcard**: `/files/*` → matches `/files/a/b/c.txt`
 
 **Router data structures:**
 
-1. **Linear scan** (Express v3) — check each route in order. O(n) per request
-2. **Regex compilation** (Express v4) — compile routes to regex. Fast for small sets
-3. **Radix tree** (Fastify, find-my-way) — trie-based routing. O(k) where k = URL length
+1. **Linear scan** (Express v3): check each route in order. O(n) per request
+2. **Regex compilation** (Express v4): compile routes to regex. Fast for small sets
+3. **Radix tree** (Fastify, find-my-way): trie-based routing. O(k) where k = URL length
 
 **Route precedence:**
 ```
@@ -44,7 +44,7 @@ app.use('/api/v1/users', router);
 
 ## Key Insight
 
-> Fastify uses a radix tree (also called a prefix tree or trie) for routing. Each node in the tree represents a URL segment. When a request comes in for `/api/users/42`, the router walks down: root → `api` → `users` → `:id`. This is O(k) where k is the number of URL segments — it doesn't matter if you have 10 routes or 10,000. Express's regex-based router is also fast for typical apps, but the radix tree approach scales better and handles parameter extraction without regex overhead.
+> Fastify uses a radix tree (also called a prefix tree or trie) for routing. Each node in the tree represents a URL segment. When a request comes in for `/api/users/42`, the router walks down: root → `api` → `users` → `:id`. This is O(k) where k is the number of URL segments. It doesn't matter if you have 10 routes or 10,000. Express's regex-based router is also fast for typical apps, but the radix tree approach scales better and handles parameter extraction without regex overhead.
 
 ## Experiment
 
@@ -329,7 +329,7 @@ console.log(`  Router with ${perfRouter.routeCount} routes`);
 console.log(`  ${lookups.toLocaleString()} lookups in ${elapsed.toFixed(1)}ms`);
 console.log(`  ${(lookups / elapsed * 1000).toFixed(0)} lookups/sec`);
 console.log(`  ${(elapsed / lookups * 1000).toFixed(2)} µs per lookup`);
-console.log(`\n  Radix tree: O(segments) — independent of route count`);
+console.log(`\n  Radix tree: O(segments): independent of route count`);
 ```
 
 ## Expected Output
@@ -363,14 +363,14 @@ console.log(`\n  Radix tree: O(segments) — independent of route count`);
 
 ## Common Mistakes
 
-- Route order dependency — Express matches routes in registration order; Fastify uses specificity. Relying on order makes code fragile
-- Not URL-decoding parameters — `/users/hello%20world` should give `params.name = "hello world"`, not the encoded string
-- Mixing route styles — combining `/api/v1/users` and `/api/v2/users/:id` without grouping makes the route table hard to reason about
-- Not handling trailing slashes — `/users` and `/users/` should route to the same handler (Fastify does this by default)
+- Route order dependency: Express matches routes in registration order; Fastify uses specificity. Relying on order makes code fragile
+- Not URL-decoding parameters: `/users/hello%20world` should give `params.name = "hello world"`, not the encoded string
+- Mixing route styles: combining `/api/v1/users` and `/api/v2/users/:id` without grouping makes the route table hard to reason about
+- Not handling trailing slashes: `/users` and `/users/` should route to the same handler (Fastify does this by default)
 
 
 ---
 
 ## Navigation
 
-[< 001 — Why Frameworks Exist](001-why-frameworks-exist.md) | [003 — Middleware And Hooks >](003-middleware-and-hooks.md)
+[< 001 - Why Frameworks Exist](001-why-frameworks-exist.md) | [003 - Middleware And Hooks >](003-middleware-and-hooks.md)

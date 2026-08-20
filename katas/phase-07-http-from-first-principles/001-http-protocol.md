@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-HTTP (HyperText Transfer Protocol) is a text-based request-response protocol built on top of TCP. Every web page, API call, and file download uses HTTP. Understanding it at the protocol level — not just the API level — is what separates backend developers from framework users.
+HTTP (HyperText Transfer Protocol) is a text-based request-response protocol built on top of TCP. Every web page, API call, and file download uses HTTP. Understanding it at the protocol level. Not just the API level: is what separates backend developers from framework users.
 
 An HTTP request looks like this on the wire:
 ```
@@ -33,11 +33,11 @@ Content-Length: 27\r\n
 
 The structure: **request/status line** + **headers** (key-value pairs) + **blank line** (`\r\n\r\n`) + **body** (optional).
 
-Headers and body are separated by a double CRLF (`\r\n\r\n`). The `Content-Length` header tells the receiver exactly how many bytes the body contains — this is length-prefix framing applied to HTTP.
+Headers and body are separated by a double CRLF (`\r\n\r\n`). The `Content-Length` header tells the receiver exactly how many bytes the body contains. This is length-prefix framing applied to HTTP.
 
 ## Key Insight
 
-> HTTP is just text over TCP with a specific format. A request line, headers, a blank line, and an optional body. When you call `fetch()` or `http.request()`, you're just building this text format and sending it through a TCP socket. There's no magic — understanding the wire format lets you debug any HTTP issue.
+> HTTP is just text over TCP with a specific format. A request line, headers, a blank line, and an optional body. When you call `fetch()` or `http.request()`, you're just building this text format and sending it through a TCP socket. There's no magic: understanding the wire format lets you debug any HTTP issue.
 
 ## Experiment
 
@@ -85,7 +85,7 @@ const rawResponse = await new Promise((resolve, reject) => {
   const chunks = [];
 
   socket.on("connect", () => {
-    // Build a raw HTTP request — this is exactly what http.request() does internally
+    // Build a raw HTTP request. This is exactly what http.request() does internally
     const request = [
       "GET /api/hello?name=world HTTP/1.1",
       "Host: 127.0.0.1:" + port,
@@ -149,7 +149,7 @@ const methods = [
 
 console.log("HTTP Methods:");
 for (const { method, path, desc } of methods) {
-  console.log(`  ${method.padEnd(7)} ${path.padEnd(10)} — ${desc}`);
+  console.log(`  ${method.padEnd(7)} ${path.padEnd(10)}: ${desc}`);
 }
 
 console.log("\n=== Status Codes ===\n");
@@ -172,7 +172,7 @@ const statusCodes = [
 
 console.log("Important status codes:");
 for (const [code, text, meaning] of statusCodes) {
-  console.log(`  ${code} ${text.padEnd(22)} — ${meaning}`);
+  console.log(`  ${code} ${text.padEnd(22)}: ${meaning}`);
 }
 
 server.close();
@@ -225,8 +225,8 @@ Parsed JSON: { message: 'Hello from Node.js!', ... }
 
 ## Challenge
 
-1. Build a raw HTTP client that sends a POST request with a JSON body over TCP — set `Content-Length` and `Content-Type` correctly
-2. What happens if `Content-Length` is wrong? Set it too short and too long — observe what happens
+1. Build a raw HTTP client that sends a POST request with a JSON body over TCP: set `Content-Length` and `Content-Type` correctly
+2. What happens if `Content-Length` is wrong? Set it too short and too long: observe what happens
 3. Implement chunked transfer encoding: send a response in multiple chunks without knowing the total size upfront
 
 ## Deep Dive
@@ -235,18 +235,18 @@ HTTP/1.1 vs HTTP/1.0:
 - **HTTP/1.0**: One request per TCP connection. Open, request, response, close.
 - **HTTP/1.1**: Keep-alive by default. Multiple requests share one connection. The `Connection: close` header tells the server to close after the response.
 
-This is why HTTP/1.1 needs `Content-Length` or `Transfer-Encoding: chunked` — without them, the client doesn't know where one response ends and the next begins on the same connection. HTTP/1.0 could rely on the TCP connection closing to signal "end of response."
+This is why HTTP/1.1 needs `Content-Length` or `Transfer-Encoding: chunked`: without them, the client doesn't know where one response ends and the next begins on the same connection. HTTP/1.0 could rely on the TCP connection closing to signal "end of response."
 
 ## Common Mistakes
 
-- Forgetting `Content-Length` — the client doesn't know when the body ends, especially on keep-alive connections
-- Using `\n` instead of `\r\n` — the HTTP spec requires CRLF. Most servers accept `\n`, but it's technically non-compliant
-- Not handling `Transfer-Encoding: chunked` — many responses use chunked encoding instead of Content-Length
-- Confusing 401 and 403 — 401 means "you're not authenticated" (log in), 403 means "you're authenticated but not authorized" (access denied)
+- Forgetting `Content-Length`. The client doesn't know when the body ends, especially on keep-alive connections
+- Using `\n` instead of `\r\n`: the HTTP spec requires CRLF. Most servers accept `\n`, but it's technically non-compliant
+- Not handling `Transfer-Encoding: chunked`: many responses use chunked encoding instead of Content-Length
+- Confusing 401 and 403 - 401 means "you're not authenticated" (log in), 403 means "you're authenticated but not authorized" (access denied)
 
 
 ---
 
 ## Navigation
 
-[< 005 — Length Prefix Framing](../phase-06-networking-fundamentals/005-length-prefix-framing.md) | [002 — Headers And Content Types >](002-headers-and-content-types.md)
+[< 005 - Length Prefix Framing](../phase-06-networking-fundamentals/005-length-prefix-framing.md) | [002 - Headers And Content Types >](002-headers-and-content-types.md)

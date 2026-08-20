@@ -29,12 +29,12 @@ logger.error({ orderId: 123, error: 'payment_failed', provider: 'stripe' });
 ```
 
 **Log levels** (from most to least verbose):
-- `trace` (10) — fine-grained debugging, rarely enabled
-- `debug` (20) — development debugging
-- `info` (30) — normal operations (requests, business events)
-- `warn` (40) — something unexpected but handled
-- `error` (50) — something failed
-- `fatal` (60) — process is crashing
+- `trace` (10): fine-grained debugging, rarely enabled
+- `debug` (20): development debugging
+- `info` (30): normal operations (requests, business events)
+- `warn` (40): something unexpected but handled
+- `error` (50): something failed
+- `fatal` (60): process is crashing
 
 **Why structured logging matters:**
 - Log aggregation tools (ELK, Datadog, CloudWatch) can parse JSON directly
@@ -44,7 +44,7 @@ logger.error({ orderId: 123, error: 'payment_failed', provider: 'stripe' });
 
 ## Key Insight
 
-> `console.log` writes to stdout as a plain string. Structured logging writes JSON to stdout with consistent fields (timestamp, level, message, context). The difference isn't about fancy libraries — it's about making your logs queryable. In production, you'll have millions of log lines across dozens of services. The only way to find "why did order 12345 fail?" is to search structured fields, not grep through strings.
+> `console.log` writes to stdout as a plain string. Structured logging writes JSON to stdout with consistent fields (timestamp, level, message, context). The difference isn't about fancy libraries. It's about making your logs queryable. In production, you'll have millions of log lines across dozens of services. The only way to find "why did order 12345 fail?" is to search structured fields, not grep through strings.
 
 ## Experiment
 
@@ -263,19 +263,19 @@ for (const [lib, desc] of libraries) {
 ## Challenge
 
 1. Build a request logging middleware that logs every request with: method, path, status code, duration, request ID, and response size
-2. Implement log sampling: in production, only log 10% of `debug`-level messages but 100% of `warn` and above — to reduce volume while keeping visibility
+2. Implement log sampling: in production, only log 10% of `debug`-level messages but 100% of `warn` and above: to reduce volume while keeping visibility
 3. Why does pino use `process.stdout.write` instead of `console.log`? What's the performance difference?
 
 ## Common Mistakes
 
-- Using `console.log` in production — no levels, no structure, no context. Switch to a structured logger
-- Logging sensitive data (passwords, tokens, PII) — scrub sensitive fields before logging
-- Not including a request ID — without it, you can't correlate logs for a single request across services
-- Setting log level too low in production — `debug` level in production generates enormous log volume and cost
+- Using `console.log` in production. No levels, no structure, no context. Switch to a structured logger
+- Logging sensitive data (passwords, tokens, PII): scrub sensitive fields before logging
+- Not including a request ID: without it, you can't correlate logs for a single request across services
+- Setting log level too low in production: `debug` level in production generates enormous log volume and cost
 
 
 ---
 
 ## Navigation
 
-[< 005 — Cpu Offloading Patterns](../phase-11-child-processes-and-workers/005-cpu-offloading-patterns.md) | [002 — Health Checks >](002-health-checks.md)
+[< 005 - Cpu Offloading Patterns](../phase-11-child-processes-and-workers/005-cpu-offloading-patterns.md) | [002 - Health Checks >](002-health-checks.md)

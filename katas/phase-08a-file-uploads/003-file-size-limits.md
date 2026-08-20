@@ -14,17 +14,17 @@ estimated_minutes: 12
 
 Accepting file uploads without limits is a denial-of-service vulnerability. An attacker can send a 100 GB file and exhaust your server's disk or memory. Every upload endpoint needs:
 
-1. **Total body size limit** — reject requests exceeding N bytes before reading the full body
-2. **Per-file size limit** — individual files can't exceed a maximum
-3. **File count limit** — maximum number of files per request
-4. **File type validation** — verify the file is an allowed type (not just by extension — check magic bytes)
-5. **Filename sanitization** — prevent path traversal attacks
+1. **Total body size limit**: reject requests exceeding N bytes before reading the full body
+2. **Per-file size limit**: individual files can't exceed a maximum
+3. **File count limit**: maximum number of files per request
+4. **File type validation**: verify the file is an allowed type (not just by extension: check magic bytes)
+5. **Filename sanitization**: prevent path traversal attacks
 
 These checks must happen **during streaming**, not after buffering the entire upload. Check the `Content-Length` header first (fast rejection), then enforce limits as bytes arrive (defense in depth, since `Content-Length` can be spoofed).
 
 ## Key Insight
 
-> Validate during streaming, not after. If a client sends a 10 GB file and your limit is 10 MB, you should abort at 10 MB — not after receiving and storing all 10 GB. Check `Content-Length` first for a fast reject, then count bytes as they stream. Destroy the socket the moment a limit is exceeded.
+> Validate during streaming, not after. If a client sends a 10 GB file and your limit is 10 MB, you should abort at 10 MB. Not after receiving and storing all 10 GB. Check `Content-Length` first for a fast reject, then count bytes as they stream. Destroy the socket the moment a limit is exceeded.
 
 ## Experiment
 
@@ -203,7 +203,7 @@ const server = createServer(async (req, res) => {
 
   const body = Buffer.concat(chunks);
 
-  // Simulate parsing parts (simplified — just check each "file")
+  // Simulate parsing parts (simplified: just check each "file")
   // In production, use the streaming parser from the previous kata
   const files = [
     { name: "small.jpg", data: Buffer.from([0xFF, 0xD8, 0xFF, 0xE0, ...Array(500).fill(0x42)]) },
@@ -315,20 +315,20 @@ Oversized (header): 413 Payload too large
 
 ## Challenge
 
-1. Implement a content-type whitelist that checks both the declared `Content-Type` header AND the magic bytes — reject if they don't match (prevents someone uploading a `.exe` renamed to `.jpg`)
+1. Implement a content-type whitelist that checks both the declared `Content-Type` header AND the magic bytes: reject if they don't match (prevents someone uploading a `.exe` renamed to `.jpg`)
 2. Add virus scanning integration: pipe each uploaded file through a ClamAV stream scanner before accepting it
 3. Implement upload quotas: each user gets 100 MB total storage. Track usage and reject when quota is exceeded
 
 ## Common Mistakes
 
-- Only checking file extension, not magic bytes — trivially bypassed by renaming files
-- Only checking `Content-Length` header — it can be set to 0 while sending a huge body. Count bytes during transfer
-- Not destroying the request stream on rejection — the server keeps receiving data it will discard
-- Trusting the client's `Content-Type` header for the file — always verify with magic bytes
+- Only checking file extension, not magic bytes: trivially bypassed by renaming files
+- Only checking `Content-Length` header. It can be set to 0 while sending a huge body. Count bytes during transfer
+- Not destroying the request stream on rejection. The server keeps receiving data it will discard
+- Trusting the client's `Content-Type` header for the file. Always verify with magic bytes
 
 
 ---
 
 ## Navigation
 
-[< 002 — Streaming Uploads](002-streaming-uploads.md) | [004 — Upload Progress >](004-upload-progress.md)
+[< 002 - Streaming Uploads](002-streaming-uploads.md) | [004 - Upload Progress >](004-upload-progress.md)

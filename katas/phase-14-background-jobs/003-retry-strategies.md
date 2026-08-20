@@ -16,25 +16,25 @@ External services fail. Networks are unreliable. Databases hit timeouts. Retry s
 
 **Retry approaches:**
 
-1. **Immediate retry** — try again right away (only for rare, instant glitches)
-2. **Fixed delay** — wait a constant time between retries (e.g., 1s, 1s, 1s)
-3. **Exponential backoff** — double the delay each time (e.g., 1s, 2s, 4s, 8s)
-4. **Exponential backoff + jitter** — add randomness to prevent thundering herd
+1. **Immediate retry**: try again right away (only for rare, instant glitches)
+2. **Fixed delay**: wait a constant time between retries (e.g., 1s, 1s, 1s)
+3. **Exponential backoff**: double the delay each time (e.g., 1s, 2s, 4s, 8s)
+4. **Exponential backoff + jitter**: add randomness to prevent thundering herd
 
 **Which errors are retryable?**
-- Network timeouts — yes (transient)
-- 503 Service Unavailable — yes (server overloaded)
-- 429 Too Many Requests — yes (with Retry-After header)
-- 500 Internal Server Error — maybe (depends on the API)
-- 400 Bad Request — no (your input is wrong)
-- 404 Not Found — no (the resource doesn't exist)
-- 409 Conflict — no (duplicate, fix the data)
+- Network timeouts: yes (transient)
+- 503 Service Unavailable: yes (server overloaded)
+- 429 Too Many Requests: yes (with Retry-After header)
+- 500 Internal Server Error: maybe (depends on the API)
+- 400 Bad Request. No (your input is wrong)
+- 404 Not Found. No (the resource doesn't exist)
+- 409 Conflict. No (duplicate, fix the data)
 
-**Circuit breaker** — after N consecutive failures, stop trying for a cooldown period. This prevents overwhelming a failing service with retries.
+**Circuit breaker**: after N consecutive failures, stop trying for a cooldown period. This prevents overwhelming a failing service with retries.
 
 ## Key Insight
 
-> Exponential backoff without jitter causes the "thundering herd" problem: if 1000 clients fail at the same time, they all retry at exactly 1s, then 2s, then 4s — hitting the recovering service with synchronized bursts. Adding random jitter (e.g., `delay * (0.5 + Math.random())`) spreads the retries over time, giving the service a chance to recover gradually.
+> Exponential backoff without jitter causes the "thundering herd" problem: if 1000 clients fail at the same time, they all retry at exactly 1s, then 2s, then 4s: hitting the recovering service with synchronized bursts. Adding random jitter (e.g., `delay * (0.5 + Math.random())`) spreads the retries over time, giving the service a chance to recover gradually.
 
 ## Experiment
 
@@ -194,7 +194,7 @@ class HttpError extends Error {
   }
 }
 
-// 400 Bad Request — should NOT retry
+// 400 Bad Request: should NOT retry
 try {
   await smartEngine.execute(async () => {
     throw new HttpError(400, "Invalid email format");
@@ -203,7 +203,7 @@ try {
   console.log(`  400 Bad Request: "${err.message}" → no retry (${smartEngine.log.length} attempt)`);
 }
 
-// 503 Service Unavailable — SHOULD retry
+// 503 Service Unavailable: SHOULD retry
 const engine503 = new RetryEngine({
   strategy: "exponential-jitter",
   maxRetries: 3,
@@ -244,7 +244,7 @@ class CircuitBreaker {
         this.log.push({ state: "half-open", reason: "cooldown expired" });
       } else {
         this.log.push({ state: "open", action: "rejected" });
-        throw new Error("Circuit is open — request rejected");
+        throw new Error("Circuit is open: request rejected");
       }
     }
 
@@ -295,9 +295,9 @@ for (let i = 0; i < 8; i++) {
       if (i < 5) throw new Error("Service down");
       return "ok";
     });
-    console.log(`  Call ${i + 1}: success — state: ${breaker.state}`);
+    console.log(`  Call ${i + 1}: success: state: ${breaker.state}`);
   } catch (err) {
-    console.log(`  Call ${i + 1}: ${err.message} — state: ${breaker.state}`);
+    console.log(`  Call ${i + 1}: ${err.message}: state: ${breaker.state}`);
   }
 }
 
@@ -307,7 +307,7 @@ await new Promise(r => setTimeout(r, 250));
 // Half-open: test request
 try {
   await breaker.execute(async () => "recovered!");
-  console.log(`  Call 9 (after cooldown): success — state: ${breaker.state}`);
+  console.log(`  Call 9 (after cooldown): success: state: ${breaker.state}`);
 } catch (err) {
   console.log(`  Call 9: ${err.message}`);
 }
@@ -366,19 +366,19 @@ for (const [practice, reason] of practices) {
 ## Challenge
 
 1. Implement a retry-aware HTTP client that automatically retries on 5xx errors with exponential backoff, respects `Retry-After` headers, and gives up after a total timeout
-2. Build a circuit breaker that tracks failure rates per endpoint (not globally) — `/api/users` might be healthy while `/api/payments` is failing
+2. Build a circuit breaker that tracks failure rates per endpoint (not globally): `/api/users` might be healthy while `/api/payments` is failing
 3. What's the difference between "at least once" and "exactly once" delivery? Why is "exactly once" so hard, and how does idempotency help?
 
 ## Common Mistakes
 
-- Retrying without backoff — immediate retries at full speed overwhelm a recovering service
-- Not adding jitter — synchronized retries from multiple clients create periodic spikes
-- Retrying non-idempotent operations — sending a payment twice is worse than not sending it at all
-- No maximum retry limit — infinite retries waste resources and may never succeed
+- Retrying without backoff: immediate retries at full speed overwhelm a recovering service
+- Not adding jitter: synchronized retries from multiple clients create periodic spikes
+- Retrying non-idempotent operations: sending a payment twice is worse than not sending it at all
+- No maximum retry limit: infinite retries waste resources and may never succeed
 
 
 ---
 
 ## Navigation
 
-[< 002 — Job Queues](002-job-queues.md) | [004 — Idempotency >](004-idempotency.md)
+[< 002 - Job Queues](002-job-queues.md) | [004 - Idempotency >](004-idempotency.md)

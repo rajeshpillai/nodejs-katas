@@ -1,4 +1,4 @@
-# Phase 8 — Building Web Servers & APIs
+# Phase 8: Building Web Servers & APIs
 
 Build production-quality web servers using core Node.js. Implement URL routing, middleware patterns, JSON API handling with validation, structured error handling, and graceful shutdown.
 
@@ -18,4 +18,4 @@ Build production-quality web servers using core Node.js. Implement URL routing, 
 
 ## Navigation
 
-[< Phase 7A — WebSockets & Real-Time Systems](../phase-07a-websockets-and-realtime/README.md) | [Phase 8A — File Uploads & Multipart Streaming >](../phase-08a-file-uploads/README.md)
+[< Phase 7A: WebSockets & Real-Time Systems](../phase-07a-websockets-and-realtime/README.md) | [Phase 8A: File Uploads & Multipart Streaming >](../phase-08a-file-uploads/README.md)

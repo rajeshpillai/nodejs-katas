@@ -21,7 +21,7 @@ Node.js is single-threaded, but it can launch **child processes** to run externa
 | `spawn` | No | No (stream) | Long-running processes, large output |
 | `fork` | No | No (IPC) | Run another Node.js script with messaging |
 
-**exec** — Runs a command in a shell, buffers all output, returns when done:
+**exec**. Runs a command in a shell, buffers all output, returns when done:
 ```js
 import { exec } from 'node:child_process';
 exec('ls -la', (err, stdout, stderr) => {
@@ -29,18 +29,18 @@ exec('ls -la', (err, stdout, stderr) => {
 });
 ```
 
-**spawn** — Launches a process, returns streams immediately:
+**spawn**: Launches a process, returns streams immediately:
 ```js
 import { spawn } from 'node:child_process';
 const child = spawn('ls', ['-la']);
 child.stdout.on('data', chunk => console.log(chunk.toString()));
 ```
 
-The key difference: `exec` waits for the process to finish and buffers output in memory. `spawn` streams output as it's produced — essential for large outputs or long-running processes.
+The key difference: `exec` waits for the process to finish and buffers output in memory. `spawn` streams output as it's produced: essential for large outputs or long-running processes.
 
 ## Key Insight
 
-> `exec` runs commands through the shell (`/bin/sh -c`), which means shell features like pipes, redirects, and globbing work — but it also means shell injection is possible if you include user input. `spawn` and `execFile` bypass the shell entirely, passing arguments as an array, making injection structurally impossible. Always prefer `spawn`/`execFile` when you don't need shell features.
+> `exec` runs commands through the shell (`/bin/sh -c`), which means shell features like pipes, redirects, and globbing work, but it also means shell injection is possible if you include user input. `spawn` and `execFile` bypass the shell entirely, passing arguments as an array, making injection structurally impossible. Always prefer `spawn`/`execFile` when you don't need shell features.
 
 ## Experiment
 
@@ -243,14 +243,14 @@ for (const [opt, desc] of options) {
 
 ## Common Mistakes
 
-- Using `exec` with user input — shell injection vulnerability, same class as SQL injection
-- Not handling the `error` event on spawn — if the binary doesn't exist, the error event fires (not close)
-- Forgetting to handle stderr — many programs write to stderr even on success (warnings, progress)
-- Using `exec` for large outputs — `maxBuffer` defaults to 1MB; use `spawn` for unbounded output
+- Using `exec` with user input: shell injection vulnerability, same class as SQL injection
+- Not handling the `error` event on spawn. If the binary doesn't exist, the error event fires (not close)
+- Forgetting to handle stderr: many programs write to stderr even on success (warnings, progress)
+- Using `exec` for large outputs: `maxBuffer` defaults to 1MB; use `spawn` for unbounded output
 
 
 ---
 
 ## Navigation
 
-[< 005 — Secure Random](../phase-10-cryptography-and-security/005-secure-random.md) | [002 — Spawn And Streaming >](002-spawn-and-streaming.md)
+[< 005 - Secure Random](../phase-10-cryptography-and-security/005-secure-random.md) | [002 - Spawn And Streaming >](002-spawn-and-streaming.md)

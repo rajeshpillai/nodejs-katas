@@ -1,4 +1,4 @@
-# Phase 14 — Background Jobs & Async Systems
+# Phase 14: Background Jobs & Async Systems
 
 Build async job processing systems. Implement background workers, job queues with PostgreSQL, retry strategies, idempotency patterns, and understand failure modes.
 
@@ -18,4 +18,4 @@ Build async job processing systems. Implement background workers, job queues wit
 
 ## Navigation
 
-[< Phase 13 — Performance & Scaling](../phase-13-performance-and-scaling/README.md) | [Phase 15 — Frameworks >](../phase-15-frameworks/README.md)
+[< Phase 13: Performance & Scaling](../phase-13-performance-and-scaling/README.md) | [Phase 15: Frameworks >](../phase-15-frameworks/README.md)

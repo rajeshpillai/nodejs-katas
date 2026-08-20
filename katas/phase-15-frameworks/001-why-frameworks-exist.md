@@ -12,21 +12,21 @@ estimated_minutes: 12
 
 ## Concept
 
-You've built HTTP servers with the raw `http` module. You've handled routing, parsing, validation, error handling, and graceful shutdown — all manually. Now you understand what frameworks actually do.
+You've built HTTP servers with the raw `http` module. You've handled routing, parsing, validation, error handling, and graceful shutdown. All manually. Now you understand what frameworks actually do.
 
 **What the raw `http` module gives you:**
 - A TCP server that speaks HTTP
 - `req` (IncomingMessage) and `res` (ServerResponse)
-- Nothing else — no routing, no body parsing, no middleware
+- Nothing else. No routing, no body parsing, no middleware
 
 **What frameworks add:**
-1. **Routing** — declarative URL patterns with parameters
-2. **Body parsing** — automatic JSON, form, multipart handling
-3. **Middleware** — composable request/response pipeline
-4. **Validation** — schema-based input validation
-5. **Error handling** — centralized error responses
-6. **Serialization** — automatic response formatting
-7. **Plugins** — lifecycle hooks and encapsulation
+1. **Routing**: declarative URL patterns with parameters
+2. **Body parsing**: automatic JSON, form, multipart handling
+3. **Middleware**: composable request/response pipeline
+4. **Validation**: schema-based input validation
+5. **Error handling**: centralized error responses
+6. **Serialization**: automatic response formatting
+7. **Plugins**: lifecycle hooks and encapsulation
 
 **The two major Node.js frameworks:**
 
@@ -43,14 +43,14 @@ You've built HTTP servers with the raw `http` module. You've handled routing, pa
 
 ## Key Insight
 
-> Frameworks don't add magic — they organize the patterns you've already learned. Every `app.get('/users/:id', handler)` call is routing logic you built in Phase 8. Every middleware is a function in the request/response pipeline. The difference is that frameworks formalize these patterns with a consistent API, handle edge cases (URL decoding, header normalization, error boundaries), and let you focus on business logic instead of plumbing. Understanding the raw `http` module means you can debug framework issues, write custom middleware correctly, and make informed choices about which framework to use.
+> Frameworks don't add magic. They organize the patterns you've already learned. Every `app.get('/users/:id', handler)` call is routing logic you built in Phase 8. Every middleware is a function in the request/response pipeline. The difference is that frameworks formalize these patterns with a consistent API, handle edge cases (URL decoding, header normalization, error boundaries), and let you focus on business logic instead of plumbing. Understanding the raw `http` module means you can debug framework issues, write custom middleware correctly, and make informed choices about which framework to use.
 
 ## Experiment
 
 ```js
 console.log("=== Why Frameworks Exist ===\n");
 
-// --- Demo 1: Raw http module — the pain points ---
+// --- Demo 1: Raw http module: the pain points ---
 
 console.log("--- Raw http module pain points ---\n");
 
@@ -230,7 +230,7 @@ app.use(async (ctx) => {
   }
 });
 
-// Routes — clean and declarative
+// Routes: clean and declarative
 app.get("/users", async (ctx) => {
   ctx.status = 200;
   ctx.response = { users: ["Alice", "Bob"] };
@@ -395,14 +395,14 @@ for (const [useCase, choice, reason] of guide) {
 
 ## Common Mistakes
 
-- Using a framework without understanding the underlying HTTP — you can't debug middleware ordering issues if you don't know how the request/response pipeline works
-- Choosing Express for new projects purely by popularity — Fastify is faster, has better async support, and built-in validation. Express is fine, but evaluate both
-- Over-abstracting with middleware — 15 layers of middleware for a simple CRUD endpoint is worse than explicit code. Middleware should solve cross-cutting concerns, not business logic
-- Ignoring serialization performance — for high-throughput APIs, `JSON.stringify` is often the bottleneck. Schema-aware serialization (Fastify's approach) can be 2-5x faster
+- Using a framework without understanding the underlying HTTP. You can't debug middleware ordering issues if you don't know how the request/response pipeline works
+- Choosing Express for new projects purely by popularity: Fastify is faster, has better async support, and built-in validation. Express is fine, but evaluate both
+- Over-abstracting with middleware: 15 layers of middleware for a simple CRUD endpoint is worse than explicit code. Middleware should solve cross-cutting concerns, not business logic
+- Ignoring serialization performance: for high-throughput APIs, `JSON.stringify` is often the bottleneck. Schema-aware serialization (Fastify's approach) can be 2-5x faster
 
 
 ---
 
 ## Navigation
 
-[< 005 — Failure Modes](../phase-14-background-jobs/005-failure-modes.md) | [002 — Routing And Parameters >](002-routing-and-parameters.md)
+[< 005 - Failure Modes](../phase-14-background-jobs/005-failure-modes.md) | [002 - Routing And Parameters >](002-routing-and-parameters.md)

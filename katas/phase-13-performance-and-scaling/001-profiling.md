@@ -45,14 +45,14 @@ console.timeEnd('query'); // query: 12.345ms
 ```
 
 **What to profile:**
-- CPU time — which functions take the most time?
-- Event loop delay — is the loop being blocked?
-- Memory allocation — where are objects being created?
-- I/O wait — how long are you waiting for network/disk?
+- CPU time. Which functions take the most time?
+- Event loop delay: is the loop being blocked?
+- Memory allocation: where are objects being created?
+- I/O wait: how long are you waiting for network/disk?
 
 ## Key Insight
 
-> The most common performance mistake in Node.js isn't slow I/O — it's accidentally blocking the event loop with synchronous work. A single `JSON.parse()` of a 10MB payload or a `fs.readFileSync()` of a large file blocks ALL concurrent requests. Profiling reveals these hidden bottlenecks that you'd never find by code review alone. Always profile under realistic load, not with a single request.
+> The most common performance mistake in Node.js isn't slow I/O. It's accidentally blocking the event loop with synchronous work. A single `JSON.parse()` of a 10MB payload or a `fs.readFileSync()` of a large file blocks ALL concurrent requests. Profiling reveals these hidden bottlenecks that you'd never find by code review alone. Always profile under realistic load, not with a single request.
 
 ## Experiment
 
@@ -305,14 +305,14 @@ for (const [tool, what, how] of tools) {
 
 ## Common Mistakes
 
-- Optimizing without profiling — you'll optimize the wrong thing. Measure first, always
-- Benchmarking with a single request — real performance issues emerge under concurrent load
-- Ignoring p99 latency — the 1% worst-case matters more than the average for user experience
-- Using `Date.now()` for micro-benchmarks — it has millisecond resolution. Use `performance.now()` for sub-millisecond precision
+- Optimizing without profiling: you'll optimize the wrong thing. Measure first, always
+- Benchmarking with a single request: real performance issues emerge under concurrent load
+- Ignoring p99 latency: the 1% worst-case matters more than the average for user experience
+- Using `Date.now()` for micro-benchmarks. It has millisecond resolution. Use `performance.now()` for sub-millisecond precision
 
 
 ---
 
 ## Navigation
 
-[< 005 — Graceful Restart](../phase-12-observability-and-reliability/005-graceful-restart.md) | [002 — Memory Management >](002-memory-management.md)
+[< 005 - Graceful Restart](../phase-12-observability-and-reliability/005-graceful-restart.md) | [002 - Memory Management >](002-memory-management.md)

@@ -14,23 +14,23 @@ estimated_minutes: 12
 
 Uploaded files typically go through a lifecycle:
 
-1. **Receive** — stream to a temporary location on disk
-2. **Validate** — check file type, scan for viruses, verify integrity
-3. **Process** — resize images, transcode video, extract metadata
-4. **Store permanently** — move to final storage (local disk, S3, database)
-5. **Clean up** — delete the temp file
+1. **Receive**: stream to a temporary location on disk
+2. **Validate**: check file type, scan for viruses, verify integrity
+3. **Process**: resize images, transcode video, extract metadata
+4. **Store permanently**: move to final storage (local disk, S3, database)
+5. **Clean up**: delete the temp file
 
 Temporary storage must be:
-- **In the right place** — `os.tmpdir()` or a configured upload directory
-- **Uniquely named** — prevent collisions with concurrent uploads
-- **Cleaned up reliably** — even when the process crashes, validation fails, or the client disconnects
-- **Size-bounded** — the temp directory shouldn't fill up the disk
+- **In the right place**: `os.tmpdir()` or a configured upload directory
+- **Uniquely named**: prevent collisions with concurrent uploads
+- **Cleaned up reliably**. Even when the process crashes, validation fails, or the client disconnects
+- **Size-bounded**: the temp directory shouldn't fill up the disk
 
-The most common mistake is forgetting cleanup. Every code path — success, validation failure, error, timeout, client disconnect — must delete temp files. A `try/finally` pattern or a periodic cleanup job ensures nothing is left behind.
+The most common mistake is forgetting cleanup. Every code path: success, validation failure, error, timeout, client disconnect: must delete temp files. A `try/finally` pattern or a periodic cleanup job ensures nothing is left behind.
 
 ## Key Insight
 
-> Temp files are a resource that must be managed like database connections — acquire, use, release. Every file you write to `/tmp` is a commitment to clean it up. Use `try/finally`, periodic sweeps, and unique naming to prevent the three temp file bugs: leaks, collisions, and disk exhaustion.
+> Temp files are a resource that must be managed like database connections: acquire, use, release. Every file you write to `/tmp` is a commitment to clean it up. Use `try/finally`, periodic sweeps, and unique naming to prevent the three temp file bugs: leaks, collisions, and disk exhaustion.
 
 ## Experiment
 
@@ -101,7 +101,7 @@ class TempFileManager {
     try {
       await rename(tempPath, destPath);
     } catch (err) {
-      // Cross-device move — fall back to copy + delete
+      // Cross-device move: fall back to copy + delete
       if (err.code === "EXDEV") {
         const { copyFile } = await import("fs/promises");
         await copyFile(tempPath, destPath);
@@ -113,7 +113,7 @@ class TempFileManager {
     this.tracked.delete(tempPath);
   }
 
-  // Periodic cleanup — remove old temp files
+  // Periodic cleanup: remove old temp files
   async sweep() {
     const now = Date.now();
     let cleaned = 0;
@@ -167,7 +167,7 @@ class TempFileManager {
     }
   }
 
-  // Destroy — clean up everything
+  // Destroy: clean up everything
   async destroy() {
     await rm(this.baseDir, { recursive: true, force: true });
     this.tracked.clear();
@@ -312,20 +312,20 @@ All temp files destroyed
 
 Why `rename()` for persisting files:
 
-`fs.rename()` is atomic on the same filesystem — the file either exists at the old path or the new path, never both or neither. This prevents partial writes: if the server crashes during a `copyFile()`, the destination could have a partial file. With `rename()`, either the move happened or it didn't.
+`fs.rename()` is atomic on the same filesystem: the file either exists at the old path or the new path, never both or neither. This prevents partial writes: if the server crashes during a `copyFile()`, the destination could have a partial file. With `rename()`, either the move happened or it didn't.
 
 The caveat: `rename()` fails with `EXDEV` across filesystem boundaries (e.g., `/tmp` on a ramdisk to `/data` on an SSD). In that case, fall back to copy + delete, accepting the non-atomicity.
 
 ## Common Mistakes
 
-- Not cleaning up temp files on every error path — the most common temp file bug. Use `try/finally`
-- Using predictable temp file names — `upload-1.tmp`, `upload-2.tmp` creates race conditions with concurrent uploads. Use random names
-- Not running periodic sweeps — even with `finally` blocks, process crashes leave orphan files. A cron-style sweep catches them
-- Writing temp files to the application directory — use `os.tmpdir()` or a dedicated upload directory. App directories may not be writable in production
+- Not cleaning up temp files on every error path: the most common temp file bug. Use `try/finally`
+- Using predictable temp file names: `upload-1.tmp`, `upload-2.tmp` creates race conditions with concurrent uploads. Use random names
+- Not running periodic sweeps. Even with `finally` blocks, process crashes leave orphan files. A cron-style sweep catches them
+- Writing temp files to the application directory. Use `os.tmpdir()` or a dedicated upload directory. App directories may not be writable in production
 
 
 ---
 
 ## Navigation
 
-[< 004 — Upload Progress](004-upload-progress.md) | [001 — Postgresql Architecture >](../phase-09-postgresql-integration/001-postgresql-architecture.md)
+[< 004 - Upload Progress](004-upload-progress.md) | [001 - Postgresql Architecture >](../phase-09-postgresql-integration/001-postgresql-architecture.md)

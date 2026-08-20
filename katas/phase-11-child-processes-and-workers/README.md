@@ -1,4 +1,4 @@
-# Phase 11 — Child Processes & Worker Threads
+# Phase 11: Child Processes & Worker Threads
 
 Offload work beyond the main thread. Learn child process basics, spawn with streaming I/O, fork with IPC, worker threads for CPU-bound tasks, and patterns for CPU offloading.
 
@@ -18,4 +18,4 @@ Offload work beyond the main thread. Learn child process basics, spawn with stre
 
 ## Navigation
 
-[< Phase 10 — Cryptography & Security](../phase-10-cryptography-and-security/README.md) | [Phase 12 — Observability & Reliability >](../phase-12-observability-and-reliability/README.md)
+[< Phase 10: Cryptography & Security](../phase-10-cryptography-and-security/README.md) | [Phase 12: Observability & Reliability >](../phase-12-observability-and-reliability/README.md)

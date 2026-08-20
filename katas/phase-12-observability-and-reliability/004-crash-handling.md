@@ -14,11 +14,11 @@ estimated_minutes: 12
 
 Node.js processes can crash from:
 
-1. **Uncaught exceptions** — a thrown error with no try/catch
-2. **Unhandled promise rejections** — a rejected promise with no `.catch()`
-3. **Out of memory** — V8 heap exhausted
-4. **Segmentation faults** — native addon bugs
-5. **SIGKILL** — OS or orchestrator forcefully kills the process
+1. **Uncaught exceptions**: a thrown error with no try/catch
+2. **Unhandled promise rejections**: a rejected promise with no `.catch()`
+3. **Out of memory**: V8 heap exhausted
+4. **Segmentation faults**: native addon bugs
+5. **SIGKILL**: OS or orchestrator forcefully kills the process
 
 **The correct response to a crash:**
 
@@ -27,7 +27,7 @@ Node.js processes can crash from:
 process.on('uncaughtException', (err) => {
   logger.fatal({ err }, 'Uncaught exception');
   // Attempt cleanup (close server, flush logs)
-  process.exit(1);  // EXIT — the process is in an unknown state
+  process.exit(1);  // EXIT: the process is in an unknown state
 });
 
 process.on('unhandledRejection', (reason) => {
@@ -41,7 +41,7 @@ After an uncaught exception, the process is in an **undefined state**. In-flight
 
 ## Key Insight
 
-> Do NOT use `uncaughtException` to "keep the server running." After an uncaught exception, you don't know what state the process is in — database connections may be half-open, transactions may be uncommitted, file handles may be leaked. The process must exit. The real fix for uncaught exceptions is to add proper error handling (try/catch, .catch()) so they never reach the process level in the first place.
+> Do NOT use `uncaughtException` to "keep the server running." After an uncaught exception, you don't know what state the process is in: database connections may be half-open, transactions may be uncommitted, file handles may be leaked. The process must exit. The real fix for uncaught exceptions is to add proper error handling (try/catch, .catch()) so they never reach the process level in the first place.
 
 ## Experiment
 
@@ -264,14 +264,14 @@ for (const [error, cause] of causes) {
 
 ## Common Mistakes
 
-- Catching `uncaughtException` and continuing to serve requests — the process state is corrupted, exit immediately
-- Not logging the error before exiting — you lose the most important debugging information
-- Relying on `process.exit()` alone — async operations (log flushing, connection closing) may not complete. Use `setTimeout(...).unref()` to give cleanup a chance
-- Not having a process manager — without auto-restart, a single uncaught exception takes your service down permanently
+- Catching `uncaughtException` and continuing to serve requests: the process state is corrupted, exit immediately
+- Not logging the error before exiting. You lose the most important debugging information
+- Relying on `process.exit()` alone: async operations (log flushing, connection closing) may not complete. Use `setTimeout(...).unref()` to give cleanup a chance
+- Not having a process manager: without auto-restart, a single uncaught exception takes your service down permanently
 
 
 ---
 
 ## Navigation
 
-[< 003 — Metrics](003-metrics.md) | [005 — Graceful Restart >](005-graceful-restart.md)
+[< 003 - Metrics](003-metrics.md) | [005 - Graceful Restart >](005-graceful-restart.md)

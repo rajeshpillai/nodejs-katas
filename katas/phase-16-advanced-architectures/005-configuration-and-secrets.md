@@ -24,8 +24,8 @@ Every production system needs external configuration: database URLs, API keys, f
 5. Remote configuration (feature flags, service discovery)
 
 **Secrets vs configuration:**
-- **Configuration** — can be checked into source control: port numbers, log levels, feature flags
-- **Secrets** — NEVER in source control: database passwords, API keys, JWT secrets, encryption keys
+- **Configuration**: can be checked into source control: port numbers, log levels, feature flags
+- **Secrets**. NEVER in source control: database passwords, API keys, JWT secrets, encryption keys
 
 **Where secrets live in production:**
 - Environment variables (basic)
@@ -35,7 +35,7 @@ Every production system needs external configuration: database URLs, API keys, f
 
 ## Key Insight
 
-> The critical insight about configuration is the separation between *what can change per environment* and *what should never be in code*. A port number can be in code as a default (`6001`) and overridden by an environment variable. A database password should NEVER appear in code — not even as a default. The `.env` file bridges development convenience (readable config file) with production safety (real env vars). But `.env` files must NEVER be committed to git — one leaked `.env` file in a public repo exposes every secret.
+> The critical insight about configuration is the separation between *what can change per environment* and *what should never be in code*. A port number can be in code as a default (`6001`) and overridden by an environment variable. A database password should NEVER appear in code. Not even as a default. The `.env` file bridges development convenience (readable config file) with production safety (real env vars). But `.env` files must NEVER be committed to git. One leaked `.env` file in a public repo exposes every secret.
 
 ## Experiment
 
@@ -429,7 +429,7 @@ console.log("\n=== Configuration Best Practices ===\n");
 const practices = [
   [".env in .gitignore", "NEVER commit .env files with secrets"],
   ["Validate at startup", "Fail fast if required config is missing"],
-  ["Type-parse env vars", "process.env values are always strings — parse them"],
+  ["Type-parse env vars", "process.env values are always strings: parse them"],
   ["Use defaults wisely", "Default PORT is fine; default PASSWORD is not"],
   ["Mask secrets in logs", "Never log raw passwords, tokens, or keys"],
   ["Rotate secrets regularly", "Leaked secrets have limited damage if rotated"],
@@ -474,14 +474,14 @@ for (const [practice, detail] of practices) {
 
 ## Common Mistakes
 
-- Committing `.env` files — the #1 cause of credential leaks. Add `.env` to `.gitignore` immediately
-- Hardcoded secrets in code — `const secret = "abc123"` in source code is visible in git history forever, even if you delete it later
-- Not validating config at startup — a missing `DB_HOST` discovered 2 hours later during the first database query is much harder to debug than a startup failure
-- Using `process.env` everywhere — scattered `process.env.X` calls throughout the codebase are hard to track. Load config once at startup and pass it explicitly
+- Committing `.env` files: the #1 cause of credential leaks. Add `.env` to `.gitignore` immediately
+- Hardcoded secrets in code: `const secret = "abc123"` in source code is visible in git history forever, even if you delete it later
+- Not validating config at startup: a missing `DB_HOST` discovered 2 hours later during the first database query is much harder to debug than a startup failure
+- Using `process.env` everywhere: scattered `process.env.X` calls throughout the codebase are hard to track. Load config once at startup and pass it explicitly
 
 
 ---
 
 ## Navigation
 
-[< 004 — Monolith Vs Microservices](004-monolith-vs-microservices.md)
+[< 004 - Monolith Vs Microservices](004-monolith-vs-microservices.md)

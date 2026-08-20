@@ -21,7 +21,7 @@ const result = await pool.query('SELECT * FROM huge_table');
 // result.rows = [... 10 million objects ...] → out of memory!
 ```
 
-**The solution — query streams:**
+**The solution: query streams:**
 ```js
 import QueryStream from 'pg-query-stream';
 
@@ -30,7 +30,7 @@ const client = await pool.connect();
 const stream = client.query(query);
 
 stream.on('data', (row) => {
-  // Process one row at a time — constant memory
+  // Process one row at a time: constant memory
 });
 
 stream.on('end', () => client.release());
@@ -39,12 +39,12 @@ stream.on('end', () => client.release());
 `pg-query-stream` uses a PostgreSQL **cursor** internally. Instead of fetching all rows, it fetches them in batches (default 100 rows at a time) and presents them as a Node.js Readable stream. This means:
 
 - Memory usage stays constant regardless of result set size
-- Backpressure works — if you process slowly, the cursor pauses
+- Backpressure works. If you process slowly, the cursor pauses
 - You can pipe results directly to transforms, files, or HTTP responses
 
 ## Key Insight
 
-> `pool.query()` buffers the entire result set in memory. A cursor-based stream fetches rows in batches and applies backpressure — if your transform or consumer is slow, the database pauses. This lets you process a 10GB result set with 50MB of RAM. The tradeoff: cursor streams require a dedicated client connection for the duration of the stream.
+> `pool.query()` buffers the entire result set in memory. A cursor-based stream fetches rows in batches and applies backpressure. If your transform or consumer is slow, the database pauses. This lets you process a 10GB result set with 50MB of RAM. The tradeoff: cursor streams require a dedicated client connection for the duration of the stream.
 
 ## Experiment
 
@@ -341,7 +341,7 @@ Streaming approach (cursor, batchSize=100):
 
 1. Implement a `streamToFile` function that streams query results to a CSV file, handling backpressure properly between the database cursor and the file write stream
 2. What happens if the client connection is released before the stream finishes? Build a safety wrapper that ensures the client is only released after `end` or `error`
-3. Compare memory usage of `pool.query()` vs cursor stream for 1M rows — measure with `process.memoryUsage()`
+3. Compare memory usage of `pool.query()` vs cursor stream for 1M rows: measure with `process.memoryUsage()`
 
 ## Deep Dive
 
@@ -359,14 +359,14 @@ The cursor issues `DECLARE cursor_name CURSOR FOR ...` then `FETCH 100 FROM curs
 
 ## Common Mistakes
 
-- Using `pool.query()` for large exports — loads everything into memory, crashes the process
-- Forgetting to release the client after a stream ends — connection leaks from the pool
-- Not handling stream errors — an error without a handler crashes the process
-- Using cursor streams for small queries — the overhead of DECLARE/FETCH is slower than a single buffered query for small results
+- Using `pool.query()` for large exports: loads everything into memory, crashes the process
+- Forgetting to release the client after a stream ends: connection leaks from the pool
+- Not handling stream errors: an error without a handler crashes the process
+- Using cursor streams for small queries: the overhead of DECLARE/FETCH is slower than a single buffered query for small results
 
 
 ---
 
 ## Navigation
 
-[< 005 — Error Handling Db](../phase-09-postgresql-integration/005-error-handling-db.md) | [002 — Bulk Inserts >](002-bulk-inserts.md)
+[< 005 - Error Handling Db](../phase-09-postgresql-integration/005-error-handling-db.md) | [002 - Bulk Inserts >](002-bulk-inserts.md)

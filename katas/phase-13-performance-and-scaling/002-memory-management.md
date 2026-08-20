@@ -15,18 +15,18 @@ estimated_minutes: 15
 V8 (Node.js's JavaScript engine) manages memory automatically with a garbage collector. Understanding how it works helps you avoid memory leaks and optimize memory usage.
 
 **V8 memory structure:**
-- **New Space** — small, short-lived objects (fast allocation, frequent GC)
-- **Old Space** — objects that survived multiple GC cycles (less frequent GC)
-- **Large Object Space** — objects > 1MB
-- **Code Space** — compiled functions
-- **Map Space** — hidden classes (object shapes)
+- **New Space**: small, short-lived objects (fast allocation, frequent GC)
+- **Old Space**: objects that survived multiple GC cycles (less frequent GC)
+- **Large Object Space**: objects > 1MB
+- **Code Space**: compiled functions
+- **Map Space**: hidden classes (object shapes)
 
 **Common memory leak patterns:**
-1. **Growing arrays/maps** — accumulating data without bounds
-2. **Event listeners** — adding listeners without removing them
-3. **Closures** — functions capturing large scopes
-4. **Global caches** — caches without eviction
-5. **Unreleased resources** — streams, timers, connections
+1. **Growing arrays/maps**: accumulating data without bounds
+2. **Event listeners**: adding listeners without removing them
+3. **Closures**: functions capturing large scopes
+4. **Global caches**: caches without eviction
+5. **Unreleased resources**: streams, timers, connections
 
 **Monitoring memory:**
 ```js
@@ -34,14 +34,14 @@ const mem = process.memoryUsage();
 // { rss, heapTotal, heapUsed, external, arrayBuffers }
 ```
 
-- `rss` — Resident Set Size (total process memory from OS perspective)
-- `heapTotal` — V8 heap allocated
-- `heapUsed` — V8 heap actually used
-- `external` — C++ objects (Buffers, native addons)
+- `rss`: Resident Set Size (total process memory from OS perspective)
+- `heapTotal`: V8 heap allocated
+- `heapUsed`: V8 heap actually used
+- `external`: C++ objects (Buffers, native addons)
 
 ## Key Insight
 
-> A memory leak in Node.js means objects that should be garbage collected are still reachable from a GC root (global, active closures, event listeners). The heap grows steadily over time until the process crashes with FATAL ERROR: CALL_AND_RETRY_LAST. The fix isn't increasing `--max-old-space-size` — that just delays the crash. The fix is finding and removing the reference chain that keeps dead objects alive.
+> A memory leak in Node.js means objects that should be garbage collected are still reachable from a GC root (global, active closures, event listeners). The heap grows steadily over time until the process crashes with FATAL ERROR: CALL_AND_RETRY_LAST. The fix isn't increasing `--max-old-space-size`. That just delays the crash. The fix is finding and removing the reference chain that keeps dead objects alive.
 
 ## Experiment
 
@@ -307,19 +307,19 @@ console.log(`  # Heap snapshot via inspect
 ## Challenge
 
 1. Build a memory monitor that takes heap snapshots every 60 seconds and alerts when heap usage grows by more than 20% between snapshots
-2. Implement an LRU cache with `WeakRef` values — cached objects can be garbage collected under memory pressure, and the cache automatically cleans up stale entries
+2. Implement an LRU cache with `WeakRef` values: cached objects can be garbage collected under memory pressure, and the cache automatically cleans up stale entries
 3. Write a stress test that intentionally creates a memory leak (accumulating event listeners), detect it with `process.memoryUsage()`, and fix it
 
 ## Common Mistakes
 
-- Increasing `--max-old-space-size` to "fix" memory leaks — it just delays the inevitable crash. Find and fix the leak
-- Storing unbounded data in module-level variables — these persist for the lifetime of the process
-- Adding event listeners in request handlers without removing them — each request adds a new listener that's never cleaned up
-- Using `global` for caching — no eviction, no size limits, grows until OOM
+- Increasing `--max-old-space-size` to "fix" memory leaks. It just delays the inevitable crash. Find and fix the leak
+- Storing unbounded data in module-level variables. These persist for the lifetime of the process
+- Adding event listeners in request handlers without removing them. Each request adds a new listener that's never cleaned up
+- Using `global` for caching. No eviction, no size limits, grows until OOM
 
 
 ---
 
 ## Navigation
 
-[< 001 — Profiling](001-profiling.md) | [003 — Event Loop Optimization >](003-event-loop-optimization.md)
+[< 001 - Profiling](001-profiling.md) | [003 - Event Loop Optimization >](003-event-loop-optimization.md)

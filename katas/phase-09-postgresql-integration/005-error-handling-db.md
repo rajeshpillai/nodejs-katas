@@ -14,31 +14,31 @@ estimated_minutes: 15
 
 Database errors fall into two categories:
 
-**Client errors** (your fault — fix the code):
-- `23505` — Unique violation (duplicate key)
-- `23503` — Foreign key violation (referenced row doesn't exist)
-- `23502` — Not null violation (required field missing)
-- `23514` — Check constraint violation (value out of range)
-- `42P01` — Table doesn't exist (wrong table name)
-- `42601` — Syntax error in SQL
+**Client errors** (your fault: fix the code):
+- `23505`: Unique violation (duplicate key)
+- `23503`: Foreign key violation (referenced row doesn't exist)
+- `23502`. Not null violation (required field missing)
+- `23514`: Check constraint violation (value out of range)
+- `42P01`: Table doesn't exist (wrong table name)
+- `42601`: Syntax error in SQL
 
-**Server/infrastructure errors** (not your fault — handle and retry):
-- `53300` — Too many connections
-- `57014` — Query cancelled (statement_timeout)
-- `08006` — Connection failure
-- `40001` — Serialization failure (retry the transaction)
-- `40P01` — Deadlock detected (retry the transaction)
+**Server/infrastructure errors** (not your fault: handle and retry):
+- `53300`: Too many connections
+- `57014`: Query cancelled (statement_timeout)
+- `08006`: Connection failure
+- `40001`: Serialization failure (retry the transaction)
+- `40P01`: Deadlock detected (retry the transaction)
 
 The error code (SQLSTATE) tells you exactly what went wrong and whether retrying might help. PostgreSQL errors in the `pg` library include:
-- `err.code` — the 5-character SQLSTATE code
-- `err.message` — human-readable description
-- `err.detail` — additional context (e.g., which key was duplicated)
-- `err.constraint` — name of the violated constraint
-- `err.table` — table where the error occurred
+- `err.code`: the 5-character SQLSTATE code
+- `err.message`: human-readable description
+- `err.detail`: additional context (e.g., which key was duplicated)
+- `err.constraint`: name of the violated constraint
+- `err.table`: table where the error occurred
 
 ## Key Insight
 
-> Not all database errors are equal. A unique violation (23505) means the client sent duplicate data — retrying won't help, return 409 Conflict. A serialization failure (40001) means two transactions collided — retry immediately. A connection failure (08006) means the database is down — retry with backoff. The SQLSTATE code tells you the correct response strategy for every error.
+> Not all database errors are equal. A unique violation (23505) means the client sent duplicate data: retrying won't help, return 409 Conflict. A serialization failure (40001) means two transactions collided: retry immediately. A connection failure (08006) means the database is down: retry with backoff. The SQLSTATE code tells you the correct response strategy for every error.
 
 ## Experiment
 
@@ -101,7 +101,7 @@ function classifyError(err) {
       type: "SERIALIZATION_FAILURE",
       httpStatus: 503,
       retryable: true,
-      message: "Transaction conflict — please retry",
+      message: "Transaction conflict: please retry",
     };
   }
   if (code === "40P01") {
@@ -109,7 +109,7 @@ function classifyError(err) {
       type: "DEADLOCK",
       httpStatus: 503,
       retryable: true,
-      message: "Deadlock detected — please retry",
+      message: "Deadlock detected: please retry",
     };
   }
 
@@ -119,7 +119,7 @@ function classifyError(err) {
       type: "TOO_MANY_CONNECTIONS",
       httpStatus: 503,
       retryable: true,
-      message: "Database overloaded — try again later",
+      message: "Database overloaded: try again later",
     };
   }
 
@@ -210,9 +210,9 @@ async function queryWithRetry(queryFn, options = {}) {
         throw err;
       }
 
-      // Retryable error — wait and try again
+      // Retryable error: wait and try again
       const delay = baseDelay * Math.pow(2, attempt);
-      console.log(`  [attempt ${attempt + 1}] ${classified.type} — retrying in ${delay}ms`);
+      console.log(`  [attempt ${attempt + 1}] ${classified.type}: retrying in ${delay}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -294,7 +294,7 @@ Error classification:
 
   Code: 40001 (SERIALIZATION_FAILURE)
     HTTP: 503, Retryable: true
-    Message: Transaction conflict — please retry
+    Message: Transaction conflict: please retry
 
   Code: 08006 (CONNECTION_ERROR)
     HTTP: 503, Retryable: true
@@ -305,8 +305,8 @@ Error classification:
 
 Scenario: Serialization failure with retry
 
-  [attempt 1] SERIALIZATION_FAILURE — retrying in 100ms
-  [attempt 2] SERIALIZATION_FAILURE — retrying in 200ms
+  [attempt 1] SERIALIZATION_FAILURE: retrying in 100ms
+  [attempt 2] SERIALIZATION_FAILURE: retrying in 200ms
   Success on attempt 3!
 
 Scenario: Unique violation (no retry)
@@ -343,14 +343,14 @@ The first two characters identify the class. Checking `code.startsWith("23")` ca
 
 ## Common Mistakes
 
-- Catching all database errors with a generic handler — different errors need different responses (409 vs 500 vs 503)
-- Retrying non-retryable errors — retrying a unique violation forever is a bug
-- Exposing raw SQL error messages to clients — they may contain table names, column names, and constraint details
-- Not setting `statement_timeout` — a missing WHERE clause on a large table can run a query for minutes
+- Catching all database errors with a generic handler: different errors need different responses (409 vs 500 vs 503)
+- Retrying non-retryable errors: retrying a unique violation forever is a bug
+- Exposing raw SQL error messages to clients. They may contain table names, column names, and constraint details
+- Not setting `statement_timeout`: a missing WHERE clause on a large table can run a query for minutes
 
 
 ---
 
 ## Navigation
 
-[< 004 — Transactions](004-transactions.md) | [001 — Streaming Query Results >](../phase-09a-advanced-postgresql/001-streaming-query-results.md)
+[< 004 - Transactions](004-transactions.md) | [001 - Streaming Query Results >](../phase-09a-advanced-postgresql/001-streaming-query-results.md)

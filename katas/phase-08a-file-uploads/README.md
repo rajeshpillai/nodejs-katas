@@ -1,4 +1,4 @@
-# Phase 8A — File Uploads & Multipart Streaming
+# Phase 8A: File Uploads & Multipart Streaming
 
 Handle file uploads correctly and safely. Understand multipart/form-data parsing, streaming uploads vs buffering, file size limits and validation, upload progress tracking, and temporary storage management.
 
@@ -18,4 +18,4 @@ Handle file uploads correctly and safely. Understand multipart/form-data parsing
 
 ## Navigation
 
-[< Phase 8 — Building Web Servers & APIs](../phase-08-building-web-servers/README.md) | [Phase 9 — PostgreSQL Integration >](../phase-09-postgresql-integration/README.md)
+[< Phase 8: Building Web Servers & APIs](../phase-08-building-web-servers/README.md) | [Phase 9: PostgreSQL Integration >](../phase-09-postgresql-integration/README.md)

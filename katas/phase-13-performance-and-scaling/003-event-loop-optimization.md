@@ -35,15 +35,15 @@ setInterval(() => {
 - Synchronous native addon calls
 
 **Optimization strategies:**
-1. **Break up work** — `setImmediate()` between chunks
-2. **Offload** — worker threads for CPU-bound tasks
-3. **Stream** — process data incrementally instead of buffering
-4. **Cache** — avoid repeated expensive computations
-5. **Use async APIs** — never use sync variants in servers
+1. **Break up work**: `setImmediate()` between chunks
+2. **Offload**: worker threads for CPU-bound tasks
+3. **Stream**: process data incrementally instead of buffering
+4. **Cache**: avoid repeated expensive computations
+5. **Use async APIs**: never use sync variants in servers
 
 ## Key Insight
 
-> `setImmediate(callback)` schedules the callback for the next iteration of the event loop's check phase — after I/O polling. This means inserting `await new Promise(r => setImmediate(r))` between chunks of CPU work gives the event loop a chance to process I/O callbacks, timers, and other waiting work. It's the simplest way to keep the server responsive during long computations without the overhead of worker threads.
+> `setImmediate(callback)` schedules the callback for the next iteration of the event loop's check phase: after I/O polling. This means inserting `await new Promise(r => setImmediate(r))` between chunks of CPU work gives the event loop a chance to process I/O callbacks, timers, and other waiting work. It's the simplest way to keep the server responsive during long computations without the overhead of worker threads.
 
 ## Experiment
 
@@ -65,7 +65,7 @@ async function measureLoopDelay(label, workFn) {
 
   // Warm-up: give the sampler a few clean turns to arm and record a baseline
   // BEFORE the work starts. Without this, a synchronous workFn runs before the
-  // sampler's first tick is ever scheduled — so the stall is never measured.
+  // sampler's first tick is ever scheduled. So the stall is never measured.
   await new Promise(r => setTimeout(r, 50));
 
   await workFn();
@@ -164,7 +164,7 @@ console.log(`    2. Rewrite to remove ambiguity, e.g. /^a+$/ instead of /^(a+)+$
 console.log(`    3. Use re2 (linear-time regex) for untrusted patterns/input`);
 console.log(`    4. Validate input length before regex matching`);
 console.log(`    Note: JS regex has NO atomic groups (?>...) or possessive`);
-console.log(`    quantifiers (a++) — those are PCRE/Java features that throw here.`);
+console.log(`    quantifiers (a++): those are PCRE/Java features that throw here.`);
 
 // --- Demo 4: Sync vs async I/O impact ---
 
@@ -261,11 +261,11 @@ for (let i = 0; i < checklist.length; i++) {
 
 Read the **`max`** column, not `p50`. The blocking run spends most of its samples
 idle (so its p50 stays ~1ms, same as baseline) but freezes the loop for one
-~230ms stretch — that single stall is the bug, and only `max`/high percentiles
+~230ms stretch. That single stall is the bug, and only `max`/high percentiles
 reveal it. Chunking trades a slightly higher p50 for a `max` that stays in
 single-digit milliseconds: the tail latency every request feels is now bounded.
-(Exact numbers vary by machine; the *shape* — blocking `max` orders of magnitude
-above idle, chunked `max` close to idle — is the point.)
+(Exact numbers vary by machine; the *shape*: blocking `max` orders of magnitude
+above idle, chunked `max` close to idle: is the point.)
 
 ## Challenge
 
@@ -275,14 +275,14 @@ above idle, chunked `max` close to idle — is the point.)
 
 ## Common Mistakes
 
-- Using `readFileSync` in a request handler — blocks every concurrent request while the file is read
-- Calling `JSON.stringify` on large objects in a hot path — it's synchronous and can take 50-200ms for large objects
-- Using user-supplied regular expressions — enables ReDoS (Regular Expression Denial of Service)
-- Not monitoring event loop delay in production — you won't know the loop is blocked until users complain
+- Using `readFileSync` in a request handler: blocks every concurrent request while the file is read
+- Calling `JSON.stringify` on large objects in a hot path. It's synchronous and can take 50-200ms for large objects
+- Using user-supplied regular expressions: enables ReDoS (Regular Expression Denial of Service)
+- Not monitoring event loop delay in production. You won't know the loop is blocked until users complain
 
 
 ---
 
 ## Navigation
 
-[< 002 — Memory Management](002-memory-management.md) | [004 — Load Testing >](004-load-testing.md)
+[< 002 - Memory Management](002-memory-management.md) | [004 - Load Testing >](004-load-testing.md)

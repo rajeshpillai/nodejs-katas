@@ -14,7 +14,7 @@ estimated_minutes: 20
 
 A production WebSocket server handles the complete lifecycle: upgrade handshake, frame parsing, message dispatch, connection tracking, ping/pong heartbeats, and graceful shutdown.
 
-Building on the frame encoder/decoder from the previous kata, we'll construct a minimal but functional WebSocket server from scratch — no libraries. This teaches you exactly what `ws` or `socket.io` do under the hood.
+Building on the frame encoder/decoder from the previous kata, we'll construct a minimal but functional WebSocket server from scratch. No libraries. This teaches you exactly what `ws` or `socket.io` do under the hood.
 
 The server must:
 1. Accept HTTP upgrade requests and complete the WebSocket handshake
@@ -25,7 +25,7 @@ The server must:
 
 ## Key Insight
 
-> A WebSocket server is an event-driven state machine. Each connection tracks its own state (handshaking, open, closing, closed), buffers partial frames, and responds to control messages. The server's job is to manage many of these state machines concurrently — and Node.js's event loop makes this natural.
+> A WebSocket server is an event-driven state machine. Each connection tracks its own state (handshaking, open, closing, closed), buffers partial frames, and responds to control messages. The server's job is to manage many of these state machines concurrently, and Node.js's event loop makes this natural.
 
 ## Experiment
 
@@ -233,7 +233,7 @@ class WebSocketServer {
   heartbeat() {
     for (const client of this.clients) {
       if (!client.alive) {
-        console.log(`[ws] Client ${client.id} failed heartbeat — disconnecting`);
+        console.log(`[ws] Client ${client.id} failed heartbeat: disconnecting`);
         client.socket.destroy();
         this.clients.delete(client);
         continue;
@@ -422,7 +422,7 @@ Server closed
 
 1. Add room support: clients can join/leave rooms, and broadcasts are scoped to rooms
 2. Implement connection authentication: the first message after connect must be `{ type: "auth", token: "..." }`. Disconnect clients that don't authenticate within 5 seconds
-3. Add a maximum message size check — reject messages larger than 1 MB and close with code 1009 (Message Too Big)
+3. Add a maximum message size check: reject messages larger than 1 MB and close with code 1009 (Message Too Big)
 
 ## Deep Dive
 
@@ -434,19 +434,19 @@ The `ws` library is excellent for production. But understanding the protocol int
 - Optimize for specific use cases (binary protocols, minimal overhead)
 - Understand what's happening when things go wrong
 
-In production, use `ws` — it handles edge cases (fragmentation reassembly, UTF-8 validation, close handshake timeouts, permessage-deflate compression) that our minimal implementation skips.
+In production, use `ws`. It handles edge cases (fragmentation reassembly, UTF-8 validation, close handshake timeouts, permessage-deflate compression) that our minimal implementation skips.
 
 ## Common Mistakes
 
-- Not responding to ping frames with pong — violates the protocol, may cause disconnection
-- Sending unmasked frames from client or masked frames from server — protocol violation
-- Not buffering partial frames — TCP can deliver half a WebSocket frame
-- Forgetting the close handshake — both sides must exchange close frames for a clean shutdown
-- Not tracking connections — leaked sockets when clients disconnect abruptly
+- Not responding to ping frames with pong: violates the protocol, may cause disconnection
+- Sending unmasked frames from client or masked frames from server: protocol violation
+- Not buffering partial frames. TCP can deliver half a WebSocket frame
+- Forgetting the close handshake. Both sides must exchange close frames for a clean shutdown
+- Not tracking connections: leaked sockets when clients disconnect abruptly
 
 
 ---
 
 ## Navigation
 
-[< 002 — Websocket Framing](002-websocket-framing.md) | [004 — Realtime State >](004-realtime-state.md)
+[< 002 - Websocket Framing](002-websocket-framing.md) | [004 - Realtime State >](004-realtime-state.md)

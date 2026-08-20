@@ -14,13 +14,13 @@ estimated_minutes: 12
 
 Health checks answer the question: "Is this service working?" There are two kinds:
 
-**Liveness probe** — "Is the process alive and not stuck?"
+**Liveness probe**: "Is the process alive and not stuck?"
 - Returns 200 if the event loop is responsive
 - If it fails, the orchestrator restarts the process
 - Should be fast and have no side effects
 - Endpoint: `GET /health` or `GET /healthz`
 
-**Readiness probe** — "Can this service handle requests?"
+**Readiness probe**: "Can this service handle requests?"
 - Checks dependencies: database, cache, external services
 - If it fails, the load balancer stops sending traffic
 - Can be slow (database ping, cache check)
@@ -43,7 +43,7 @@ app.get('/readyz', async (req, res) => {
 
 ## Key Insight
 
-> A liveness check should never call the database. Its only job is to prove the event loop isn't stuck. A readiness check should verify all dependencies because it determines whether the service can actually serve requests. If your readiness check calls the database and the database is down, the load balancer routes traffic away from this instance — which is exactly what you want. If your liveness check calls the database, a database outage causes all instances to restart, making things worse.
+> A liveness check should never call the database. Its only job is to prove the event loop isn't stuck. A readiness check should verify all dependencies because it determines whether the service can actually serve requests. If your readiness check calls the database and the database is down, the load balancer routes traffic away from this instance. Which is exactly what you want. If your liveness check calls the database, a database outage causes all instances to restart, making things worse.
 
 ## Experiment
 
@@ -199,7 +199,7 @@ console.log(`  Status: ${degradedResult.status} (HTTP ${degradedResult.httpStatu
 console.log(`  Checks:`);
 for (const [name, result] of Object.entries(degradedResult.checks)) {
   const icon = result.status === "ok" ? "✓" : "✗";
-  const extra = result.error ? ` — ${result.error}` : "";
+  const extra = result.error ? `: ${result.error}` : "";
   console.log(`    ${icon} ${name}: ${result.status}${extra}`);
 }
 console.log(`\n  Load balancer should stop sending traffic (503)\n`);
@@ -218,7 +218,7 @@ health3.addCheck("slow-service", async () => {
 const timeoutResult = await health3.readiness();
 console.log(`  Status: ${timeoutResult.status}`);
 for (const [name, result] of Object.entries(timeoutResult.checks)) {
-  console.log(`  ${name}: ${result.status} — ${result.error || "ok"} (${result.latencyMs}ms)`);
+  console.log(`  ${name}: ${result.status}: ${result.error || "ok"} (${result.latencyMs}ms)`);
 }
 
 // --- Demo 5: Detailed health endpoint ---
@@ -286,7 +286,7 @@ console.log(`  // Health check routes
 
   Status: degraded (HTTP 503)
   Checks:
-    ✗ database: error — ECONNREFUSED: connection refused
+    ✗ database: error: ECONNREFUSED: connection refused
     ✓ cache: ok
     ✓ storage: ok
 
@@ -302,14 +302,14 @@ console.log(`  // Health check routes
 
 ## Common Mistakes
 
-- Making the liveness probe check the database — if the DB is down, all instances restart, causing a cascade failure
-- Not setting timeouts on health check dependencies — a slow dependency makes the entire health check timeout
-- Exposing detailed health information publicly — internal status should be on an internal port or behind authentication
-- Returning 200 when dependencies are down — the load balancer will keep routing traffic to a broken instance
+- Making the liveness probe check the database. If the DB is down, all instances restart, causing a cascade failure
+- Not setting timeouts on health check dependencies: a slow dependency makes the entire health check timeout
+- Exposing detailed health information publicly: internal status should be on an internal port or behind authentication
+- Returning 200 when dependencies are down: the load balancer will keep routing traffic to a broken instance
 
 
 ---
 
 ## Navigation
 
-[< 001 — Structured Logging](001-structured-logging.md) | [003 — Metrics >](003-metrics.md)
+[< 001 - Structured Logging](001-structured-logging.md) | [003 - Metrics >](003-metrics.md)

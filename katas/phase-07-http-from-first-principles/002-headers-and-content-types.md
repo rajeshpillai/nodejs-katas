@@ -15,27 +15,27 @@ estimated_minutes: 12
 HTTP headers are metadata about the request or response. They're key-value pairs that control caching, authentication, content negotiation, connection behavior, and more.
 
 **Request headers** (client → server):
-- `Host` — which server (required in HTTP/1.1, enables virtual hosting)
-- `Accept` — what content types the client understands (`application/json`, `text/html`)
-- `Authorization` — credentials (`Bearer <token>`, `Basic <base64>`)
-- `Content-Type` — body format when sending data
-- `Content-Length` — body size in bytes
-- `User-Agent` — client identification
-- `Cookie` — session data
+- `Host`. Which server (required in HTTP/1.1, enables virtual hosting)
+- `Accept`: what content types the client understands (`application/json`, `text/html`)
+- `Authorization`: credentials (`Bearer <token>`, `Basic <base64>`)
+- `Content-Type`: body format when sending data
+- `Content-Length`: body size in bytes
+- `User-Agent`: client identification
+- `Cookie`: session data
 
 **Response headers** (server → client):
-- `Content-Type` — what the body is (`application/json; charset=utf-8`)
-- `Content-Length` — body size
-- `Set-Cookie` — store session data in the browser
-- `Cache-Control` — caching rules
-- `Location` — redirect target (with 301/302 status)
-- `Access-Control-Allow-Origin` — CORS permission
+- `Content-Type`: what the body is (`application/json; charset=utf-8`)
+- `Content-Length`: body size
+- `Set-Cookie`: store session data in the browser
+- `Cache-Control`: caching rules
+- `Location`: redirect target (with 301/302 status)
+- `Access-Control-Allow-Origin`: CORS permission
 
-The `Content-Type` header is critical — it tells the receiver how to interpret the body bytes. Without it, `{"name":"alice"}` is just a meaningless string of characters.
+The `Content-Type` header is critical. It tells the receiver how to interpret the body bytes. Without it, `{"name":"alice"}` is just a meaningless string of characters.
 
 ## Key Insight
 
-> `Content-Type` is a contract between sender and receiver. The sender says "these bytes are JSON" (`application/json`) and the receiver knows to parse them accordingly. Send HTML with a JSON content type and the client will try to JSON.parse it and fail. The content type doesn't change the bytes — it changes how they're interpreted.
+> `Content-Type` is a contract between sender and receiver. The sender says "these bytes are JSON" (`application/json`) and the receiver knows to parse them accordingly. Send HTML with a JSON content type and the client will try to JSON.parse it and fail. The content type doesn't change the bytes. It changes how they're interpreted.
 
 ## Experiment
 
@@ -239,8 +239,8 @@ Headers sent by fetch():
 
 ## Challenge
 
-1. Build a server that serves the same resource as JSON or HTML based on the `Accept` header — return JSON for `application/json` and HTML for `text/html`
-2. Implement proper `Content-Length` calculation for a JSON response with Unicode characters — remember, `Content-Length` is in bytes, not characters
+1. Build a server that serves the same resource as JSON or HTML based on the `Accept` header: return JSON for `application/json` and HTML for `text/html`
+2. Implement proper `Content-Length` calculation for a JSON response with Unicode characters: remember, `Content-Length` is in bytes, not characters
 3. What happens if you set `Content-Type: text/html` but send JSON in the body? How do browsers handle this mismatch?
 
 ## Deep Dive
@@ -255,14 +255,14 @@ The `Content-Length` header is in **bytes**, not characters. For ASCII text, byt
 
 ## Common Mistakes
 
-- Setting `Content-Length` using `string.length` instead of `Buffer.byteLength(string)` — wrong for non-ASCII characters
-- Sending JSON with `Content-Type: text/plain` — clients won't auto-parse it
-- Not setting `charset=utf-8` on HTML responses — browsers may guess wrong encoding
-- Sending multiple `Content-Type` headers — only the last one takes effect in most implementations
+- Setting `Content-Length` using `string.length` instead of `Buffer.byteLength(string)`: wrong for non-ASCII characters
+- Sending JSON with `Content-Type: text/plain`: clients won't auto-parse it
+- Not setting `charset=utf-8` on HTML responses: browsers may guess wrong encoding
+- Sending multiple `Content-Type` headers. Only the last one takes effect in most implementations
 
 
 ---
 
 ## Navigation
 
-[< 001 — Http Protocol](001-http-protocol.md) | [003 — Request Response Lifecycle >](003-request-response-lifecycle.md)
+[< 001 - Http Protocol](001-http-protocol.md) | [003 - Request Response Lifecycle >](003-request-response-lifecycle.md)

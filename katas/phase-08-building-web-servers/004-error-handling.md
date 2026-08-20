@@ -146,12 +146,12 @@ function deleteUser(requestingUser, targetId) {
 function errorHandler(err, req, res) {
   // Determine if this is a known API error or an unexpected error
   if (err instanceof ApiError) {
-    // Known error — safe to expose to client
+    // Known error: safe to expose to client
     res.writeHead(err.statusCode, { "Content-Type": "application/json" });
     res.end(JSON.stringify(err.toJSON()));
     console.log(`[handled] ${err.statusCode} ${err.code}: ${err.message}`);
   } else {
-    // Unknown error — log full details, send generic message
+    // Unknown error: log full details, send generic message
     console.error(`[unhandled] ${err.stack}`);
     res.writeHead(500, { "Content-Type": "application/json" });
     res.end(JSON.stringify({
@@ -208,7 +208,7 @@ const server = createServer(async (req, res) => {
 
     // GET /crash (simulates an unexpected error)
     if (url.pathname === "/crash") {
-      // This simulates a bug — not a domain error
+      // This simulates a bug. Not a domain error
       null.property;  // TypeError!
     }
 
@@ -302,20 +302,20 @@ Unknown route:
 
 ## Challenge
 
-1. Add a `requestId` to every error response — generate a UUID at the start of each request and include it in both the response and the log. This lets operators correlate client-reported errors with server logs
+1. Add a `requestId` to every error response: generate a UUID at the start of each request and include it in both the response and the log. This lets operators correlate client-reported errors with server logs
 2. Implement error rate monitoring: track errors per minute by status code. Alert (console.log) if 5xx errors exceed 10 per minute
 3. Add retry guidance in error responses: include a `retryAfter` field for 429 and 503 errors, and `retryable: true/false` for all errors
 
 ## Common Mistakes
 
-- Exposing stack traces to clients — security risk, leaks internal paths and dependencies
-- Using 200 for error responses with `{ "success": false }` — use proper HTTP status codes
-- Catching errors too broadly — `catch (e) {}` silently swallows everything, including bugs
-- Not logging unhandled errors — a 500 response without a log means you'll never find the bug
+- Exposing stack traces to clients: security risk, leaks internal paths and dependencies
+- Using 200 for error responses with `{ "success": false }`. Use proper HTTP status codes
+- Catching errors too broadly: `catch (e) {}` silently swallows everything, including bugs
+- Not logging unhandled errors: a 500 response without a log means you'll never find the bug
 
 
 ---
 
 ## Navigation
 
-[< 003 — Json And Validation](003-json-and-validation.md) | [005 — Graceful Shutdown >](005-graceful-shutdown.md)
+[< 003 - Json And Validation](003-json-and-validation.md) | [005 - Graceful Shutdown >](005-graceful-shutdown.md)

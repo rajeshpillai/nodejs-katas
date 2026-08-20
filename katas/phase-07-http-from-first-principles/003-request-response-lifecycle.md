@@ -25,19 +25,19 @@ Every HTTP interaction follows a lifecycle:
 
 **Server side (Node.js `http` module):**
 1. `'request'` event fires with `(req, res)` objects
-2. `req` is a Readable stream — read the request body from it
+2. `req` is a Readable stream: read the request body from it
 3. Process the request (validate, query DB, compute response)
-4. `res.writeHead()` — send status and headers
-5. `res.write()` — send body chunks (optional, for streaming)
-6. `res.end()` — signal response is complete
+4. `res.writeHead()`: send status and headers
+5. `res.write()`: send body chunks (optional, for streaming)
+6. `res.end()`: signal response is complete
 
-The `req` object is a Readable stream because HTTP request bodies can be large (file uploads). Node.js doesn't buffer the entire body — it streams it to you. You must collect the chunks yourself.
+The `req` object is a Readable stream because HTTP request bodies can be large (file uploads). Node.js doesn't buffer the entire body. It streams it to you. You must collect the chunks yourself.
 
-The `res` object is a Writable stream. You can stream the response too — sending data as it becomes available instead of buffering everything in memory.
+The `res` object is a Writable stream. You can stream the response too: sending data as it becomes available instead of buffering everything in memory.
 
 ## Key Insight
 
-> The request body is a stream, not a string. Node.js doesn't buffer it for you — you must read it yourself. This is by design: a 10 GB file upload shouldn't consume 10 GB of memory. Reading the body as a stream lets you process data as it arrives, respecting memory limits.
+> The request body is a stream, not a string. Node.js doesn't buffer it for you. You must read it yourself. This is by design: a 10 GB file upload shouldn't consume 10 GB of memory. Reading the body as a stream lets you process data as it arrives, respecting memory limits.
 
 ## Experiment
 
@@ -231,29 +231,29 @@ Body: { error: 'Not Found', path: '/nonexistent' }
 
 ## Challenge
 
-1. Build a body size limiter: reject requests with bodies larger than 1 MB. Read the stream and count bytes — abort with 413 "Payload Too Large" if the limit is exceeded
+1. Build a body size limiter: reject requests with bodies larger than 1 MB. Read the stream and count bytes: abort with 413 "Payload Too Large" if the limit is exceeded
 2. Implement content-type-aware body parsing: if `Content-Type` is `application/json`, parse as JSON. If `text/plain`, return a string. If `application/x-www-form-urlencoded`, parse as form data
-3. Stream a large response (1 million lines) while monitoring memory usage — prove that streaming keeps memory constant
+3. Stream a large response (1 million lines) while monitoring memory usage: prove that streaming keeps memory constant
 
 ## Deep Dive
 
 `res.writeHead()` vs `res.setHeader()`:
-- `res.setHeader(name, value)` — sets a header but doesn't send it yet. Can be called multiple times
-- `res.writeHead(status, headers)` — sends the status line and ALL headers immediately. After this, you can't add more headers
+- `res.setHeader(name, value)`: sets a header but doesn't send it yet. Can be called multiple times
+- `res.writeHead(status, headers)`: sends the status line and ALL headers immediately. After this, you can't add more headers
 - `res.write()` implicitly calls `writeHead(200)` if you haven't called it yet
 
 Node.js buffers the headers until you first call `write()` or `end()`. This lets you set headers at any point before sending the body. But once the first byte of the body is sent, headers are locked.
 
 ## Common Mistakes
 
-- Not reading the request body — if you don't consume the body stream, keep-alive connections may stall or the next request may read the previous request's body
-- Using `JSON.parse` without try/catch — malformed JSON throws a SyntaxError, crashing the request handler
-- Setting headers after `writeHead()` — they're silently ignored, not an error
-- Not setting `Content-Type` — clients default to `application/octet-stream` or `text/html`, which may not be what you want
+- Not reading the request body. If you don't consume the body stream, keep-alive connections may stall or the next request may read the previous request's body
+- Using `JSON.parse` without try/catch: malformed JSON throws a SyntaxError, crashing the request handler
+- Setting headers after `writeHead()`. They're silently ignored, not an error
+- Not setting `Content-Type`: clients default to `application/octet-stream` or `text/html`, which may not be what you want
 
 
 ---
 
 ## Navigation
 
-[< 002 — Headers And Content Types](002-headers-and-content-types.md) | [004 — Http Keep Alive >](004-http-keep-alive.md)
+[< 002 - Headers And Content Types](002-headers-and-content-types.md) | [004 - Http Keep Alive >](004-http-keep-alive.md)

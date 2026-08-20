@@ -19,24 +19,24 @@ Two HTTP features that are essential for production web servers:
 The `Content-Encoding` header tells the client that the response body is compressed. The client sends `Accept-Encoding: gzip, br` to say what it supports, and the server compresses the response accordingly.
 
 Common encodings:
-- **gzip** — widely supported, decent compression
-- **br** (Brotli) — better compression ratio, slower to compress, great for static assets
-- **deflate** — legacy, avoid it (inconsistent implementations)
+- **gzip**: widely supported, decent compression
+- **br** (Brotli): better compression ratio, slower to compress, great for static assets
+- **deflate**: legacy, avoid it (inconsistent implementations)
 
-Compression reduces bandwidth by 60–90% for text content (HTML, JSON, CSS, JS). It's one of the highest-impact performance optimizations.
+Compression reduces bandwidth by 60-90% for text content (HTML, JSON, CSS, JS). It's one of the highest-impact performance optimizations.
 
 ### Range Requests (Partial Content)
 
 Range requests let the client ask for a specific byte range of a resource. The server responds with `206 Partial Content` and only sends the requested range.
 
 Use cases:
-- **Resuming downloads** — download interrupted at byte 50000? Request `Range: bytes=50000-`
-- **Media streaming** — video player seeks to 2:30, requests only those bytes
-- **Large file downloads** — download in parallel chunks
+- **Resuming downloads**: download interrupted at byte 50000? Request `Range: bytes=50000-`
+- **Media streaming**: video player seeks to 2:30, requests only those bytes
+- **Large file downloads**: download in parallel chunks
 
 ## Key Insight
 
-> Compression and range requests are how the web stays fast. Compression shrinks a 500 KB JSON response to 50 KB. Range requests let you resume a 2 GB download from byte 1.5 GB instead of starting over. Both are transparent to the application — middleware handles them.
+> Compression and range requests are how the web stays fast. Compression shrinks a 500 KB JSON response to 50 KB. Range requests let you resume a 2 GB download from byte 1.5 GB instead of starting over. Both are transparent to the application: middleware handles them.
 
 ## Experiment
 
@@ -351,21 +351,21 @@ Random bytes    |    <num> |    <num> | ~100%
 The `Vary` header tells caches that the response differs based on certain request headers. `Vary: Accept-Encoding` means: "the same URL returns different content depending on the `Accept-Encoding` request header." Without it, a cache might serve a gzip-compressed response to a client that only supports Brotli, or serve compressed content to a client that sent no `Accept-Encoding`.
 
 Range request status codes:
-- `206 Partial Content` — partial response for a valid range
-- `416 Range Not Satisfiable` — requested range is outside the resource bounds
-- `200 OK` — server can ignore the Range header and send the full response
+- `206 Partial Content`: partial response for a valid range
+- `416 Range Not Satisfiable`: requested range is outside the resource bounds
+- `200 OK`: server can ignore the Range header and send the full response
 
 ## Common Mistakes
 
-- Compressing already-compressed content (JPEG, PNG, ZIP) — wastes CPU and may actually increase size
-- Not setting `Vary: Accept-Encoding` — caches serve wrong encoding to clients
-- Compressing tiny responses — the gzip header overhead (~20 bytes) makes small responses larger
-- Not handling `Range: bytes=0-` (request for everything as a range) — should work like a normal request
-- Setting `Content-Length` to the uncompressed size when `Content-Encoding` is set — the length must reflect the compressed size
+- Compressing already-compressed content (JPEG, PNG, ZIP): wastes CPU and may actually increase size
+- Not setting `Vary: Accept-Encoding`: caches serve wrong encoding to clients
+- Compressing tiny responses: the gzip header overhead (~20 bytes) makes small responses larger
+- Not handling `Range: bytes=0-` (request for everything as a range): should work like a normal request
+- Setting `Content-Length` to the uncompressed size when `Content-Encoding` is set: the length must reflect the compressed size
 
 
 ---
 
 ## Navigation
 
-[< 004 — Http Keep Alive](004-http-keep-alive.md) | [001 — Websocket Upgrade >](../phase-07a-websockets-and-realtime/001-websocket-upgrade.md)
+[< 004 - Http Keep Alive](004-http-keep-alive.md) | [001 - Websocket Upgrade >](../phase-07a-websockets-and-realtime/001-websocket-upgrade.md)

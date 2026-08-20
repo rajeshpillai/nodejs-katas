@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-`spawn` returns a `ChildProcess` object with `.stdin`, `.stdout`, and `.stderr` — all standard Node.js streams. This lets you pipe data between processes, process output incrementally, and handle large outputs without buffering everything in memory.
+`spawn` returns a `ChildProcess` object with `.stdin`, `.stdout`, and `.stderr`. All standard Node.js streams. This lets you pipe data between processes, process output incrementally, and handle large outputs without buffering everything in memory.
 
 **stdio configuration:**
 ```js
@@ -26,9 +26,9 @@ const child = spawn('cmd', ['args'], {
 ```
 
 **stdio options per fd:**
-- `'pipe'` — create a pipe (default), accessible via `child.stdin`/`child.stdout`/`child.stderr`
-- `'inherit'` — share the parent's fd (child writes directly to terminal)
-- `'ignore'` — discard (`/dev/null`)
+- `'pipe'`: create a pipe (default), accessible via `child.stdin`/`child.stdout`/`child.stderr`
+- `'inherit'`: share the parent's fd (child writes directly to terminal)
+- `'ignore'`: discard (`/dev/null`)
 - An existing fd number or Stream object
 
 **Process chaining (like Unix pipes):**
@@ -44,7 +44,7 @@ grep.stdout.pipe(wc.stdin);
 
 ## Key Insight
 
-> spawn's streaming I/O means you can process the output of a command that produces 10GB of data without using more than a few KB of memory. The child's stdout is a Readable stream with full backpressure support — if your Node.js code processes data slowly, the OS pipe buffer fills up, and the child process blocks until you catch up. This is the same backpressure mechanism that makes Node.js streams efficient.
+> spawn's streaming I/O means you can process the output of a command that produces 10GB of data without using more than a few KB of memory. The child's stdout is a Readable stream with full backpressure support. If your Node.js code processes data slowly, the OS pipe buffer fills up, and the child process blocks until you catch up. This is the same backpressure mechanism that makes Node.js streams efficient.
 
 ## Experiment
 
@@ -95,23 +95,23 @@ console.log(`\n  Total lines: ${result.lines.length}, exit code: ${result.code}\
 
 console.log("--- stdio configurations ---\n");
 
-// 'inherit' — child writes directly to parent's terminal
-console.log("  stdio: 'inherit' — child writes to parent terminal:");
+// 'inherit': child writes directly to parent's terminal
+console.log("  stdio: 'inherit': child writes to parent terminal:");
 const inherit = spawn("node", ["-e", "console.log('  [child] direct to terminal')"], {
   stdio: "inherit",
 });
 await new Promise(resolve => inherit.on("close", resolve));
 
-// 'pipe' — capture output
-console.log("\n  stdio: 'pipe' — capture in parent:");
+// 'pipe': capture output
+console.log("\n  stdio: 'pipe': capture in parent:");
 const piped = spawn("node", ["-e", "console.log('captured!')"]);
 let captured = "";
 piped.stdout.on("data", chunk => captured += chunk);
 await new Promise(resolve => piped.on("close", resolve));
 console.log(`  Captured: "${captured.trim()}"\n`);
 
-// 'ignore' — discard output
-console.log("  stdio: 'ignore' — discard output:");
+// 'ignore': discard output
+console.log("  stdio: 'ignore': discard output:");
 const ignored = spawn("node", ["-e", "console.log('this is discarded')"], {
   stdio: ["ignore", "ignore", "ignore"],
 });
@@ -264,10 +264,10 @@ try {
 
 --- stdio configurations ---
 
-  stdio: 'inherit' — child writes to parent terminal:
+  stdio: 'inherit': child writes to parent terminal:
   [child] direct to terminal
 
-  stdio: 'pipe' — capture in parent:
+  stdio: 'pipe': capture in parent:
   Captured: "captured!"
 
 --- Process piping ---
@@ -284,20 +284,20 @@ try {
 
 ## Challenge
 
-1. Build a `ProcessPool` that runs up to N child processes concurrently, queuing additional work until a slot opens — useful for CPU-bound batch processing
+1. Build a `ProcessPool` that runs up to N child processes concurrently, queuing additional work until a slot opens: useful for CPU-bound batch processing
 2. Implement a streaming log processor: spawn `tail -f /var/log/syslog`, parse each line, and emit structured events for lines matching certain patterns
 3. What's the maximum size of the OS pipe buffer? What happens when both the parent and child try to write to each other simultaneously without reading? (Hint: deadlock)
 
 ## Common Mistakes
 
-- Not consuming stdout/stderr — if the pipe buffer fills up, the child process blocks forever (deadlock)
-- Using `exec` for large outputs — it buffers everything; `maxBuffer` defaults to 1MB
-- Forgetting to handle the `error` event — `spawn` emits `error` if the command doesn't exist (before `close`)
-- Piping between processes without error handling — if one process in a pipe chain fails, you need to clean up the others
+- Not consuming stdout/stderr. If the pipe buffer fills up, the child process blocks forever (deadlock)
+- Using `exec` for large outputs. It buffers everything; `maxBuffer` defaults to 1MB
+- Forgetting to handle the `error` event: `spawn` emits `error` if the command doesn't exist (before `close`)
+- Piping between processes without error handling. If one process in a pipe chain fails, you need to clean up the others
 
 
 ---
 
 ## Navigation
 
-[< 001 — Child Process Basics](001-child-process-basics.md) | [003 — Fork And Ipc >](003-fork-and-ipc.md)
+[< 001 - Child Process Basics](001-child-process-basics.md) | [003 - Fork And Ipc >](003-fork-and-ipc.md)

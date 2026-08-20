@@ -14,10 +14,10 @@ estimated_minutes: 15
 
 Not all work should happen in the request/response cycle. Background workers handle tasks that are:
 
-- **Slow** — sending emails, generating PDFs, resizing images
-- **Unreliable** — calling external APIs that may be down
-- **Scheduled** — daily reports, cleanup tasks, data aggregation
-- **Best-effort** — analytics, logging to external services
+- **Slow**: sending emails, generating PDFs, resizing images
+- **Unreliable**: calling external APIs that may be down
+- **Scheduled**: daily reports, cleanup tasks, data aggregation
+- **Best-effort**: analytics, logging to external services
 
 **The pattern:**
 ```
@@ -31,10 +31,10 @@ HTTP Request → Enqueue Job → Return 202 Accepted
 The API server enqueues work and responds immediately. A separate worker process picks up jobs and processes them at its own pace. This decouples the API's response time from the work's processing time.
 
 **Why separate workers?**
-1. API stays fast — no long-running tasks blocking responses
-2. Retry independently — failed jobs retry without the user waiting
-3. Scale independently — add more workers without more API servers
-4. Crash isolation — a worker crash doesn't affect the API
+1. API stays fast. No long-running tasks blocking responses
+2. Retry independently: failed jobs retry without the user waiting
+3. Scale independently: add more workers without more API servers
+4. Crash isolation: a worker crash doesn't affect the API
 
 ## Key Insight
 
@@ -243,7 +243,7 @@ await workerPromise;
 
 console.log("  Completed jobs:\n");
 for (const job of queue.completed) {
-  console.log(`    Job #${job.id}: ${job.type} — ${job.duration}ms — ${JSON.stringify(job.result)}`);
+  console.log(`    Job #${job.id}: ${job.type}: ${job.duration}ms: ${JSON.stringify(job.result)}`);
 }
 
 console.log(`\n  Queue stats: ${JSON.stringify(queue.getStats())}\n`);
@@ -322,7 +322,7 @@ for (let i = 0; i < order.length; i++) {
 
 console.log("\n=== API Integration Pattern ===\n");
 
-console.log(`  // API endpoint — enqueue and return immediately
+console.log(`  // API endpoint: enqueue and return immediately
   router.post('/api/reports', async (req, res) => {
     const { format, dateRange } = req.body;
 
@@ -339,7 +339,7 @@ console.log(`  // API endpoint — enqueue and return immediately
     });
   });
 
-  // Status endpoint — check job progress
+  // Status endpoint: check job progress
   router.get('/api/jobs/:id', async (req, res) => {
     const job = await queue.getJob(req.params.id);
     if (!job) return res.status(404).json({ error: 'Job not found' });
@@ -374,7 +374,7 @@ console.log(`  // API endpoint — enqueue and return immediately
 
   Completed jobs:
 
-    Job #1: send-email — 10ms — {"sent":true,"to":"alice@example.com"}
+    Job #1: send-email: 10ms: {"sent":true,"to":"alice@example.com"}
     ...
 
 --- Retry on failure ---
@@ -387,19 +387,19 @@ console.log(`  // API endpoint — enqueue and return immediately
 ## Challenge
 
 1. Implement a dead-letter queue: after a job fails all retries, move it to a DLQ for manual inspection. Build an admin endpoint that lists DLQ jobs and allows retry
-2. Build a job scheduler that runs recurring jobs (e.g., "every 5 minutes") using `setInterval` with drift correction — ensure jobs don't overlap if one takes longer than the interval
+2. Build a job scheduler that runs recurring jobs (e.g., "every 5 minutes") using `setInterval` with drift correction: ensure jobs don't overlap if one takes longer than the interval
 3. How would you implement job progress tracking? The worker reports progress (10%, 50%, 90%), and the API endpoint returns the current progress to the client
 
 ## Common Mistakes
 
-- Processing slow tasks in the request handler — the client times out waiting for a response
-- Not implementing retries — external services fail temporarily. Without retry, every transient failure becomes permanent
-- Retrying non-idempotent operations — sending an email twice is a bug. Make operations idempotent or deduplicate
-- Using in-memory queues in production — if the process restarts, all pending jobs are lost. Use Redis or a database
+- Processing slow tasks in the request handler. The client times out waiting for a response
+- Not implementing retries: external services fail temporarily. Without retry, every transient failure becomes permanent
+- Retrying non-idempotent operations: sending an email twice is a bug. Make operations idempotent or deduplicate
+- Using in-memory queues in production. If the process restarts, all pending jobs are lost. Use Redis or a database
 
 
 ---
 
 ## Navigation
 
-[< 005 — Horizontal Scaling](../phase-13-performance-and-scaling/005-horizontal-scaling.md) | [002 — Job Queues >](002-job-queues.md)
+[< 005 - Horizontal Scaling](../phase-13-performance-and-scaling/005-horizontal-scaling.md) | [002 - Job Queues >](002-job-queues.md)

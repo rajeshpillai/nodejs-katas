@@ -23,9 +23,9 @@ ciphertext + key → decrypt → plaintext
 
 **AES-256-GCM** is the recommended algorithm for most use cases:
 
-- **AES-256** — 256-bit key, extremely strong
-- **GCM** (Galois/Counter Mode) — provides both encryption AND authentication (detects tampering)
-- Requires a unique **IV** (initialization vector) for each encryption — never reuse an IV with the same key
+- **AES-256**: 256-bit key, extremely strong
+- **GCM** (Galois/Counter Mode): provides both encryption AND authentication (detects tampering)
+- Requires a unique **IV** (initialization vector) for each encryption. Never reuse an IV with the same key
 
 ```js
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
@@ -35,7 +35,7 @@ const key = randomBytes(32);  // 256 bits
 const iv = randomBytes(12);   // 96 bits for GCM
 const cipher = createCipheriv('aes-256-gcm', key, iv);
 const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
-const authTag = cipher.getAuthTag();  // 16 bytes — proves no tampering
+const authTag = cipher.getAuthTag();  // 16 bytes: proves no tampering
 
 // Decrypt
 const decipher = createDecipheriv('aes-256-gcm', key, iv);
@@ -45,7 +45,7 @@ const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
 
 ## Key Insight
 
-> AES-GCM provides authenticated encryption — it guarantees both confidentiality (nobody can read the data) AND integrity (nobody can tamper with it). If even one bit of the ciphertext is modified, decryption fails with an authentication error. This is why GCM is preferred over CBC — CBC encrypts but doesn't detect tampering, requiring a separate HMAC step.
+> AES-GCM provides authenticated encryption. It guarantees both confidentiality (nobody can read the data) AND integrity (nobody can tamper with it). If even one bit of the ciphertext is modified, decryption fails with an authentication error. This is why GCM is preferred over CBC: CBC encrypts but doesn't detect tampering, requiring a separate HMAC step.
 
 ## Experiment
 
@@ -128,7 +128,7 @@ console.log(`  Tampered ciphertext: ${tampered.toString("hex").slice(0, 40)}...`
 
 try {
   decrypt(tampered, key);
-  console.log("  Decryption succeeded (BAD — tampering not detected)");
+  console.log("  Decryption succeeded (BAD: tampering not detected)");
 } catch (err) {
   console.log(`  Decryption failed: ${err.message}`);
   console.log("  GCM detected the tampering! (GOOD)\n");
@@ -247,14 +247,14 @@ for (const [algo, keySize, auth, use] of algos) {
 
 ## Common Mistakes
 
-- Reusing an IV with the same key — in GCM, this completely breaks security (reveals XOR of plaintexts)
-- Using CBC without HMAC — CBC doesn't detect tampering, enabling padding oracle attacks
-- Storing the key alongside the encrypted data — the key must be separate (environment variable, KMS, HSM)
-- Using ECB mode — encrypts identical blocks to identical ciphertext, revealing patterns
+- Reusing an IV with the same key: in GCM, this completely breaks security (reveals XOR of plaintexts)
+- Using CBC without HMAC: CBC doesn't detect tampering, enabling padding oracle attacks
+- Storing the key alongside the encrypted data: the key must be separate (environment variable, KMS, HSM)
+- Using ECB mode: encrypts identical blocks to identical ciphertext, revealing patterns
 
 
 ---
 
 ## Navigation
 
-[< 002 — Password Storage](002-password-storage.md) | [004 — Tokens And Signatures >](004-tokens-and-signatures.md)
+[< 002 - Password Storage](002-password-storage.md) | [004 - Tokens And Signatures >](004-tokens-and-signatures.md)

@@ -12,7 +12,7 @@ estimated_minutes: 12
 
 ## Concept
 
-Every HTTP request requires a TCP connection. TCP connections are expensive to create — the three-way handshake adds a full round-trip of latency before any data can flow.
+Every HTTP request requires a TCP connection. TCP connections are expensive to create: the three-way handshake adds a full round-trip of latency before any data can flow.
 
 **HTTP/1.0** opened a new TCP connection for every single request. Load a web page with 50 resources? That's 50 TCP handshakes.
 
@@ -27,7 +27,7 @@ The tradeoff: keep-alive connections consume server resources (memory, file desc
 
 ## Key Insight
 
-> A TCP handshake takes one full network round-trip — maybe 1ms on localhost, 50ms across the internet, 200ms intercontinental. Keep-alive eliminates this cost for all but the first request. For an API that makes 100 requests to an upstream service, keep-alive turns 100 handshakes into 1.
+> A TCP handshake takes one full network round-trip: maybe 1ms on localhost, 50ms across the internet, 200ms intercontinental. Keep-alive eliminates this cost for all but the first request. For an API that makes 100 requests to an upstream service, keep-alive turns 100 handshakes into 1.
 
 ## Experiment
 
@@ -251,22 +251,22 @@ Sequential: 3 requests, 0 connections
 HTTP/1.1 keep-alive has a fundamental limitation: **head-of-line blocking**. On a single connection, requests must be processed in order. If request A takes 5 seconds, requests B and C wait even if the server could answer them immediately.
 
 Solutions:
-- **Multiple connections** — browsers open 6-8 connections per host. `http.Agent.maxSockets` controls this
-- **HTTP/2 multiplexing** — multiple streams over a single connection, no head-of-line blocking
-- **HTTP/3 (QUIC)** — even eliminates TCP-level head-of-line blocking
+- **Multiple connections**: browsers open 6-8 connections per host. `http.Agent.maxSockets` controls this
+- **HTTP/2 multiplexing**: multiple streams over a single connection, no head-of-line blocking
+- **HTTP/3 (QUIC)**. Even eliminates TCP-level head-of-line blocking
 
 In Node.js, the global `http.Agent` is created with `keepAlive: false` for backward compatibility. Always create your own agent with `keepAlive: true` for production HTTP clients.
 
 ## Common Mistakes
 
-- Not using `keepAlive: true` in the HTTP agent — each request creates a new TCP connection
-- Setting `keepAliveTimeout` too high on the server — idle connections consume memory and file descriptors
-- Not destroying the agent when done — leaked sockets keep the process alive
-- Assuming keep-alive means "the connection never closes" — servers close idle connections after a timeout, and agents must handle reconnection
+- Not using `keepAlive: true` in the HTTP agent. Each request creates a new TCP connection
+- Setting `keepAliveTimeout` too high on the server: idle connections consume memory and file descriptors
+- Not destroying the agent when done: leaked sockets keep the process alive
+- Assuming keep-alive means "the connection never closes": servers close idle connections after a timeout, and agents must handle reconnection
 
 
 ---
 
 ## Navigation
 
-[< 003 — Request Response Lifecycle](003-request-response-lifecycle.md) | [005 — Content Encoding And Range >](005-content-encoding-and-range.md)
+[< 003 - Request Response Lifecycle](003-request-response-lifecycle.md) | [005 - Content Encoding And Range >](005-content-encoding-and-range.md)

@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-Middleware and hooks are the backbone of request processing in frameworks. They let you run code before, during, and after route handlers — for cross-cutting concerns like authentication, logging, CORS, and error handling.
+Middleware and hooks are the backbone of request processing in frameworks. They let you run code before, during, and after route handlers: for cross-cutting concerns like authentication, logging, CORS, and error handling.
 
 **Express model: middleware chain**
 ```
@@ -33,16 +33,16 @@ Response ← onSend ← preSerialization ← onResponse ←───────
 Each hook fires at a specific lifecycle phase. More precise than middleware.
 
 **Common middleware/hook patterns:**
-- **Authentication** — verify tokens before handlers run
-- **Rate limiting** — count requests, reject if over limit
-- **CORS** — add Access-Control headers
-- **Request logging** — log method, path, duration
-- **Error handling** — catch errors, return structured responses
-- **Request ID** — generate/propagate a unique request ID
+- **Authentication**: verify tokens before handlers run
+- **Rate limiting**: count requests, reject if over limit
+- **CORS**: add Access-Control headers
+- **Request logging**: log method, path, duration
+- **Error handling**: catch errors, return structured responses
+- **Request ID**: generate/propagate a unique request ID
 
 ## Key Insight
 
-> Express middleware is a single pipe — everything goes through the same chain in order. Fastify hooks are targeted to lifecycle phases — you hook into exactly the moment you need (before parsing, before validation, before handler, before sending). This matters because authentication should run *after* parsing (you need the headers) but *before* validation. In Express, you control this by middleware ordering. In Fastify, you use the right hook (`preValidation` for auth). Fastify's approach is more explicit and less prone to ordering bugs.
+> Express middleware is a single pipe: everything goes through the same chain in order. Fastify hooks are targeted to lifecycle phases. You hook into exactly the moment you need (before parsing, before validation, before handler, before sending). This matters because authentication should run *after* parsing (you need the headers) but *before* validation. In Express, you control this by middleware ordering. In Fastify, you use the right hook (`preValidation` for auth). Fastify's approach is more explicit and less prone to ordering bugs.
 
 ## Experiment
 
@@ -136,7 +136,7 @@ expressApp.use("/api", async (req, res, next) => {
     res.status = 401;
     res.body = { error: "Unauthorized" };
     res.log.push("3. Auth: rejected");
-    // Not calling next() — chain stops
+    // Not calling next(): chain stops
   }
 });
 
@@ -515,14 +515,14 @@ console.log(`  // Fastify: async errors caught automatically
 
 ## Common Mistakes
 
-- Forgetting to call `next()` in Express middleware — the request hangs forever with no response
-- Wrong middleware order — auth middleware after the route handler does nothing. Order matters in Express
-- Async errors in Express — `throw` inside an async route handler becomes an unhandled promise rejection. Must use `try/catch` + `next(err)` or a wrapper
-- Modifying shared state in middleware — middleware that writes to `req.user` can conflict if multiple middleware touch the same property
+- Forgetting to call `next()` in Express middleware: the request hangs forever with no response
+- Wrong middleware order: auth middleware after the route handler does nothing. Order matters in Express
+- Async errors in Express: `throw` inside an async route handler becomes an unhandled promise rejection. Must use `try/catch` + `next(err)` or a wrapper
+- Modifying shared state in middleware: middleware that writes to `req.user` can conflict if multiple middleware touch the same property
 
 
 ---
 
 ## Navigation
 
-[< 002 — Routing And Parameters](002-routing-and-parameters.md) | [004 — Validation And Serialization >](004-validation-and-serialization.md)
+[< 002 - Routing And Parameters](002-routing-and-parameters.md) | [004 - Validation And Serialization >](004-validation-and-serialization.md)

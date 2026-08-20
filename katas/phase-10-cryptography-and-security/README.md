@@ -1,4 +1,4 @@
-# Phase 10 — Cryptography & Security
+# Phase 10: Cryptography & Security
 
 Secure your Node.js applications using the built-in crypto module. Learn hashing, password storage with scrypt, symmetric encryption with AES, tokens and signatures (HMAC/JWT), and secure random generation.
 
@@ -18,4 +18,4 @@ Secure your Node.js applications using the built-in crypto module. Learn hashing
 
 ## Navigation
 
-[< Phase 9A — Advanced PostgreSQL in Node.js](../phase-09a-advanced-postgresql/README.md) | [Phase 11 — Child Processes & Worker Threads >](../phase-11-child-processes-and-workers/README.md)
+[< Phase 9A: Advanced PostgreSQL in Node.js](../phase-09a-advanced-postgresql/README.md) | [Phase 11: Child Processes & Worker Threads >](../phase-11-child-processes-and-workers/README.md)

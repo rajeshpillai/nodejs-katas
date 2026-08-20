@@ -14,12 +14,12 @@ estimated_minutes: 15
 
 When a single Node.js process can't handle the load, you scale:
 
-**Vertical scaling** — bigger machine (more CPU, RAM):
+**Vertical scaling**: bigger machine (more CPU, RAM):
 - Simple but limited (there's a biggest machine)
-- Node.js is single-threaded — more cores don't help a single process
+- Node.js is single-threaded: more cores don't help a single process
 
-**Horizontal scaling** — more processes/machines:
-- Node.js cluster module — multiple processes on one machine
+**Horizontal scaling**: more processes/machines:
+- Node.js cluster module: multiple processes on one machine
 - Multiple machines behind a load balancer
 - Scales indefinitely (add more machines)
 
@@ -37,14 +37,14 @@ if (cluster.isPrimary) {
 ```
 
 **Requirements for horizontal scaling:**
-1. **Stateless processes** — no in-memory sessions, caches, or state
-2. **Shared storage** — database for state, Redis for sessions/cache
-3. **Sticky sessions** (if needed) — WebSockets, file uploads
-4. **Idempotent operations** — retries must be safe
+1. **Stateless processes**: no in-memory sessions, caches, or state
+2. **Shared storage**: database for state, Redis for sessions/cache
+3. **Sticky sessions** (if needed): WebSockets, file uploads
+4. **Idempotent operations**: retries must be safe
 
 ## Key Insight
 
-> Horizontal scaling works because Node.js processes are independent. Each worker has its own V8 heap, event loop, and connection pool. A load balancer distributes requests across workers, and since each request is handled by a single worker, there's no shared-memory contention. The constraint is that ALL state must be external (database, Redis, S3) — if you store anything in a module-level variable, other workers won't see it.
+> Horizontal scaling works because Node.js processes are independent. Each worker has its own V8 heap, event loop, and connection pool. A load balancer distributes requests across workers, and since each request is handled by a single worker, there's no shared-memory contention. The constraint is that ALL state must be external (database, Redis, S3). If you store anything in a module-level variable, other workers won't see it.
 
 ## Experiment
 
@@ -304,19 +304,19 @@ console.log("    - On macOS: least-loaded (kernel decides)");
 ## Challenge
 
 1. Implement a cluster-based HTTP server that forks one worker per CPU core, auto-restarts crashed workers, and distributes traffic. Measure throughput vs a single-process server
-2. Build a "sticky session" load balancer that hashes the session cookie to consistently route the same client to the same worker — needed for WebSocket connections
+2. Build a "sticky session" load balancer that hashes the session cookie to consistently route the same client to the same worker: needed for WebSocket connections
 3. Design a scaling strategy for an API that handles 10,000 RPS with a p99 of 50ms. How many workers do you need? How many machines? What are the bottlenecks?
 
 ## Common Mistakes
 
-- Storing session data in process memory — the next request may hit a different worker
-- Forking too many workers — more workers than CPU cores causes context switching overhead
-- Not auto-restarting crashed workers — a single uncaught exception permanently reduces capacity
-- Assuming linear scaling — database connections, shared caches, and network become bottlenecks. 8 workers doesn't mean 8x throughput
+- Storing session data in process memory: the next request may hit a different worker
+- Forking too many workers: more workers than CPU cores causes context switching overhead
+- Not auto-restarting crashed workers: a single uncaught exception permanently reduces capacity
+- Assuming linear scaling: database connections, shared caches, and network become bottlenecks. 8 workers doesn't mean 8x throughput
 
 
 ---
 
 ## Navigation
 
-[< 004 — Load Testing](004-load-testing.md) | [001 — Background Workers >](../phase-14-background-jobs/001-background-workers.md)
+[< 004 - Load Testing](004-load-testing.md) | [001 - Background Workers >](../phase-14-background-jobs/001-background-workers.md)

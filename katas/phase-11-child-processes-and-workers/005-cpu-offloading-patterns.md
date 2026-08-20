@@ -14,24 +14,24 @@ estimated_minutes: 15
 
 The golden rule of Node.js: **never block the event loop**. Any CPU-intensive operation that takes more than a few milliseconds should be offloaded. There are several strategies:
 
-**1. Worker threads** — for trusted, CPU-bound JavaScript:
+**1. Worker threads**: for trusted, CPU-bound JavaScript:
 ```js
 const worker = new Worker('./hash-worker.js');
 worker.postMessage({ data: largeFile });
 ```
 
-**2. Child processes** — for isolation or external tools:
+**2. Child processes**: for isolation or external tools:
 ```js
 const child = spawn('ffmpeg', ['-i', input, '-o', output]);
 ```
 
-**3. Native addons (N-API)** — for maximum performance:
+**3. Native addons (N-API)**: for maximum performance:
 ```js
 // C/C++ addon compiled to .node file
 const { compress } = require('./native-addon.node');
 ```
 
-**4. Chunking** — break work into small pieces, yield between chunks:
+**4. Chunking**: break work into small pieces, yield between chunks:
 ```js
 async function processChunked(items, chunkSize = 100) {
   for (let i = 0; i < items.length; i += chunkSize) {
@@ -41,9 +41,9 @@ async function processChunked(items, chunkSize = 100) {
 }
 ```
 
-**5. libuv thread pool** — Node.js already offloads some operations:
-- `crypto.pbkdf2`, `crypto.scrypt` — CPU-heavy crypto
-- `zlib.gzip`, `zlib.brotliCompress` — compression
+**5. libuv thread pool**: Node.js already offloads some operations:
+- `crypto.pbkdf2`, `crypto.scrypt`: CPU-heavy crypto
+- `zlib.gzip`, `zlib.brotliCompress`: compression
 - DNS lookups (`dns.lookup`)
 - File system operations
 
@@ -56,7 +56,7 @@ async function processChunked(items, chunkSize = 100) {
 ```js
 import { Worker } from "node:worker_threads";
 
-// Worker body — uses eval mode so this kata works whether the file is loaded
+// Worker body. Uses eval mode so this kata works whether the file is loaded
 // from disk or piped via stdin (where import.meta.url is not a real path).
 const workerCode = `
   import { parentPort, workerData } from "node:worker_threads";
@@ -229,8 +229,8 @@ console.log("--- Simulated request handling with worker pool ---\n");
 
 // Simulate 10 concurrent API requests, some CPU-heavy
 const requests = [
-  { id: 1, type: "io", duration: 20 },    // I/O bound — handle normally
-  { id: 2, type: "cpu", work: 2000 },      // CPU bound — offload
+  { id: 1, type: "io", duration: 20 },    // I/O bound: handle normally
+  { id: 2, type: "cpu", work: 2000 },      // CPU bound: offload
   { id: 3, type: "io", duration: 10 },
   { id: 4, type: "cpu", work: 3000 },
   { id: 5, type: "io", duration: 15 },
@@ -247,10 +247,10 @@ const reqResults = await Promise.all(
   requests.map(async (req) => {
     const start = performance.now();
     if (req.type === "io") {
-      // Simulated I/O — non-blocking
+      // Simulated I/O: non-blocking
       await new Promise(r => setTimeout(r, req.duration));
     } else {
-      // CPU work — offload to worker
+      // CPU work: offload to worker
       await runInWorker("analyze", Array.from({ length: req.work }, (_, i) => i));
     }
     return { ...req, elapsed: performance.now() - start };
@@ -323,7 +323,7 @@ for (const [op, time, strategy] of ops) {
 
 ## Challenge
 
-1. Build an event loop monitor that logs a warning whenever a tick takes longer than 50ms — use `monitorEventLoopDelay` from `perf_hooks` or measure manually with `setImmediate`
+1. Build an event loop monitor that logs a warning whenever a tick takes longer than 50ms. Use `monitorEventLoopDelay` from `perf_hooks` or measure manually with `setImmediate`
 2. Implement a "compute budget" middleware: for each request, track how much CPU time has been used and reject requests that exceed a threshold
 3. Profile a real Node.js server under load: use `--prof` to generate a V8 CPU profile and identify which functions are blocking the event loop
 
@@ -341,14 +341,14 @@ All I/O callbacks are delayed by the full duration of the CPU work. With 1000 re
 
 ## Common Mistakes
 
-- Blocking the event loop with JSON.parse of large payloads — use streaming parsers or workers for bodies > 1MB
-- Using `setImmediate` chunking with too-large chunks — each chunk still blocks; keep chunks under ~5ms of CPU time
-- Over-offloading I/O-bound work to workers — workers add overhead; async I/O is already non-blocking
-- Not monitoring event loop delay in production — use `monitorEventLoopDelay()` to detect blocking before users notice
+- Blocking the event loop with JSON.parse of large payloads. Use streaming parsers or workers for bodies > 1MB
+- Using `setImmediate` chunking with too-large chunks. Each chunk still blocks; keep chunks under ~5ms of CPU time
+- Over-offloading I/O-bound work to workers: workers add overhead; async I/O is already non-blocking
+- Not monitoring event loop delay in production. Use `monitorEventLoopDelay()` to detect blocking before users notice
 
 
 ---
 
 ## Navigation
 
-[< 004 — Worker Threads](004-worker-threads.md) | [001 — Structured Logging >](../phase-12-observability-and-reliability/001-structured-logging.md)
+[< 004 - Worker Threads](004-worker-threads.md) | [001 - Structured Logging >](../phase-12-observability-and-reliability/001-structured-logging.md)

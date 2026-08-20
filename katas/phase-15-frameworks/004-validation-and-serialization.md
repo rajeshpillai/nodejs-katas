@@ -13,8 +13,8 @@ estimated_minutes: 15
 ## Concept
 
 Every API must solve two problems:
-1. **Validation** — is the incoming data correct?
-2. **Serialization** — how do we format the outgoing data?
+1. **Validation**: is the incoming data correct?
+2. **Serialization**: how do we format the outgoing data?
 
 **Validation approaches:**
 
@@ -32,22 +32,22 @@ Every API must solve two problems:
 - Schema = documentation (OpenAPI spec can be auto-generated)
 
 **Where to validate:**
-- **Request body** — POST/PUT/PATCH payloads
-- **Path parameters** — `/users/:id` (is `id` a number?)
-- **Query parameters** — `?page=2&limit=100` (are they within range?)
-- **Headers** — `Authorization`, `Content-Type`
-- **Response** — ensure you never leak internal fields (passwords, internal IDs)
+- **Request body**: POST/PUT/PATCH payloads
+- **Path parameters**: `/users/:id` (is `id` a number?)
+- **Query parameters**: `?page=2&limit=100` (are they within range?)
+- **Headers**: `Authorization`, `Content-Type`
+- **Response**: ensure you never leak internal fields (passwords, internal IDs)
 
 ## Key Insight
 
-> Fastify validates input AND output. Most frameworks only validate input, but response validation catches a critical class of bugs: accidentally sending sensitive data. If your User schema says `response: { properties: { name, email } }` but your handler returns the full database row including `password_hash`, Fastify strips the extra fields. This is defense-in-depth — even if your handler code is wrong, the schema prevents data leaks.
+> Fastify validates input AND output. Most frameworks only validate input, but response validation catches a critical class of bugs: accidentally sending sensitive data. If your User schema says `response: { properties: { name, email } }` but your handler returns the full database row including `password_hash`, Fastify strips the extra fields. This is defense-in-depth. Even if your handler code is wrong, the schema prevents data leaks.
 
 ## Experiment
 
 ```js
 console.log("=== Validation and Serialization ===\n");
 
-// --- Demo 1: Manual validation — the pain ---
+// --- Demo 1: Manual validation: the pain ---
 
 console.log("--- Manual validation (verbose and error-prone) ---\n");
 
@@ -209,7 +209,7 @@ class SchemaValidator {
   }
 }
 
-// Define schema once — use for validation, docs, and serialization
+// Define schema once. Use for validation, docs, and serialization
 const userSchema = {
   type: "object",
   required: ["name", "email"],
@@ -277,7 +277,7 @@ class ResponseSerializer {
   }
 }
 
-// Response schema — only expose safe fields
+// Response schema. Only expose safe fields
 const userResponseSchema = {
   type: "object",
   properties: {
@@ -463,14 +463,14 @@ console.log(`  app.post('/users', {
 
 ## Common Mistakes
 
-- Validating only on the client — client-side validation is for UX. Server-side validation is for security. Always validate on the server
-- Not validating response schemas — without response validation, a handler bug can leak `password_hash` or internal IDs
-- Over-validating — checking every possible edge case in manual `if` statements instead of using schema-based validation
-- Ignoring validation performance — for high-throughput APIs, interpreted validation (checking rules one by one) is much slower than compiled validation (ajv). Pre-compile schemas at startup
+- Validating only on the client: client-side validation is for UX. Server-side validation is for security. Always validate on the server
+- Not validating response schemas: without response validation, a handler bug can leak `password_hash` or internal IDs
+- Over-validating: checking every possible edge case in manual `if` statements instead of using schema-based validation
+- Ignoring validation performance: for high-throughput APIs, interpreted validation (checking rules one by one) is much slower than compiled validation (ajv). Pre-compile schemas at startup
 
 
 ---
 
 ## Navigation
 
-[< 003 — Middleware And Hooks](003-middleware-and-hooks.md) | [005 — Plugins And Encapsulation >](005-plugins-and-encapsulation.md)
+[< 003 - Middleware And Hooks](003-middleware-and-hooks.md) | [005 - Plugins And Encapsulation >](005-plugins-and-encapsulation.md)

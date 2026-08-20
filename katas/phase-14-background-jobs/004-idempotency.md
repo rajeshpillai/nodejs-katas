@@ -16,37 +16,37 @@ An operation is **idempotent** if performing it multiple times produces the same
 
 **Why idempotency matters:**
 - Retries happen (network failures, timeouts, crashes)
-- Message queues deliver "at least once" — duplicates are expected
+- Message queues deliver "at least once": duplicates are expected
 - Users double-click buttons
 - Load balancers retry on 502/503
 
 **Naturally idempotent operations:**
-- `SET x = 5` — always results in x being 5
-- `DELETE FROM orders WHERE id = 123` — deleting twice is fine
-- `PUT /users/42 { name: "Alice" }` — replaces the whole resource
+- `SET x = 5`. Always results in x being 5
+- `DELETE FROM orders WHERE id = 123`: deleting twice is fine
+- `PUT /users/42 { name: "Alice" }`: replaces the whole resource
 
 **NOT naturally idempotent:**
-- `x = x + 1` — incrementing twice gives the wrong result
-- `INSERT INTO orders (...)` — creates duplicate rows
-- `POST /payments { amount: 100 }` — charges twice
-- `balance -= amount` — deducts twice
+- `x = x + 1`: incrementing twice gives the wrong result
+- `INSERT INTO orders (...)`: creates duplicate rows
+- `POST /payments { amount: 100 }`: charges twice
+- `balance -= amount`: deducts twice
 
 **Making non-idempotent operations idempotent:**
-1. **Idempotency key** — client sends a unique key; server deduplicates
-2. **Conditional writes** — `UPDATE ... WHERE version = N` (optimistic locking)
-3. **Deduplication table** — track processed operation IDs in a separate table
-4. **Natural keys** — use business-meaningful unique constraints
+1. **Idempotency key**: client sends a unique key; server deduplicates
+2. **Conditional writes**: `UPDATE ... WHERE version = N` (optimistic locking)
+3. **Deduplication table**: track processed operation IDs in a separate table
+4. **Natural keys**: use business-meaningful unique constraints
 
 ## Key Insight
 
-> The idempotency key pattern works like this: the client generates a UUID for each logical operation and sends it with every request (including retries). The server stores this key alongside the result. On retry, the server finds the existing key, skips the operation, and returns the stored result. The key insight is that the idempotency check and the operation MUST happen in the same database transaction — otherwise a crash between the check and the operation creates a window where duplicates slip through.
+> The idempotency key pattern works like this: the client generates a UUID for each logical operation and sends it with every request (including retries). The server stores this key alongside the result. On retry, the server finds the existing key, skips the operation, and returns the stored result. The key insight is that the idempotency check and the operation MUST happen in the same database transaction. Otherwise a crash between the check and the operation creates a window where duplicates slip through.
 
 ## Experiment
 
 ```js
 console.log("=== Idempotency ===\n");
 
-// --- Demo 1: The problem — non-idempotent operations ---
+// --- Demo 1: The problem: non-idempotent operations ---
 
 console.log("--- The duplicate problem ---\n");
 
@@ -69,7 +69,7 @@ const naive = new NaivePaymentService();
 naive.processPayment("user-1", 100);
 console.log(`  After first payment:  balance = $${naive.balance}`);
 
-// Network timeout — client retries the SAME payment
+// Network timeout: client retries the SAME payment
 naive.processPayment("user-1", 100);
 console.log(`  After retry (dup):    balance = $${naive.balance}`);
 
@@ -267,7 +267,7 @@ const clientBVersion = doc.version;
 const updateA = doc.update({ title: "Final" }, clientAVersion);
 console.log(`  Client A: ${updateA.success ? "updated" : "conflict"} → version ${updateA.version || doc.version}`);
 
-// Client B tries with stale version — conflict!
+// Client B tries with stale version: conflict!
 const updateB = doc.update({ title: "Other" }, clientBVersion);
 console.log(`  Client B: ${updateB.success ? "updated" : "conflict"} → ${updateB.error || "ok"}`);
 
@@ -380,7 +380,7 @@ const practices = [
   ["Use UUIDv4 for keys", "Globally unique, no coordination needed"],
   ["Store key + result together", "Return the original result on duplicates"],
   ["Same DB transaction", "Key check and operation must be atomic"],
-  ["Set key TTL (24-48h)", "Don't store keys forever — they accumulate"],
+  ["Set key TTL (24-48h)", "Don't store keys forever. They accumulate"],
   ["Return same status code", "A duplicate should return the original response"],
   ["Log duplicates", "High duplicate rates reveal client/network issues"],
 ];
@@ -428,14 +428,14 @@ for (const [practice, reason] of practices) {
 
 ## Common Mistakes
 
-- Checking the idempotency key outside the transaction — a crash between check and operation allows duplicates
-- Using server-generated keys — only the client knows if it's a retry or a new request
-- Never expiring keys — idempotency keys accumulate forever and slow down lookups
-- Returning different responses for duplicates — the client expects the same result it would have gotten originally
+- Checking the idempotency key outside the transaction: a crash between check and operation allows duplicates
+- Using server-generated keys. Only the client knows if it's a retry or a new request
+- Never expiring keys: idempotency keys accumulate forever and slow down lookups
+- Returning different responses for duplicates. The client expects the same result it would have gotten originally
 
 
 ---
 
 ## Navigation
 
-[< 003 — Retry Strategies](003-retry-strategies.md) | [005 — Failure Modes >](005-failure-modes.md)
+[< 003 - Retry Strategies](003-retry-strategies.md) | [005 - Failure Modes >](005-failure-modes.md)

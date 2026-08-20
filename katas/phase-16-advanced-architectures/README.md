@@ -1,4 +1,4 @@
-# Phase 16 — Advanced Architectures
+# Phase 16: Advanced Architectures
 
 Design production-grade backend architectures. Build REST + real-time hybrids, streaming APIs, API gateway patterns, evaluate monolith vs microservices, and manage configuration and secrets.
 
@@ -18,4 +18,4 @@ Design production-grade backend architectures. Build REST + real-time hybrids, s
 
 ## Navigation
 
-[< Phase 15 — Frameworks](../phase-15-frameworks/README.md)
+[< Phase 15: Frameworks](../phase-15-frameworks/README.md)

@@ -12,25 +12,25 @@ estimated_minutes: 15
 
 ## Concept
 
-Real-time applications manage shared state that multiple clients see simultaneously. A chat room, a collaborative document, a live dashboard — all need a server-side state model that stays synchronized across all connected clients.
+Real-time applications manage shared state that multiple clients see simultaneously. A chat room, a collaborative document, a live dashboard. All need a server-side state model that stays synchronized across all connected clients.
 
 Key patterns:
 
-**Pub/Sub** — clients subscribe to topics, server publishes updates to subscribers:
+**Pub/Sub**: clients subscribe to topics, server publishes updates to subscribers:
 ```
 Client A subscribes to "room:lobby"
 Client B publishes "Hello!" to "room:lobby"
 Server forwards "Hello!" to all "room:lobby" subscribers (including A)
 ```
 
-**State Synchronization** — server maintains authoritative state, clients receive diffs:
+**State Synchronization**: server maintains authoritative state, clients receive diffs:
 ```
 Server state: { users: ["Alice", "Bob"], score: 42 }
 Bob joins → server broadcasts: { type: "user_joined", user: "Charlie" }
 All clients update their local state
 ```
 
-**Optimistic Updates** — client applies change immediately, server confirms or rejects:
+**Optimistic Updates**: client applies change immediately, server confirms or rejects:
 ```
 Client: move piece to (3,4) → apply locally, send to server
 Server: validates move → broadcast confirmed state
@@ -39,7 +39,7 @@ If invalid: server sends correction, client rolls back
 
 ## Key Insight
 
-> The server is the single source of truth. Clients are projections. When a client sends an action, the server validates it, updates its state, and broadcasts the result. Never trust client state — it's always stale, possibly wrong, and potentially malicious. The server decides what happened.
+> The server is the single source of truth. Clients are projections. When a client sends an action, the server validates it, updates its state, and broadcasts the result. Never trust client state. It's always stale, possibly wrong, and potentially malicious. The server decides what happened.
 
 ## Experiment
 
@@ -48,7 +48,7 @@ import { createServer } from "http";
 import { createHash, randomBytes } from "crypto";
 import { connect as tcpConnect } from "net";
 
-// Tiny WebSocket client over raw TCP — clients must mask frames per RFC 6455.
+// Tiny WebSocket client over raw TCP: clients must mask frames per RFC 6455.
 function maskFrame(data, opcode = 0x01) {
   const payload = Buffer.isBuffer(data) ? data : Buffer.from(data);
   const len = payload.length;
@@ -421,14 +421,14 @@ Done
 
 ## Common Mistakes
 
-- Storing state only on the client — server must be the source of truth
-- Not cleaning up room membership on disconnect — "ghost" users persist in room lists
-- Broadcasting to disconnected sockets — check `socket.writable` before writing
-- Not validating message format — malformed JSON from clients should be handled gracefully, not crash the server
+- Storing state only on the client: server must be the source of truth
+- Not cleaning up room membership on disconnect: "ghost" users persist in room lists
+- Broadcasting to disconnected sockets: check `socket.writable` before writing
+- Not validating message format: malformed JSON from clients should be handled gracefully, not crash the server
 
 
 ---
 
 ## Navigation
 
-[< 003 — Websocket Server](003-websocket-server.md) | [005 — Scaling Websockets >](005-scaling-websockets.md)
+[< 003 - Websocket Server](003-websocket-server.md) | [005 - Scaling Websockets >](005-scaling-websockets.md)

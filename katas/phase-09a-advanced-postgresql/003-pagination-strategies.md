@@ -40,7 +40,7 @@ When multiple rows share the same `created_at`, add `id` as a tiebreaker to ensu
 
 ## Key Insight
 
-> OFFSET pagination is O(n) — fetching page 1000 requires scanning 20,000 rows. Keyset pagination is O(1) — it uses an index to jump directly to the cursor position. For any dataset over a few thousand rows, keyset pagination is dramatically faster. The tradeoff: keyset pagination can't jump to arbitrary page numbers, only "next" and "previous."
+> OFFSET pagination is O(n): fetching page 1000 requires scanning 20,000 rows. Keyset pagination is O(1). It uses an index to jump directly to the cursor position. For any dataset over a few thousand rows, keyset pagination is dramatically faster. The tradeoff: keyset pagination can't jump to arbitrary page numbers, only "next" and "previous."
 
 ## Experiment
 
@@ -58,7 +58,7 @@ class PaginatedDB {
     this.scannedRows = 0;
   }
 
-  // OFFSET/LIMIT — scans from the beginning every time
+  // OFFSET/LIMIT: scans from the beginning every time
   queryOffset(limit, offset) {
     this.scannedRows = 0;
     const results = [];
@@ -72,7 +72,7 @@ class PaginatedDB {
     return { rows: results, scanned: this.scannedRows };
   }
 
-  // Keyset — jumps to the cursor position (simulated index seek)
+  // Keyset: jumps to the cursor position (simulated index seek)
   queryKeyset(limit, cursor = null) {
     this.scannedRows = 0;
     const results = [];
@@ -231,7 +231,7 @@ console.log(`  CREATE INDEX idx_posts_cursor
   ON posts (created_at DESC, id DESC);
 `);
 
-console.log("Count for total (expensive — cache this!):");
+console.log("Count for total (expensive: cache this!):");
 console.log(`  SELECT count(*) FROM posts WHERE <filters>;
 `);
 ```
@@ -267,20 +267,20 @@ console.log(`  SELECT count(*) FROM posts WHERE <filters>;
 
 ## Challenge
 
-1. Implement bidirectional keyset pagination — support both "next page" and "previous page" using reversed comparison operators
+1. Implement bidirectional keyset pagination: support both "next page" and "previous page" using reversed comparison operators
 2. Build a hybrid pagination API that uses OFFSET for the first 10 pages (allows jumping) and keyset for deeper pages (keeps it fast)
 3. How would you paginate results that are sorted by a non-unique column like `status`? What tiebreaker do you need?
 
 ## Common Mistakes
 
-- Using OFFSET for deep pagination — page 10,000 scans 200,000 rows before returning 20
-- Not adding `id` as a tiebreaker to keyset pagination — rows with the same `created_at` can be skipped or duplicated
-- Running `COUNT(*)` on every page request — cache the count or use an estimate from `pg_class.reltuples`
-- Exposing raw database IDs in cursors — encode cursors as opaque base64 tokens so clients can't manipulate them
+- Using OFFSET for deep pagination: page 10,000 scans 200,000 rows before returning 20
+- Not adding `id` as a tiebreaker to keyset pagination: rows with the same `created_at` can be skipped or duplicated
+- Running `COUNT(*)` on every page request: cache the count or use an estimate from `pg_class.reltuples`
+- Exposing raw database IDs in cursors: encode cursors as opaque base64 tokens so clients can't manipulate them
 
 
 ---
 
 ## Navigation
 
-[< 002 — Bulk Inserts](002-bulk-inserts.md) | [004 — Jsonb Usage >](004-jsonb-usage.md)
+[< 002 - Bulk Inserts](002-bulk-inserts.md) | [004 - Jsonb Usage >](004-jsonb-usage.md)

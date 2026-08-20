@@ -15,31 +15,31 @@ estimated_minutes: 15
 Traditional REST APIs buffer the entire response before sending it. Streaming APIs send data incrementally as it becomes available.
 
 **Why stream API responses?**
-- **Large datasets** — returning 1M rows as JSON requires buffering the entire array in memory
-- **Long-running operations** — export jobs, report generation, data migration
-- **Real-time data** — log tailing, live metrics, event streams
-- **Time to first byte** — clients start processing immediately instead of waiting
+- **Large datasets**: returning 1M rows as JSON requires buffering the entire array in memory
+- **Long-running operations**: export jobs, report generation, data migration
+- **Real-time data**: log tailing, live metrics, event streams
+- **Time to first byte**: clients start processing immediately instead of waiting
 
 **Streaming formats:**
 
-1. **NDJSON (Newline-Delimited JSON)** — one JSON object per line
+1. **NDJSON (Newline-Delimited JSON)**. One JSON object per line
    ```
    {"id":1,"name":"Alice"}\n
    {"id":2,"name":"Bob"}\n
    {"id":3,"name":"Charlie"}\n
    ```
 
-2. **SSE (Server-Sent Events)** — event stream protocol
+2. **SSE (Server-Sent Events)**: event stream protocol
    ```
    event: message\ndata: {"text":"hello"}\n\n
    ```
 
-3. **Chunked Transfer Encoding** — HTTP/1.1 chunked responses
+3. **Chunked Transfer Encoding**: HTTP/1.1 chunked responses
    ```
    Transfer-Encoding: chunked
    ```
 
-4. **gRPC streaming** — HTTP/2 bidirectional streaming (not covered here)
+4. **gRPC streaming**: HTTP/2 bidirectional streaming (not covered here)
 
 **NDJSON is the most common for APIs because:**
 - Each line is independently parseable (unlike JSON arrays)
@@ -49,7 +49,7 @@ Traditional REST APIs buffer the entire response before sending it. Streaming AP
 
 ## Key Insight
 
-> The fundamental problem with `res.json([...array])` is that you must build the entire array in memory before sending it. If you're querying 1M rows from PostgreSQL, that's the database result set + the serialized JSON string — potentially gigabytes of memory for a single request. Streaming with NDJSON solves this: you fetch rows in batches (cursor or LIMIT/OFFSET), serialize each row independently, and write it to the response stream. Memory usage stays constant regardless of result set size. The trade-off is that the client must parse line-by-line instead of `JSON.parse()` on the whole body.
+> The fundamental problem with `res.json([...array])` is that you must build the entire array in memory before sending it. If you're querying 1M rows from PostgreSQL, that's the database result set + the serialized JSON string: potentially gigabytes of memory for a single request. Streaming with NDJSON solves this: you fetch rows in batches (cursor or LIMIT/OFFSET), serialize each row independently, and write it to the response stream. Memory usage stays constant regardless of result set size. The trade-off is that the client must parse line-by-line instead of `JSON.parse()` on the whole body.
 
 ## Experiment
 
@@ -409,14 +409,14 @@ for (const [scenario, approach, reason] of decisions) {
 
 ## Common Mistakes
 
-- Building the entire result in memory before streaming — defeats the purpose. Stream row-by-row from the data source
-- Not handling backpressure — writing to `res` faster than the network can handle causes unbounded memory growth. Always check `res.write()` return value
-- Using JSON arrays for large exports — `[{...},{...},...]` requires the client to buffer the entire response before parsing. NDJSON lets the client process each line immediately
-- No content-type header — without `application/x-ndjson`, clients don't know how to parse the response. Always set the correct content type
+- Building the entire result in memory before streaming: defeats the purpose. Stream row-by-row from the data source
+- Not handling backpressure: writing to `res` faster than the network can handle causes unbounded memory growth. Always check `res.write()` return value
+- Using JSON arrays for large exports: `[{...},{...},...]` requires the client to buffer the entire response before parsing. NDJSON lets the client process each line immediately
+- No content-type header: without `application/x-ndjson`, clients don't know how to parse the response. Always set the correct content type
 
 
 ---
 
 ## Navigation
 
-[< 001 — Rest And Realtime Hybrid](001-rest-and-realtime-hybrid.md) | [003 — Api Gateway Patterns >](003-api-gateway-patterns.md)
+[< 001 - Rest And Realtime Hybrid](001-rest-and-realtime-hybrid.md) | [003 - Api Gateway Patterns >](003-api-gateway-patterns.md)

@@ -32,11 +32,11 @@ RETURNING *;
 ```
 
 **Why PostgreSQL for queues?**
-- Already in your stack — no new infrastructure
-- ACID transactions — jobs are never lost or double-processed
-- `SKIP LOCKED` — multiple workers claim different jobs without blocking
-- `LISTEN/NOTIFY` — instant notification when a job is enqueued
-- Full SQL — complex queries on job history, statistics, filtering
+- Already in your stack. No new infrastructure
+- ACID transactions: jobs are never lost or double-processed
+- `SKIP LOCKED`: multiple workers claim different jobs without blocking
+- `LISTEN/NOTIFY`: instant notification when a job is enqueued
+- Full SQL: complex queries on job history, statistics, filtering
 
 **When to use Redis-based queues instead:**
 - Very high throughput (>10K jobs/sec)
@@ -46,7 +46,7 @@ RETURNING *;
 
 ## Key Insight
 
-> `FOR UPDATE SKIP LOCKED` is the key to using PostgreSQL as a job queue. Without it, two workers claiming jobs simultaneously would either block each other (FOR UPDATE) or grab the same job (no lock). SKIP LOCKED makes each worker atomically claim a different job — if a row is already locked by another worker, it's skipped and the next available row is claimed. This gives you Redis-like concurrent job claiming with PostgreSQL's durability.
+> `FOR UPDATE SKIP LOCKED` is the key to using PostgreSQL as a job queue. Without it, two workers claiming jobs simultaneously would either block each other (FOR UPDATE) or grab the same job (no lock). SKIP LOCKED makes each worker atomically claim a different job. If a row is already locked by another worker, it's skipped and the next available row is claimed. This gives you Redis-like concurrent job claiming with PostgreSQL's durability.
 
 ## Experiment
 
@@ -363,14 +363,14 @@ console.log(`  CREATE TABLE jobs (
 
 ## Common Mistakes
 
-- Polling too frequently — `SELECT` every 100ms wastes database resources. Use `LISTEN/NOTIFY` or poll every 1-5 seconds
-- Not using `SKIP LOCKED` — without it, concurrent workers block each other waiting for the same row lock
-- Not handling stale jobs — if a worker crashes mid-processing, the job stays in "processing" forever
-- Storing large payloads in the job data — store a reference (S3 URL, file path) instead of the actual data
+- Polling too frequently: `SELECT` every 100ms wastes database resources. Use `LISTEN/NOTIFY` or poll every 1-5 seconds
+- Not using `SKIP LOCKED`: without it, concurrent workers block each other waiting for the same row lock
+- Not handling stale jobs. If a worker crashes mid-processing, the job stays in "processing" forever
+- Storing large payloads in the job data: store a reference (S3 URL, file path) instead of the actual data
 
 
 ---
 
 ## Navigation
 
-[< 001 — Background Workers](001-background-workers.md) | [003 — Retry Strategies >](003-retry-strategies.md)
+[< 001 - Background Workers](001-background-workers.md) | [003 - Retry Strategies >](003-retry-strategies.md)

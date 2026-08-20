@@ -16,19 +16,19 @@ Background jobs fail in ways that HTTP requests don't. Understanding failure mod
 
 **Failure categories:**
 
-1. **Transient failures** — temporary, will succeed on retry
+1. **Transient failures**: temporary, will succeed on retry
    - Network timeout, database connection dropped, 503 from external API
 
-2. **Permanent failures** — will never succeed no matter how many retries
+2. **Permanent failures**: will never succeed no matter how many retries
    - Invalid data, missing resource, business rule violation
 
-3. **Poison pill** — a job that crashes the worker every time it runs
+3. **Poison pill**: a job that crashes the worker every time it runs
    - Triggers an unhandled exception, causes OOM, hits an infinite loop
 
-4. **Partial failure** — some steps succeeded, others didn't
+4. **Partial failure**. Some steps succeeded, others didn't
    - Payment charged but email not sent, order created but inventory not decremented
 
-5. **Timeout failure** — job takes too long
+5. **Timeout failure**: job takes too long
    - Large file processing, external API hangs, deadlocked query
 
 **Recovery strategies:**
@@ -43,7 +43,7 @@ Background jobs fail in ways that HTTP requests don't. Understanding failure mod
 
 ## Key Insight
 
-> A dead-letter queue (DLQ) is where jobs go to die gracefully. After N retries, instead of discarding a failed job or retrying forever, you move it to a separate queue for human inspection. This is essential because some failures need human judgment — a payment that fails with "insufficient funds" needs a customer notification, not another retry. The DLQ preserves the job data, error history, and context so an operator can diagnose the issue, fix the root cause, and re-enqueue the job.
+> A dead-letter queue (DLQ) is where jobs go to die gracefully. After N retries, instead of discarding a failed job or retrying forever, you move it to a separate queue for human inspection. This is essential because some failures need human judgment: a payment that fails with "insufficient funds" needs a customer notification, not another retry. The DLQ preserves the job data, error history, and context so an operator can diagnose the issue, fix the root cause, and re-enqueue the job.
 
 ## Experiment
 
@@ -116,7 +116,7 @@ class RobustJobProcessor {
       });
 
       if (this.isPermanentError(err)) {
-        // Permanent failure — don't retry
+        // Permanent failure: don't retry
         job.status = "dead-letter";
         this.deadLetterQueue.push(job);
         this.log.push({ jobId: job.id, action: "dead-letter", reason: err.message });
@@ -126,7 +126,7 @@ class RobustJobProcessor {
         this.deadLetterQueue.push(job);
         this.log.push({ jobId: job.id, action: "dead-letter", reason: "max retries" });
       } else {
-        // Transient failure — retry
+        // Transient failure: retry
         job.status = "pending";
         this.queue.push(job);
         this.log.push({ jobId: job.id, action: "retry", attempt: job.attempts });
@@ -165,22 +165,22 @@ let transientCount = 0;
 processor.register("send-email", async (data) => {
   transientCount++;
   if (transientCount <= 2) {
-    throw new Error("SMTP connection timeout"); // Transient — will retry
+    throw new Error("SMTP connection timeout"); // Transient: will retry
   }
   return { sent: true, to: data.to };
 });
 
 processor.register("validate-order", async (data) => {
   if (!data.productId) {
-    throw new Error("VALIDATION_ERROR: productId is required"); // Permanent — won't retry
+    throw new Error("VALIDATION_ERROR: productId is required"); // Permanent: won't retry
   }
   return { valid: true };
 });
 
-// Transient failure — retries until success
+// Transient failure: retries until success
 processor.enqueue(new Job("job-1", "send-email", { to: "user@example.com" }, { maxAttempts: 5 }));
 
-// Permanent failure — goes to DLQ immediately
+// Permanent failure: goes to DLQ immediately
 processor.enqueue(new Job("job-2", "validate-order", { productId: null }, { maxAttempts: 5 }));
 
 await processor.processAll();
@@ -358,7 +358,7 @@ for (const [key, value] of Object.entries(orderState)) {
 console.log(`\n  Saga log:`);
 for (const entry of orderSaga.log) {
   const detail = entry.step ? ` [${entry.step}]` : "";
-  const error = entry.error ? ` — ${entry.error}` : "";
+  const error = entry.error ? `: ${entry.error}` : "";
   console.log(`    ${entry.action}${detail}${error}`);
 }
 
@@ -565,19 +565,19 @@ for (const [item, detail] of checklist) {
 
 1. Build a robust job processor that: classifies errors, retries transient failures with backoff, dead-letters permanent failures, detects poison pills, and logs everything. Wire it to a PostgreSQL-backed queue
 2. Implement the Saga pattern for a multi-step process (e.g., booking a flight: reserve seat → charge payment → send confirmation). Each step must have a compensation action that undoes it on failure
-3. How would you handle a job that succeeds in processing but fails to acknowledge completion (the worker crashes after processing but before marking the job as done)? This is the "at least once" delivery problem — how does idempotency solve it?
+3. How would you handle a job that succeeds in processing but fails to acknowledge completion (the worker crashes after processing but before marking the job as done)? This is the "at least once" delivery problem: how does idempotency solve it?
 
 ## Common Mistakes
 
-- Retrying permanent errors — wastes resources and delays other jobs. Classify errors first
-- No dead-letter queue — failed jobs silently disappear, and you never learn about systemic issues
-- Ignoring partial failures — if step 2 of 4 fails, steps 1's side effects remain. Always plan compensation
-- No timeout on jobs — a hanging job blocks the worker forever. Always set execution timeouts
-- Not logging enough context — when a job fails at 3am, you need the full picture: input data, error, attempt count, timestamps
+- Retrying permanent errors: wastes resources and delays other jobs. Classify errors first
+- No dead-letter queue: failed jobs silently disappear, and you never learn about systemic issues
+- Ignoring partial failures. If step 2 of 4 fails, steps 1's side effects remain. Always plan compensation
+- No timeout on jobs: a hanging job blocks the worker forever. Always set execution timeouts
+- Not logging enough context. When a job fails at 3am, you need the full picture: input data, error, attempt count, timestamps
 
 
 ---
 
 ## Navigation
 
-[< 004 — Idempotency](004-idempotency.md) | [001 — Why Frameworks Exist >](../phase-15-frameworks/001-why-frameworks-exist.md)
+[< 004 - Idempotency](004-idempotency.md) | [001 - Why Frameworks Exist >](../phase-15-frameworks/001-why-frameworks-exist.md)

@@ -16,10 +16,10 @@ A single Node.js process can handle tens of thousands of concurrent WebSocket co
 
 Scaling strategies:
 
-1. **Vertical scaling** — bigger server, more connections per process. Optimize memory per connection
-2. **Sticky sessions** — a load balancer ensures the same client always reaches the same server. Simple but limits failover
-3. **Pub/Sub backbone** — servers publish messages to a shared channel (Redis, NATS, Kafka). All servers subscribe and forward to their local clients
-4. **Shared-nothing + routing** — each server owns a partition of rooms/users. Route connections to the right server
+1. **Vertical scaling**: bigger server, more connections per process. Optimize memory per connection
+2. **Sticky sessions**: a load balancer ensures the same client always reaches the same server. Simple but limits failover
+3. **Pub/Sub backbone**: servers publish messages to a shared channel (Redis, NATS, Kafka). All servers subscribe and forward to their local clients
+4. **Shared-nothing + routing**: each server owns a partition of rooms/users. Route connections to the right server
 
 The pub/sub backbone is the most common approach. Redis Pub/Sub or a message broker acts as the glue between servers:
 
@@ -29,7 +29,7 @@ Client A → Server 1 → Redis Pub/Sub → Server 2 → Client B
 
 ## Key Insight
 
-> WebSocket connections are stateful — they can't be load-balanced like HTTP requests. If Alice is connected to Server 1 and Bob to Server 2, a message from Alice to Bob must cross the server boundary. A pub/sub backbone (Redis, NATS) solves this: each server publishes to the backbone and subscribes for updates, making multi-server WebSocket systems work seamlessly.
+> WebSocket connections are stateful. They can't be load-balanced like HTTP requests. If Alice is connected to Server 1 and Bob to Server 2, a message from Alice to Bob must cross the server boundary. A pub/sub backbone (Redis, NATS) solves this: each server publishes to the backbone and subscribes for updates, making multi-server WebSocket systems work seamlessly.
 
 ## Experiment
 
@@ -193,7 +193,7 @@ class ScalableWSServer {
 
       case "message": {
         const channel = `room:${msg.room}`;
-        // Publish through the backbone — ALL servers receive this
+        // Publish through the backbone. ALL servers receive this
         this.broker.publish(channel, JSON.stringify({
           type: "message",
           room: msg.room,
@@ -329,7 +329,7 @@ await new Promise(r => setTimeout(r, 100));
 
 console.log("\nBoth joined #general\n");
 
-// Alice sends a message — Bob should receive it (via pub/sub backbone)
+// Alice sends a message: Bob should receive it (via pub/sub backbone)
 alice.send(JSON.stringify({ type: "message", room: "general", text: "Hello from Server-1!" }));
 await new Promise(r => setTimeout(r, 100));
 
@@ -431,14 +431,14 @@ Memory per connection matters at scale. An idle WebSocket with `ws` library uses
 
 ## Common Mistakes
 
-- Publishing messages to the backbone AND to local clients — double delivery. Publish once to the backbone; let the subscription handler deliver locally
-- Not unsubscribing from channels when the last local client leaves a room — leaked subscriptions consume broker resources
-- Assuming message ordering across servers — pub/sub may deliver out of order. Include timestamps for ordering
-- Not handling broker disconnections — if Redis goes down, your pub/sub backbone breaks. Implement reconnection logic
+- Publishing messages to the backbone AND to local clients: double delivery. Publish once to the backbone; let the subscription handler deliver locally
+- Not unsubscribing from channels when the last local client leaves a room: leaked subscriptions consume broker resources
+- Assuming message ordering across servers: pub/sub may deliver out of order. Include timestamps for ordering
+- Not handling broker disconnections. If Redis goes down, your pub/sub backbone breaks. Implement reconnection logic
 
 
 ---
 
 ## Navigation
 
-[< 004 — Realtime State](004-realtime-state.md) | [001 — Routing >](../phase-08-building-web-servers/001-routing.md)
+[< 004 - Realtime State](004-realtime-state.md) | [001 - Routing >](../phase-08-building-web-servers/001-routing.md)

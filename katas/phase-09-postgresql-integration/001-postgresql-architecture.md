@@ -16,10 +16,10 @@ PostgreSQL is a client-server database system. Understanding its architecture he
 
 **How PostgreSQL works internally:**
 
-1. **Postmaster** — the main process that listens for connections
-2. **Backend processes** — one OS process per client connection (not threads!)
-3. **Shared memory** — shared buffers, WAL buffers, lock tables
-4. **WAL (Write-Ahead Log)** — every change is logged before it's applied, ensuring durability
+1. **Postmaster**: the main process that listens for connections
+2. **Backend processes**: one OS process per client connection (not threads!)
+3. **Shared memory**: shared buffers, WAL buffers, lock tables
+4. **WAL (Write-Ahead Log)**: every change is logged before it's applied, ensuring durability
 
 **The connection lifecycle:**
 
@@ -38,16 +38,16 @@ Each connection gets its own dedicated backend process in PostgreSQL. This means
 - Each connection consumes **memory** (~5-10 MB per backend process)
 - PostgreSQL has a **max_connections** limit (default 100)
 
-This is why connection pooling is essential — you reuse a small pool of connections instead of creating new ones per request.
+This is why connection pooling is essential. You reuse a small pool of connections instead of creating new ones per request.
 
 ## Key Insight
 
-> Every PostgreSQL connection is a separate OS process. Creating connections is expensive (fork + auth), and each one consumes real memory. A Node.js server handling 1000 concurrent requests must NOT open 1000 database connections — it should share 10-20 pooled connections. The pool queues requests, and each request borrows a connection briefly, then returns it.
+> Every PostgreSQL connection is a separate OS process. Creating connections is expensive (fork + auth), and each one consumes real memory. A Node.js server handling 1000 concurrent requests must NOT open 1000 database connections. It should share 10-20 pooled connections. The pool queues requests, and each request borrows a connection briefly, then returns it.
 
 ## Experiment
 
 ```js
-// This kata is conceptual — it explains PostgreSQL architecture
+// This kata is conceptual. It explains PostgreSQL architecture
 // without requiring a running database. The code demonstrates
 // the concepts through simulation.
 
@@ -286,14 +286,14 @@ With pooling (pool size 10):
 
 ## Common Mistakes
 
-- Opening a new connection per HTTP request — creates hundreds of connections and hits `max_connections`
-- Not setting `statement_timeout` — a runaway query can hold a connection and a backend process forever
-- Setting `max_connections` very high (500+) — each connection uses 5-10 MB of RAM in the PostgreSQL process
-- Assuming database connections are free — they're expensive OS resources that must be pooled and managed
+- Opening a new connection per HTTP request: creates hundreds of connections and hits `max_connections`
+- Not setting `statement_timeout`: a runaway query can hold a connection and a backend process forever
+- Setting `max_connections` very high (500+). Each connection uses 5-10 MB of RAM in the PostgreSQL process
+- Assuming database connections are free. They're expensive OS resources that must be pooled and managed
 
 
 ---
 
 ## Navigation
 
-[< 005 — Temporary Storage](../phase-08a-file-uploads/005-temporary-storage.md) | [002 — Connection Pooling >](002-connection-pooling.md)
+[< 005 - Temporary Storage](../phase-08a-file-uploads/005-temporary-storage.md) | [002 - Connection Pooling >](002-connection-pooling.md)

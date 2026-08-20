@@ -35,7 +35,7 @@ if (cluster.isPrimary) {
   // Graceful restart: replace workers one by one
   cluster.on('exit', (worker) => {
     if (!worker.exitedAfterDisconnect) {
-      cluster.fork(); // Worker crashed — restart
+      cluster.fork(); // Worker crashed: restart
     }
   });
 } else {
@@ -242,7 +242,7 @@ console.log(`\n  Status: ${JSON.stringify(cluster.status())}\n`);
 console.log("--- Worker crash recovery ---\n");
 
 const crashWorker = cluster.getActiveWorkers()[0];
-cluster.log(`CRASH: ${crashWorker} — uncaught exception`);
+cluster.log(`CRASH: ${crashWorker}: uncaught exception`);
 crashWorker.exit();
 
 // Auto-restart crashed worker
@@ -426,14 +426,14 @@ Node.js cluster module supports rolling restart natively. Blue/green and canary 
 
 ## Common Mistakes
 
-- Killing workers immediately on deploy — drops in-flight requests. Always disconnect first and wait for drain
-- Not auto-restarting crashed workers — one uncaught exception permanently reduces your worker count
-- Setting the drain timeout too high — a single slow request can block the entire deploy
-- Forgetting to handle SIGTERM in workers — Kubernetes sends SIGTERM before SIGKILL. Workers must shut down gracefully within the termination grace period
+- Killing workers immediately on deploy: drops in-flight requests. Always disconnect first and wait for drain
+- Not auto-restarting crashed workers. One uncaught exception permanently reduces your worker count
+- Setting the drain timeout too high: a single slow request can block the entire deploy
+- Forgetting to handle SIGTERM in workers: Kubernetes sends SIGTERM before SIGKILL. Workers must shut down gracefully within the termination grace period
 
 
 ---
 
 ## Navigation
 
-[< 004 — Crash Handling](004-crash-handling.md) | [001 — Profiling >](../phase-13-performance-and-scaling/001-profiling.md)
+[< 004 - Crash Handling](004-crash-handling.md) | [001 - Profiling >](../phase-13-performance-and-scaling/001-profiling.md)

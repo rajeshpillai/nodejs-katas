@@ -1,4 +1,4 @@
-# Phase 9A — Advanced PostgreSQL in Node.js
+# Phase 9A: Advanced PostgreSQL in Node.js
 
 Push PostgreSQL integration further with advanced patterns. Stream query results, perform bulk inserts with COPY, implement pagination strategies, work with JSONB, and handle query cancellation and timeouts.
 
@@ -18,4 +18,4 @@ Push PostgreSQL integration further with advanced patterns. Stream query results
 
 ## Navigation
 
-[< Phase 9 — PostgreSQL Integration](../phase-09-postgresql-integration/README.md) | [Phase 10 — Cryptography & Security >](../phase-10-cryptography-and-security/README.md)
+[< Phase 9: PostgreSQL Integration](../phase-09-postgresql-integration/README.md) | [Phase 10: Cryptography & Security >](../phase-10-cryptography-and-security/README.md)

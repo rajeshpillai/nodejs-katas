@@ -1,4 +1,4 @@
-# Phase 7 — HTTP from First Principles
+# Phase 7. HTTP from First Principles
 
 Understand HTTP before using any framework. Learn the protocol itself, headers and content types, the request/response lifecycle, keep-alive connections, content encoding, and range requests.
 
@@ -18,4 +18,4 @@ Understand HTTP before using any framework. Learn the protocol itself, headers a
 
 ## Navigation
 
-[< Phase 6 — Networking Fundamentals](../phase-06-networking-fundamentals/README.md) | [Phase 7A — WebSockets & Real-Time Systems >](../phase-07a-websockets-and-realtime/README.md)
+[< Phase 6: Networking Fundamentals](../phase-06-networking-fundamentals/README.md) | [Phase 7A: WebSockets & Real-Time Systems >](../phase-07a-websockets-and-realtime/README.md)

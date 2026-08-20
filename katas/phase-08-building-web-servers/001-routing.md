@@ -15,10 +15,10 @@ estimated_minutes: 15
 Routing maps incoming HTTP requests to handler functions based on the method and URL path. A router answers: "Given `GET /api/users/42`, which function should handle this?"
 
 Routing components:
-- **Method matching** — `GET`, `POST`, `PUT`, `DELETE`, etc.
-- **Path matching** — exact (`/users`), parameterized (`/users/:id`), wildcard (`/files/*`)
-- **Query string parsing** — `?page=2&limit=10` → `{ page: "2", limit: "10" }`
-- **URL parameters** — `/users/:id` + `/users/42` → `params.id = "42"`
+- **Method matching**: `GET`, `POST`, `PUT`, `DELETE`, etc.
+- **Path matching**: exact (`/users`), parameterized (`/users/:id`), wildcard (`/files/*`)
+- **Query string parsing**: `?page=2&limit=10` → `{ page: "2", limit: "10" }`
+- **URL parameters**: `/users/:id` + `/users/42` → `params.id = "42"`
 
 Building a router from scratch reveals what Express/Fastify do internally: they compile route patterns into regular expressions, test them against incoming paths, extract named parameters, and call the matching handler.
 
@@ -249,14 +249,14 @@ getAll('tags'): [ 'backend', 'api' ]
 
 ## Common Mistakes
 
-- Not decoding URL parameters — `%20` should become a space, `%2F` should become `/`
-- Testing routes in wrong order — a greedy pattern like `/users/:id` matches before `/users/search` if registered first
-- Not handling trailing slashes — `/users` and `/users/` should usually match the same route
-- Parsing query strings manually — use `URL` and `URLSearchParams` instead of splitting on `&` and `=`
+- Not decoding URL parameters: `%20` should become a space, `%2F` should become `/`
+- Testing routes in wrong order: a greedy pattern like `/users/:id` matches before `/users/search` if registered first
+- Not handling trailing slashes: `/users` and `/users/` should usually match the same route
+- Parsing query strings manually. Use `URL` and `URLSearchParams` instead of splitting on `&` and `=`
 
 
 ---
 
 ## Navigation
 
-[< 005 — Scaling Websockets](../phase-07a-websockets-and-realtime/005-scaling-websockets.md) | [002 — Middleware Patterns >](002-middleware-patterns.md)
+[< 005 - Scaling Websockets](../phase-07a-websockets-and-realtime/005-scaling-websockets.md) | [002 - Middleware Patterns >](002-middleware-patterns.md)

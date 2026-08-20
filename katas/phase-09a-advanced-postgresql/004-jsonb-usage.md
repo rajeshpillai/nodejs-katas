@@ -21,9 +21,9 @@ PostgreSQL's `jsonb` type stores JSON data in a binary format that supports inde
 - Schema-flexible fields alongside structured columns
 
 **When NOT to use JSONB:**
-- Data you query or join on frequently — use regular columns
-- Data with a fixed, known schema — columns are faster and type-safe
-- Large arrays that grow indefinitely — updates rewrite the entire field
+- Data you query or join on frequently. Use regular columns
+- Data with a fixed, known schema: columns are faster and type-safe
+- Large arrays that grow indefinitely: updates rewrite the entire field
 
 **Key operators:**
 ```sql
@@ -44,7 +44,7 @@ CREATE INDEX idx_events_type ON events USING GIN (data);
 
 ## Key Insight
 
-> JSONB is not "MongoDB inside PostgreSQL." It's a column type — you still have tables, constraints, transactions, and indexes. Use regular columns for structured, queryable data and JSONB for flexible, semi-structured data within the same row. The `@>` containment operator with a GIN index makes JSONB queries fast even on millions of rows.
+> JSONB is not "MongoDB inside PostgreSQL." It's a column type. You still have tables, constraints, transactions, and indexes. Use regular columns for structured, queryable data and JSONB for flexible, semi-structured data within the same row. The `@>` containment operator with a GIN index makes JSONB queries fast even on millions of rows.
 
 ## Experiment
 
@@ -212,7 +212,7 @@ for (const u of darkUsers) {
 }
 
 // Merge/update JSONB
-console.log("\n  JSONB merge (||) — update Alice's settings:");
+console.log("\n  JSONB merge (||): update Alice's settings:");
 const alice = db.query("users", r => r.name === "Alice")[0];
 const updatedSettings = { ...alice.settings, theme: "light", fontSize: 16 };
 console.log(`    Before: ${JSON.stringify(alice.settings)}`);
@@ -333,19 +333,19 @@ console.log(`  -- GIN index (all keys and values, supports @>, ?, ?|, ?&)
 ## Challenge
 
 1. Build a function that converts a flat query object like `{ "data.type": "click", "data.position.x__gt": 100 }` into a PostgreSQL query with JSONB operators
-2. Implement a schema validator that checks JSONB data against a JSON Schema before inserting — PostgreSQL doesn't enforce JSONB structure, so your app must
+2. Implement a schema validator that checks JSONB data against a JSON Schema before inserting: PostgreSQL doesn't enforce JSONB structure, so your app must
 3. When should you promote a JSONB field to a regular column? Build a query that identifies the most-queried JSONB keys from `pg_stat_statements`
 
 ## Common Mistakes
 
-- Storing everything in JSONB to "avoid migrations" — you lose type safety, foreign keys, and query performance
-- Querying JSONB without indexes — `WHERE data->>'type' = 'click'` does a full table scan without an expression index
-- Using `json` instead of `jsonb` — `json` preserves whitespace and key order but can't be indexed or use operators like `@>`
-- Updating JSONB by replacing the entire column — use `jsonb_set()` or `||` to update specific keys instead
+- Storing everything in JSONB to "avoid migrations". You lose type safety, foreign keys, and query performance
+- Querying JSONB without indexes: `WHERE data->>'type' = 'click'` does a full table scan without an expression index
+- Using `json` instead of `jsonb`: `json` preserves whitespace and key order but can't be indexed or use operators like `@>`
+- Updating JSONB by replacing the entire column. Use `jsonb_set()` or `||` to update specific keys instead
 
 
 ---
 
 ## Navigation
 
-[< 003 — Pagination Strategies](003-pagination-strategies.md) | [005 — Query Cancellation >](005-query-cancellation.md)
+[< 003 - Pagination Strategies](003-pagination-strategies.md) | [005 - Query Cancellation >](005-query-cancellation.md)

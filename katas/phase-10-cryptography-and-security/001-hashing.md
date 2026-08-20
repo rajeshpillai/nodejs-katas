@@ -14,9 +14,9 @@ estimated_minutes: 12
 
 A hash function takes input of any size and produces a fixed-size output (the "digest"). Good cryptographic hash functions have three properties:
 
-1. **Deterministic** — same input always produces the same hash
-2. **One-way** — you can't reverse the hash to get the input
-3. **Collision-resistant** — extremely hard to find two different inputs with the same hash
+1. **Deterministic**: same input always produces the same hash
+2. **One-way**: you can't reverse the hash to get the input
+3. **Collision-resistant**: extremely hard to find two different inputs with the same hash
 
 Node.js provides the `crypto` module with access to all hash algorithms supported by OpenSSL:
 
@@ -30,10 +30,10 @@ const hash = createHash('sha256')
 ```
 
 **Common algorithms:**
-- `sha256` — general-purpose, used in most applications (32 bytes)
-- `sha512` — longer hash, used when extra collision resistance is needed (64 bytes)
-- `md5` — broken for security, but still used for checksums (16 bytes)
-- `sha1` — deprecated for security, still in legacy systems (20 bytes)
+- `sha256`: general-purpose, used in most applications (32 bytes)
+- `sha512`: longer hash, used when extra collision resistance is needed (64 bytes)
+- `md5`: broken for security, but still used for checksums (16 bytes)
+- `sha1`: deprecated for security, still in legacy systems (20 bytes)
 
 **Use cases:**
 - File integrity verification (checksums)
@@ -43,7 +43,7 @@ const hash = createHash('sha256')
 
 ## Key Insight
 
-> Hashing is not encryption. Encryption is reversible (decrypt with a key). Hashing is one-way — there is no "unhash" function. SHA-256 produces the same 32 bytes whether the input is 1 byte or 1 GB. This makes hashes ideal for verification ("does this file match this hash?") but useless for hiding data that needs to be recovered.
+> Hashing is not encryption. Encryption is reversible (decrypt with a key). Hashing is one-way. There is no "unhash" function. SHA-256 produces the same 32 bytes whether the input is 1 byte or 1 GB. This makes hashes ideal for verification ("does this file match this hash?") but useless for hiding data that needs to be recovered.
 
 ## Experiment
 
@@ -183,10 +183,10 @@ console.log(`     Git SHA-1: ${gitHash}`);
 
 console.log("\n--- What NOT to use hashing for ---\n");
 
-console.log("  ✗ Password storage — use scrypt/argon2 instead (next kata)");
-console.log("  ✗ Encryption — hashing is one-way, use AES for encryption");
-console.log("  ✗ MD5/SHA-1 for security — both have known collisions");
-console.log("  ✗ Hashing secrets without HMAC — vulnerable to length extension");
+console.log("  ✗ Password storage. Use scrypt/argon2 instead (next kata)");
+console.log("  ✗ Encryption: hashing is one-way, use AES for encryption");
+console.log("  ✗ MD5/SHA-1 for security. Both have known collisions");
+console.log("  ✗ Hashing secrets without HMAC: vulnerable to length extension");
 
 console.log("\n  Available algorithms on this system:");
 const { getHashes } = await import("node:crypto");
@@ -232,14 +232,14 @@ console.log(`    ${hashes.join(", ")}...`);
 
 ## Common Mistakes
 
-- Using MD5 or SHA-1 for security purposes — both have practical collision attacks
-- Using plain SHA-256 for passwords — it's too fast! Attackers can hash billions of guesses per second. Use bcrypt/scrypt/argon2
-- Hashing without HMAC when integrity + authenticity is needed — SHA-256 alone doesn't prove who created the hash
-- Creating a new hash object for each `.update()` call instead of reusing one — each `createHash()` allocates a new context
+- Using MD5 or SHA-1 for security purposes. Both have practical collision attacks
+- Using plain SHA-256 for passwords. It's too fast! Attackers can hash billions of guesses per second. Use bcrypt/scrypt/argon2
+- Hashing without HMAC when integrity + authenticity is needed: SHA-256 alone doesn't prove who created the hash
+- Creating a new hash object for each `.update()` call instead of reusing one. Each `createHash()` allocates a new context
 
 
 ---
 
 ## Navigation
 
-[< 005 — Query Cancellation](../phase-09a-advanced-postgresql/005-query-cancellation.md) | [002 — Password Storage >](002-password-storage.md)
+[< 005 - Query Cancellation](../phase-09a-advanced-postgresql/005-query-cancellation.md) | [002 - Password Storage >](002-password-storage.md)

@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-When a browser sends a file upload, it uses `Content-Type: multipart/form-data`. This encoding packages multiple fields — text inputs, files, binary data — into a single HTTP request body, separated by a **boundary** string.
+When a browser sends a file upload, it uses `Content-Type: multipart/form-data`. This encoding packages multiple fields: text inputs, files, binary data: into a single HTTP request body, separated by a **boundary** string.
 
 A multipart body looks like this on the wire:
 
@@ -38,7 +38,7 @@ The structure:
 4. Headers and body are separated by `\r\n\r\n`
 5. The final boundary ends with `--boundary--\r\n`
 
-Understanding this format is essential because every file upload on the web uses it. Frameworks hide the parsing, but when something goes wrong — large files, encoding issues, timeouts — you need to know what's happening at the protocol level.
+Understanding this format is essential because every file upload on the web uses it. Frameworks hide the parsing, but when something goes wrong: large files, encoding issues, timeouts. You need to know what's happening at the protocol level.
 
 ## Key Insight
 
@@ -200,7 +200,7 @@ const server = createServer(async (req, res) => {
       return;
     }
 
-    // Read full body (educational only — production should stream)
+    // Read full body (educational only: production should stream)
     const chunks = [];
     for await (const chunk of req) {
       chunks.push(chunk);
@@ -297,27 +297,27 @@ Upload response:
 ## Challenge
 
 1. What happens if the boundary string appears inside a file's binary content? How does the multipart spec handle this? (Hint: the boundary is chosen to be unique)
-2. Build a multipart encoder that creates a `ReadableStream` — don't buffer the entire body, stream each part
-3. Parse a multipart body where a field value contains Unicode and is encoded differently — how do you handle encoding?
+2. Build a multipart encoder that creates a `ReadableStream`: don't buffer the entire body, stream each part
+3. Parse a multipart body where a field value contains Unicode and is encoded differently: how do you handle encoding?
 
 ## Deep Dive
 
 Why `multipart/form-data` instead of JSON for file uploads:
 
-JSON can carry binary data as base64, but that adds 33% overhead. A 100 MB file becomes 133 MB of base64 text. Multipart carries binary directly — the raw bytes go on the wire. It also naturally handles mixed content: text fields and binary files in the same request.
+JSON can carry binary data as base64, but that adds 33% overhead. A 100 MB file becomes 133 MB of base64 text. Multipart carries binary directly: the raw bytes go on the wire. It also naturally handles mixed content: text fields and binary files in the same request.
 
-The `application/x-www-form-urlencoded` content type is for simple form fields only — it encodes everything as key=value pairs, and binary data must be percent-encoded (3 bytes per input byte for non-ASCII).
+The `application/x-www-form-urlencoded` content type is for simple form fields only. It encodes everything as key=value pairs, and binary data must be percent-encoded (3 bytes per input byte for non-ASCII).
 
 ## Common Mistakes
 
-- Buffering the entire upload in memory — a 2 GB video upload should be streamed to disk, not held in RAM
-- Not validating the boundary exists in the `Content-Type` header — crash on missing boundary
-- Assuming parts arrive in a specific order — the spec doesn't guarantee ordering
-- Not handling the case where `filename` is present but empty — some browsers send `filename=""` for empty file inputs
+- Buffering the entire upload in memory: a 2 GB video upload should be streamed to disk, not held in RAM
+- Not validating the boundary exists in the `Content-Type` header: crash on missing boundary
+- Assuming parts arrive in a specific order: the spec doesn't guarantee ordering
+- Not handling the case where `filename` is present but empty. Some browsers send `filename=""` for empty file inputs
 
 
 ---
 
 ## Navigation
 
-[< 005 — Graceful Shutdown](../phase-08-building-web-servers/005-graceful-shutdown.md) | [002 — Streaming Uploads >](002-streaming-uploads.md)
+[< 005 - Graceful Shutdown](../phase-08-building-web-servers/005-graceful-shutdown.md) | [002 - Streaming Uploads >](002-streaming-uploads.md)

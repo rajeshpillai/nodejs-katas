@@ -38,7 +38,7 @@ The database receives the query structure and parameters separately. The paramet
 
 ## Key Insight
 
-> Parameterized queries don't just escape special characters — they fundamentally separate code from data. The SQL engine parses and plans the query before it ever sees the parameter values. The values are then bound into the plan as data, not as SQL tokens. This makes SQL injection structurally impossible, not just unlikely.
+> Parameterized queries don't just escape special characters. They fundamentally separate code from data. The SQL engine parses and plans the query before it ever sees the parameter values. The values are then bound into the plan as data, not as SQL tokens. This makes SQL injection structurally impossible, not just unlikely.
 
 ## Experiment
 
@@ -267,20 +267,20 @@ With parameterized queries, all attacks fail:
 
 ## Challenge
 
-1. Build a dynamic query builder that safely handles `ORDER BY` — column names can't be parameterized, so you must whitelist them
+1. Build a dynamic query builder that safely handles `ORDER BY`: column names can't be parameterized, so you must whitelist them
 2. What's the difference between parameterized queries and prepared statements? When would you use `client.query({ name: 'get-user', text: '...', values: [...] })`?
 3. Write a function that safely builds a bulk `INSERT INTO users (name, email) VALUES ($1, $2), ($3, $4), ...` for N rows
 
 ## Common Mistakes
 
-- Using string interpolation for SQL — even "trusted" internal values should use parameters for consistency
-- Parameterizing column names or table names — `$1` only works for values, not identifiers. Whitelist identifiers instead
-- Forgetting that `IN ($1)` doesn't work with arrays — use `= ANY($1)` and pass a JavaScript array
-- Using `parseInt()` on user input and putting it directly in SQL — this seems safe but is fragile. Use parameters always
+- Using string interpolation for SQL. Even "trusted" internal values should use parameters for consistency
+- Parameterizing column names or table names: `$1` only works for values, not identifiers. Whitelist identifiers instead
+- Forgetting that `IN ($1)` doesn't work with arrays. Use `= ANY($1)` and pass a JavaScript array
+- Using `parseInt()` on user input and putting it directly in SQL. This seems safe but is fragile. Use parameters always
 
 
 ---
 
 ## Navigation
 
-[< 002 — Connection Pooling](002-connection-pooling.md) | [004 — Transactions >](004-transactions.md)
+[< 002 - Connection Pooling](002-connection-pooling.md) | [004 - Transactions >](004-transactions.md)

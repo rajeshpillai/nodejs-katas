@@ -12,21 +12,21 @@ estimated_minutes: 12
 
 ## Concept
 
-For large uploads, users need feedback — a progress bar or percentage. Progress tracking requires knowing two things:
+For large uploads, users need feedback: a progress bar or percentage. Progress tracking requires knowing two things:
 
-1. **Total size** — from the `Content-Length` request header
-2. **Bytes received so far** — counted as chunks arrive
+1. **Total size**: from the `Content-Length` request header
+2. **Bytes received so far**: counted as chunks arrive
 
 The server tracks progress during streaming and can report it via:
-- **Server-Sent Events (SSE)** — a separate connection that pushes progress updates
-- **WebSocket** — bidirectional, can send progress while receiving the upload
-- **Polling endpoint** — client polls `GET /upload/status/:id` periodically
+- **Server-Sent Events (SSE)**: a separate connection that pushes progress updates
+- **WebSocket**: bidirectional, can send progress while receiving the upload
+- **Polling endpoint**: client polls `GET /upload/status/:id` periodically
 
 On the client side, `XMLHttpRequest` has an `upload.onprogress` event. The `fetch()` API doesn't expose upload progress natively, but you can use `ReadableStream` as the body to track outgoing bytes.
 
 ## Key Insight
 
-> Upload progress is a streaming problem. The `Content-Length` header gives you the total, and each `data` event on the request stream gives you a chunk to count. The challenge is reporting this progress back to the client while the upload is still in progress — which requires a separate communication channel (SSE, WebSocket, or polling).
+> Upload progress is a streaming problem. The `Content-Length` header gives you the total, and each `data` event on the request stream gives you a chunk to count. The challenge is reporting this progress back to the client while the upload is still in progress. Which requires a separate communication channel (SSE, WebSocket, or polling).
 
 ## Experiment
 
@@ -103,7 +103,7 @@ class UploadTracker extends EventEmitter {
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
-  // POST /upload — accept upload with progress tracking
+  // POST /upload: accept upload with progress tracking
   if (req.method === "POST" && url.pathname === "/upload") {
     const uploadId = randomBytes(8).toString("hex");
     const totalBytes = parseInt(req.headers["content-length"] || "0");
@@ -159,7 +159,7 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  // GET /upload/status/:id — poll progress
+  // GET /upload/status/:id: poll progress
   if (req.method === "GET" && url.pathname.startsWith("/upload/status/")) {
     const id = url.pathname.split("/").pop();
     const tracker = uploads.get(id);
@@ -187,7 +187,7 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  // GET /upload/events/:id — Server-Sent Events for progress
+  // GET /upload/events/:id: Server-Sent Events for progress
   if (req.method === "GET" && url.pathname.startsWith("/upload/events/")) {
     const id = url.pathname.split("/").pop();
     const tracker = uploads.get(id);
@@ -294,14 +294,14 @@ Final status: { id: '<hex>', status: 'complete', received: 204800, total: 204800
 
 ## Common Mistakes
 
-- Reporting progress too frequently — 1000 events per second floods the client. Throttle to 5-10 updates per second
-- Not cleaning up SSE connections when the upload finishes — leaked connections consume server resources
-- Using `Content-Length` as the sole progress indicator — it can be absent or wrong. Always count actual bytes
-- Not handling the case where the upload ID is checked before the upload starts — race condition between starting upload and polling
+- Reporting progress too frequently: 1000 events per second floods the client. Throttle to 5-10 updates per second
+- Not cleaning up SSE connections when the upload finishes: leaked connections consume server resources
+- Using `Content-Length` as the sole progress indicator. It can be absent or wrong. Always count actual bytes
+- Not handling the case where the upload ID is checked before the upload starts: race condition between starting upload and polling
 
 
 ---
 
 ## Navigation
 
-[< 003 — File Size Limits](003-file-size-limits.md) | [005 — Temporary Storage >](005-temporary-storage.md)
+[< 003 - File Size Limits](003-file-size-limits.md) | [005 - Temporary Storage >](005-temporary-storage.md)

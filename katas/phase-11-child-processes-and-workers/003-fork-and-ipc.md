@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-`fork()` is a specialized `spawn` for running Node.js scripts. It automatically sets up an **IPC channel** — a bidirectional message-passing link between parent and child:
+`fork()` is a specialized `spawn` for running Node.js scripts. It automatically sets up an **IPC channel**: a bidirectional message-passing link between parent and child:
 
 ```js
 // parent.js
@@ -32,7 +32,7 @@ process.on('message', msg => {
 **IPC (Inter-Process Communication)** uses the OS pipe mechanism to serialize messages as JSON between processes. This means:
 
 - Messages must be JSON-serializable (no functions, no circular references)
-- Each process has its own V8 heap — no shared memory
+- Each process has its own V8 heap. No shared memory
 - Messages are copied, not shared (unlike worker threads)
 - IPC overhead is microseconds per message
 
@@ -46,7 +46,7 @@ process.on('message', msg => {
 
 ## Key Insight
 
-> `fork()` creates a completely independent Node.js process with its own V8 instance, event loop, and memory. Communication happens via structured message passing over an IPC channel. This is true process isolation — a crash in the child doesn't crash the parent, a memory leak in the child doesn't affect the parent, and an infinite loop in the child doesn't block the parent's event loop.
+> `fork()` creates a completely independent Node.js process with its own V8 instance, event loop, and memory. Communication happens via structured message passing over an IPC channel. This is true process isolation: a crash in the child doesn't crash the parent, a memory leak in the child doesn't affect the parent, and an infinite loop in the child doesn't block the parent's event loop.
 
 ## Experiment
 
@@ -299,14 +299,14 @@ for (const [use, desc] of useCases) {
 
 ## Common Mistakes
 
-- Forking a new process per request — fork is expensive (~30ms + memory). Use a process pool and reuse workers
-- Sending large payloads via IPC — messages are serialized as JSON and copied; for large data, use files or shared memory
-- Not handling worker crashes — listen for the `exit` event and restart workers that crash unexpectedly
-- Forgetting to call `worker.disconnect()` or `worker.kill()` — orphaned workers keep running after the parent exits
+- Forking a new process per request: fork is expensive (~30ms + memory). Use a process pool and reuse workers
+- Sending large payloads via IPC: messages are serialized as JSON and copied; for large data, use files or shared memory
+- Not handling worker crashes: listen for the `exit` event and restart workers that crash unexpectedly
+- Forgetting to call `worker.disconnect()` or `worker.kill()`: orphaned workers keep running after the parent exits
 
 
 ---
 
 ## Navigation
 
-[< 002 — Spawn And Streaming](002-spawn-and-streaming.md) | [004 — Worker Threads >](004-worker-threads.md)
+[< 002 - Spawn And Streaming](002-spawn-and-streaming.md) | [004 - Worker Threads >](004-worker-threads.md)

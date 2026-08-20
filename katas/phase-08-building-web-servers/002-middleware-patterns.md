@@ -24,11 +24,11 @@ Each middleware has the signature `(req, res, next)`:
 - Don't call `next()` to short-circuit (e.g., return 401 for auth failure)
 - Call `next(error)` to skip to error-handling middleware
 
-This pattern is powerful because middleware is composable — you can mix and match logging, authentication, rate limiting, CORS, compression, and more by simply adding them to the pipeline.
+This pattern is powerful because middleware is composable. You can mix and match logging, authentication, rate limiting, CORS, compression, and more by simply adding them to the pipeline.
 
 ## Key Insight
 
-> Middleware turns request processing into a pipeline of composable, single-responsibility functions. Each middleware does one thing — log, authenticate, validate, compress — and the pipeline combines them. This separation of concerns makes servers modular: add CORS support by adding one middleware, not by modifying every route handler.
+> Middleware turns request processing into a pipeline of composable, single-responsibility functions. Each middleware does one thing: log, authenticate, validate, compress, and the pipeline combines them. This separation of concerns makes servers modular: add CORS support by adding one middleware, not by modifying every route handler.
 
 ## Experiment
 
@@ -131,7 +131,7 @@ app.use(async (req, res, next) => {
   if (req.method === "OPTIONS") {
     res.writeHead(204);
     res.end();
-    return;  // Short-circuit — don't call next()
+    return;  // Short-circuit: don't call next()
   }
 
   await next();
@@ -302,14 +302,14 @@ CORS headers: *
 
 ## Common Mistakes
 
-- Forgetting to call `next()` — the request hangs forever, no response is sent
-- Calling `next()` multiple times — processes the rest of the pipeline twice, causing double responses
-- Not wrapping middleware in try/catch — unhandled errors crash the server instead of returning 500
-- Modifying `res` after headers are sent — calling `res.writeHead()` twice throws an error
+- Forgetting to call `next()`: the request hangs forever, no response is sent
+- Calling `next()` multiple times: processes the rest of the pipeline twice, causing double responses
+- Not wrapping middleware in try/catch: unhandled errors crash the server instead of returning 500
+- Modifying `res` after headers are sent: calling `res.writeHead()` twice throws an error
 
 
 ---
 
 ## Navigation
 
-[< 001 — Routing](001-routing.md) | [003 — Json And Validation >](003-json-and-validation.md)
+[< 001 - Routing](001-routing.md) | [003 - Json And Validation >](003-json-and-validation.md)

@@ -1,6 +1,6 @@
-# Phase 15 — Frameworks
+# Phase 15: Frameworks
 
-Understand why frameworks exist and how they work. Explore routing and parameters, middleware and hooks, validation and serialization, and plugin architectures — all grounded in the fundamentals you already know.
+Understand why frameworks exist and how they work. Explore routing and parameters, middleware and hooks, validation and serialization, and plugin architectures. All grounded in the fundamentals you already know.
 
 **Mental Model Level:** 6-11. HTTP through Production Architectures
 
@@ -18,4 +18,4 @@ Understand why frameworks exist and how they work. Explore routing and parameter
 
 ## Navigation
 
-[< Phase 14 — Background Jobs & Async Systems](../phase-14-background-jobs/README.md) | [Phase 16 — Advanced Architectures >](../phase-16-advanced-architectures/README.md)
+[< Phase 14: Background Jobs & Async Systems](../phase-14-background-jobs/README.md) | [Phase 16: Advanced Architectures >](../phase-16-advanced-architectures/README.md)

@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-The previous kata parsed multipart by buffering the entire body in memory. That works for small uploads but fails catastrophically for large files — a 2 GB video upload would consume 2 GB of RAM.
+The previous kata parsed multipart by buffering the entire body in memory. That works for small uploads but fails catastrophically for large files: a 2 GB video upload would consume 2 GB of RAM.
 
 The solution: **streaming**. Parse the multipart boundary as data arrives, and pipe file contents directly to disk (or another destination) without ever holding the entire file in memory.
 
@@ -23,11 +23,11 @@ A streaming multipart parser works like this:
 4. Pipe the part's body to a file write stream (or any Writable)
 5. When the boundary is found again, the current part is complete
 
-The memory usage is bounded by the `highWaterMark` of the streams involved — typically 64 KB — regardless of whether the uploaded file is 1 KB or 10 GB.
+The memory usage is bounded by the `highWaterMark` of the streams involved. Typically 64 KB: regardless of whether the uploaded file is 1 KB or 10 GB.
 
 ## Key Insight
 
-> Streaming uploads are the difference between a server that handles 10 MB files and one that handles 10 GB files. By piping the upload directly to disk, memory usage is constant — proportional to the buffer size, not the file size. This is the same principle as `pipeline()`: connect streams, let backpressure regulate flow.
+> Streaming uploads are the difference between a server that handles 10 MB files and one that handles 10 GB files. By piping the upload directly to disk, memory usage is constant: proportional to the buffer size, not the file size. This is the same principle as `pipeline()`: connect streams, let backpressure regulate flow.
 
 ## Experiment
 
@@ -135,7 +135,7 @@ class MultipartParser extends Transform {
     const endIdx = this.buffer.indexOf(this.endBoundary);
 
     if (endIdx !== -1 && (boundaryIdx === -1 || endIdx <= boundaryIdx)) {
-      // End boundary found — emit remaining body data
+      // End boundary found: emit remaining body data
       const bodyData = this.buffer.slice(0, endIdx);
       if (bodyData.length > 0) {
         this.currentPart.size += bodyData.length;
@@ -148,7 +148,7 @@ class MultipartParser extends Transform {
     }
 
     if (boundaryIdx !== -1) {
-      // Next boundary found — emit body data before it
+      // Next boundary found: emit body data before it
       const bodyData = this.buffer.slice(0, boundaryIdx);
       if (bodyData.length > 0) {
         this.currentPart.size += bodyData.length;
@@ -163,7 +163,7 @@ class MultipartParser extends Transform {
       return true;
     }
 
-    // No boundary found — emit safe portion (keep last boundary-length bytes)
+    // No boundary found: emit safe portion (keep last boundary-length bytes)
     const safeLen = this.buffer.length - this.boundary.length;
     if (safeLen > 0) {
       const safeData = this.buffer.slice(0, safeLen);
@@ -204,12 +204,12 @@ const server = createServer((req, res) => {
     console.log(`  [upload] Part started: ${part.name}${part.filename ? ` (${part.filename})` : ""}`);
 
     if (part.filename) {
-      // File field — stream to disk
+      // File field: stream to disk
       const filePath = join(uploadDir, `${Date.now()}-${part.filename}`);
       currentWriter = createWriteStream(filePath);
       part.savedPath = filePath;
     } else {
-      // Text field — collect in memory (small)
+      // Text field: collect in memory (small)
       part.chunks = [];
     }
     results.push(part);
@@ -342,18 +342,18 @@ Files in upload dir: [ '<timestamp>-data.bin' ]
 
 1. Add upload progress tracking: emit `progress` events with `{ bytesReceived, totalBytes }` (use the `Content-Length` header for total)
 2. Implement file size limits per part: abort the upload with 413 if any single file exceeds 10 MB
-3. Stream the uploaded file directly to a cloud storage API (simulate with a Writable) — no temp file on disk
+3. Stream the uploaded file directly to a cloud storage API (simulate with a Writable). No temp file on disk
 
 ## Common Mistakes
 
-- Holding entire files in memory — use streaming to disk for any file that could be large
-- Not cleaning up temp files on error — if parsing fails mid-upload, delete any partially written files
-- Trusting the `filename` from the client — it could contain path traversal (`../../etc/passwd`). Always sanitize
-- Not setting upload timeouts — a slow client can hold a connection open indefinitely
+- Holding entire files in memory. Use streaming to disk for any file that could be large
+- Not cleaning up temp files on error. If parsing fails mid-upload, delete any partially written files
+- Trusting the `filename` from the client. It could contain path traversal (`../../etc/passwd`). Always sanitize
+- Not setting upload timeouts: a slow client can hold a connection open indefinitely
 
 
 ---
 
 ## Navigation
 
-[< 001 — Multipart Form Data](001-multipart-form-data.md) | [003 — File Size Limits >](003-file-size-limits.md)
+[< 001 - Multipart Form Data](001-multipart-form-data.md) | [003 - File Size Limits >](003-file-size-limits.md)
