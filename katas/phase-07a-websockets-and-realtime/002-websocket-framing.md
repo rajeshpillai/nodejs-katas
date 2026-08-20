@@ -251,7 +251,7 @@ const closeCodes = [
 ];
 
 for (const [code, name, desc] of closeCodes) {
-  console.log(`  ${code} ${name.padEnd(20)}: ${desc}`);
+  console.log(`  ${code} ${(name + ":").padEnd(21)} ${desc}`);
 }
 
 console.log("\n=== Opcodes Summary ===\n");
@@ -266,7 +266,7 @@ const opcodes = [
 ];
 
 for (const [code, name, desc] of opcodes) {
-  console.log(`  0x${code.toString(16)} ${name.padEnd(14)}: ${desc}`);
+  console.log(`  0x${code.toString(16)} ${(name + ":").padEnd(15)} ${desc}`);
 }
 ```
 
