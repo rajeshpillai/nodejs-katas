@@ -57,8 +57,8 @@ console.log("=== Child Process Basics ===\n");
 
 console.log("--- exec: run shell commands ---\n");
 
-const { stdout: lsOutput } = await execAsync("ls -1 /tmp | head -5");
-console.log("  ls /tmp (first 5):");
+const { stdout: lsOutput } = await execAsync("ls -1 /usr/share | head -5");
+console.log("  ls /usr/share (first 5):");
 for (const line of lsOutput.trim().split("\n")) {
   console.log(`    ${line}`);
 }
