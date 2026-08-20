@@ -115,12 +115,13 @@ class SimulatedWorker {
   }
 
   handle(request) {
+    // The connection stays counted after routing. Incrementing and immediately
+    // decrementing would leave every worker on zero, and least-connections would
+    // then always pick the first worker and send it everything.
     this.activeConnections++;
     this.requestsHandled++;
     const latency = 5 + Math.random() * 20;
     this.totalLatency += latency;
-    // Simulate processing
-    this.activeConnections--;
     return latency;
   }
 
