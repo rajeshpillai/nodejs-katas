@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-HTTP (HyperText Transfer Protocol) is a text-based request-response protocol built on top of TCP. Every web page, API call, and file download uses HTTP. Understanding it at the protocol level. Not just the API level: is what separates backend developers from framework users.
+HTTP (HyperText Transfer Protocol) is a text-based request-response protocol built on top of TCP. Every web page, API call, and file download uses HTTP. Understanding it at the protocol level, not just the API level, is what separates backend developers from framework users.
 
 An HTTP request looks like this on the wire:
 ```

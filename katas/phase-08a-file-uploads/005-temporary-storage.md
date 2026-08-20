@@ -26,7 +26,7 @@ Temporary storage must be:
 - **Cleaned up reliably**. Even when the process crashes, validation fails, or the client disconnects
 - **Size-bounded**: the temp directory shouldn't fill up the disk
 
-The most common mistake is forgetting cleanup. Every code path: success, validation failure, error, timeout, client disconnect: must delete temp files. A `try/finally` pattern or a periodic cleanup job ensures nothing is left behind.
+The most common mistake is forgetting cleanup. Every code path (success, validation failure, error, timeout, client disconnect) must delete temp files. A `try/finally` pattern or a periodic cleanup job ensures nothing is left behind.
 
 ## Key Insight
 

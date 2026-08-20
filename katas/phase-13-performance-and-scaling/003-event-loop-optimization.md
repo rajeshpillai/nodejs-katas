@@ -264,8 +264,8 @@ idle (so its p50 stays ~1ms, same as baseline) but freezes the loop for one
 ~230ms stretch. That single stall is the bug, and only `max`/high percentiles
 reveal it. Chunking trades a slightly higher p50 for a `max` that stays in
 single-digit milliseconds: the tail latency every request feels is now bounded.
-(Exact numbers vary by machine; the *shape*: blocking `max` orders of magnitude
-above idle, chunked `max` close to idle: is the point.)
+(Exact numbers vary by machine. The *shape* is the point: blocking `max` orders of
+magnitude above idle, chunked `max` close to idle.)
 
 ## Challenge
 

@@ -12,7 +12,7 @@ estimated_minutes: 15
 
 ## Concept
 
-When a browser sends a file upload, it uses `Content-Type: multipart/form-data`. This encoding packages multiple fields: text inputs, files, binary data: into a single HTTP request body, separated by a **boundary** string.
+When a browser sends a file upload, it uses `Content-Type: multipart/form-data`. This encoding packages multiple fields (text inputs, files, binary data) into a single HTTP request body, separated by a **boundary** string.
 
 A multipart body looks like this on the wire:
 
@@ -38,7 +38,7 @@ The structure:
 4. Headers and body are separated by `\r\n\r\n`
 5. The final boundary ends with `--boundary--\r\n`
 
-Understanding this format is essential because every file upload on the web uses it. Frameworks hide the parsing, but when something goes wrong: large files, encoding issues, timeouts. You need to know what's happening at the protocol level.
+Understanding this format is essential because every file upload on the web uses it. Frameworks hide the parsing, but when something goes wrong (large files, encoding issues, timeouts) you need to know what's happening at the protocol level.
 
 ## Key Insight
 

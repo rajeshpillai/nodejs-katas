@@ -23,7 +23,7 @@ A streaming multipart parser works like this:
 4. Pipe the part's body to a file write stream (or any Writable)
 5. When the boundary is found again, the current part is complete
 
-The memory usage is bounded by the `highWaterMark` of the streams involved. Typically 64 KB: regardless of whether the uploaded file is 1 KB or 10 GB.
+The memory usage is bounded by the `highWaterMark` of the streams involved, typically 64 KB, regardless of whether the uploaded file is 1 KB or 10 GB.
 
 ## Key Insight
 
