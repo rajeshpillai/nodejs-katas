@@ -115,6 +115,26 @@ async function errorDemo() {
 }
 
 await errorDemo();
+
+// PITFALL 5: Promise.all rejects early. It does not cancel the others.
+async function noCancelDemo() {
+  const sibling = new Promise((resolve) => setTimeout(() => {
+    console.log("  sibling finished anyway, after the catch");
+    resolve("done");
+  }, 60));
+
+  try {
+    await Promise.all([Promise.reject(new Error("fails at once")), sibling]);
+  } catch (err) {
+    console.log(`Promise.all rejected: "${err.message}"`);
+  }
+
+  // Wait long enough for the sibling to land, so you can see that it did.
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  console.log("Nothing was cancelled. The side effect already happened.");
+}
+
+await noCancelDemo();
 ```
 
 ## Expected Output
@@ -126,6 +146,9 @@ forEach trap, results: [] (empty! forEach didn't wait)
 for...of fix, results: [1, 2, 3]
 Promise.all error: "one failed". All results lost!
 allSettled: [ 'ok', 'ERR: one failed', 'also ok' ]
+Promise.all rejected: "fails at once"
+  sibling finished anyway, after the catch
+Nothing was cancelled. The side effect already happened.
 ```
 
 ## Challenge
@@ -138,7 +161,7 @@ allSettled: [ 'ok', 'ERR: one failed', 'also ok' ]
 
 - Using `forEach` with `async` callbacks. It never waits for them. Use `for...of` for sequential, `Promise.all(arr.map(...))` for concurrent
 - Catching errors from `Promise.all` and losing the successful results: use `Promise.allSettled` when you need partial results
-- Not handling the case where `Promise.all` rejects on the first failure: the other Promises keep running but their results are discarded
+- Assuming `Promise.all` cancels the rest when one rejects. It does not. The others run to completion and their side effects still happen, which matters when they write files, charge cards or send email
 - Wrapping synchronous code in `new Promise()` unnecessarily: if it doesn't need to be async, don't make it async
 
 
